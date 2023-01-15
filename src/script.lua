@@ -1,26 +1,9 @@
-function tprint(tbl, indent)
-    if not indent then indent = 0 end
-    local toprint = string.rep(" ", indent) .. "{\r\n"
-    indent = indent + 2
-    for k, v in pairs(tbl) do
-        toprint = toprint .. string.rep(" ", indent)
-        if (type(k) == "number") then
-            toprint = toprint .. "[" .. k .. "] = "
-        elseif (type(k) == "string") then
-            toprint = toprint .. k .. "= "
-        end
-        if (type(v) == "number") then
-            toprint = toprint .. v .. ",\r\n"
-        elseif (type(v) == "string") then
-            toprint = toprint .. "\"" .. v .. "\",\r\n"
-        elseif (type(v) == "table") then
-            toprint = toprint .. tprint(v, indent + 2) .. ",\r\n"
-        else
-            toprint = toprint .. "\"" .. tostring(v) .. "\",\r\n"
-        end
+function Make_screenshots()
+    local i = 1
+    local screens = display.screens
+    for var in pairs(screens) do
+        screens[var]:capture("hi" .. i .. ".png")
+        screens[var]:capture_area(0, 20, 40, 40, "hi-point" .. i .. ".png")
+        i = i + 1
     end
-    toprint = toprint .. string.rep(" ", indent - 2) .. "}"
-    return toprint
 end
-
-display.screens[1].capture("hi.png")

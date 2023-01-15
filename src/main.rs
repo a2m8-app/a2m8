@@ -2,7 +2,7 @@ use displays::EasyDisplay;
 use mlua::{Error as LuaError, Lua};
 
 mod displays;
-mod screenshot;
+mod event_handler;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), LuaError> {
@@ -12,6 +12,7 @@ async fn main() -> Result<(), LuaError> {
     // })?;
     // lua.globals().set("rust_func", f)?;
     lua.globals().set("display", EasyDisplay {})?;
-    lua.load(include_str!("./script.lua")).exec()?;
+
+    lua.load(include_str!("./script.lua")).exec_async().await?;
     Ok(())
 }

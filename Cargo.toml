@@ -5,7 +5,7 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-mlua = { version = "0.8", features = ["lua54", "vendored", "parking_lot"] }
+mlua = { version = "0.8", features = ["lua54", "vendored", "parking_lot", "async", "serde", "serialize", "mlua_derive", "macros"] }
 rdev = "0.5.2"
 screenshots = "0.4.6"
 serde = { version = "1.0.152", features = ["derive"] }

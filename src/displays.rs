@@ -71,6 +71,17 @@ impl UserData for SerdeDisplayInfo {
             fs::write(outfile, buffer).unwrap();
             Ok(())
         });
+        methods.add_method(
+            "capture_area",
+            |_, this, (x, y, width, height, outfile): (i32, i32, u32, u32, String)| {
+                let display: screenshots::DisplayInfo = (*this).into();
+                let screen = screenshots::Screen::new(&display);
+                let image = screen.capture_area(x, y, width, height).unwrap();
+                let buffer = image.buffer();
+                fs::write(outfile, buffer).unwrap();
+                Ok(())
+            },
+        )
     }
 }
 
