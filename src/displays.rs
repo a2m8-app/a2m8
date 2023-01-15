@@ -1,6 +1,6 @@
 use std::fs;
 
-use mlua::{Lua, UserData, Value};
+use mlua::UserData;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -9,7 +9,7 @@ pub struct EasyDisplay {}
 
 impl UserData for EasyDisplay {
     fn add_fields<'lua, F: mlua::UserDataFields<'lua, Self>>(fields: &mut F) {
-        fields.add_field_method_get("screens", |_, this| {
+        fields.add_field_method_get("screens", |_, _this| {
             Ok(screenshots::DisplayInfo::all()
                 .unwrap_or_default()
                 .into_iter()

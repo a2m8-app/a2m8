@@ -1,6 +1,4 @@
-use std::{collections::HashMap, sync::Arc};
-
-use mlua::{AnyUserData, FromLua, Function, UserData, UserDataMethods};
+use mlua::{FromLua, UserData, UserDataMethods};
 use rdev::{Button, Event, EventType};
 use serde::{Deserialize, Serialize};
 

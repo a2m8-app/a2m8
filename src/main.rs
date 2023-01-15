@@ -2,10 +2,10 @@ use std::thread;
 
 use clipboard::Clipboard;
 use displays::EasyDisplay;
-use event_handler::{EventEvent, EventHandler, Events};
-use mlua::{Error as LuaError, Lua, Value as LuaValue};
+use event_handler::EventHandler;
+use mlua::{Error as LuaError, Lua};
 use once_cell::sync::Lazy;
-use rdev::{listen, Event, EventType as RdevEventType};
+use rdev::{listen, Event};
 use tokio::sync::{
     mpsc::{self, UnboundedReceiver},
     Mutex,
@@ -21,7 +21,7 @@ static EVENT_LISTENER: Lazy<Mutex<UnboundedReceiver<Event>>> = Lazy::new(|| {
         listen(move |event| {
             schan
                 .send(event)
-                .unwrap_or_else(|e| println!("Could not send event {:?}", e));
+                .unwrap_or_else(|e| println!("Could not send event {e:?}"));
         })
         .expect("Could not listen");
     });
