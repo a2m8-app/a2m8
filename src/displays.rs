@@ -22,7 +22,7 @@ impl UserData for EasyDisplay {
     }
 
     fn add_methods<'lua, M: mlua::UserDataMethods<'lua, Self>>(methods: &mut M) {
-        methods.add_method("from_point", |_, this, (x, y): (i32, i32)| {
+        methods.add_function("from_point", |_, (x, y): (i32, i32)| {
             Ok(screenshots::DisplayInfo::from_point(x, y)
                 .map(|x| {
                     let x: SerdeDisplayInfo = x.into();

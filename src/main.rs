@@ -1,8 +1,32 @@
-use displays::EasyDisplay;
-use mlua::{Error as LuaError, Lua};
+use std::thread;
 
+use clipboard::Clipboard;
+use displays::EasyDisplay;
+use event_handler::{EventEvent, EventHandler, Events};
+use mlua::{Error as LuaError, Lua, Value as LuaValue};
+use once_cell::sync::Lazy;
+use rdev::{listen, Event, EventType as RdevEventType};
+use tokio::sync::{
+    mpsc::{self, UnboundedReceiver},
+    Mutex,
+};
+
+mod clipboard;
 mod displays;
 mod event_handler;
+
+static EVENT_LISTENER: Lazy<Mutex<UnboundedReceiver<Event>>> = Lazy::new(|| {
+    let (schan, rchan) = mpsc::unbounded_channel();
+    let _listener = thread::spawn(move || {
+        listen(move |event| {
+            schan
+                .send(event)
+                .unwrap_or_else(|e| println!("Could not send event {:?}", e));
+        })
+        .expect("Could not listen");
+    });
+    Mutex::new(rchan)
+});
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), LuaError> {
@@ -12,6 +36,8 @@ async fn main() -> Result<(), LuaError> {
     // })?;
     // lua.globals().set("rust_func", f)?;
     lua.globals().set("display", EasyDisplay {})?;
+    lua.globals().set("event_handler", EventHandler {})?;
+    lua.globals().set("clipboard", Clipboard {})?;
 
     lua.load(include_str!("./script.lua")).exec_async().await?;
     Ok(())
