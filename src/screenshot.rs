@@ -1,0 +1,69 @@
+use mlua::{Lua, UserData, Value};
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, Debug)]
+
+pub struct Screenshots {}
+impl UserData for Screenshots {
+    fn add_fields<'lua, F: mlua::UserDataFields<'lua, Self>>(fields: &mut F) {
+        fields.add_field_method_get("screens", |_, this| {
+            Ok(screenshots::DisplayInfo::all()
+                .unwrap_or_default()
+                .into_iter()
+                .map(|x| {
+                    let x: SerdeDisplayInfo = x.into();
+                    x
+                })
+                .collect::<Vec<_>>())
+        });
+    }
+
+    fn add_methods<'lua, M: mlua::UserDataMethods<'lua, Self>>(methods: &mut M) {}
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
+pub struct SerdeDisplayInfo {
+    pub id: u32,
+    pub x: i32,
+    pub y: i32,
+    pub width: u32,
+    pub height: u32,
+    pub rotation: f32,
+    pub scale_factor: f32,
+    pub is_primary: bool,
+}
+
+impl UserData for SerdeDisplayInfo {
+    fn add_fields<'lua, F: mlua::UserDataFields<'lua, Self>>(fields: &mut F) {
+        //create a simple macro to generate these methods
+        macro_rules! add_field_method_get {
+            ($name:ident) => {
+                fields.add_field_method_get(stringify!($name), |_, this| Ok(this.$name));
+            };
+        }
+        add_field_method_get!(id);
+        add_field_method_get!(x);
+        add_field_method_get!(y);
+        add_field_method_get!(width);
+        add_field_method_get!(height);
+        add_field_method_get!(rotation);
+        add_field_method_get!(scale_factor);
+        add_field_method_get!(is_primary);
+    }
+    fn add_methods<'lua, M: mlua::UserDataMethods<'lua, Self>>(methods: &mut M) {}
+}
+
+impl From<screenshots::DisplayInfo> for SerdeDisplayInfo {
+    fn from(info: screenshots::DisplayInfo) -> Self {
+        SerdeDisplayInfo {
+            id: info.id,
+            x: info.x,
+            y: info.y,
+            width: info.width,
+            height: info.height,
+            rotation: info.rotation,
+            scale_factor: info.scale_factor,
+            is_primary: info.is_primary,
+        }
+    }
+}

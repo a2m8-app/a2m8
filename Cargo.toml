@@ -1,0 +1,18 @@
+[package]
+name = "easyhotkeys"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+mlua = { version = "0.8", features = ["lua54", "vendored", "parking_lot"] }
+rdev = "0.5.2"
+screenshots = "0.4.6"
+serde = { version = "1.0.152", features = ["derive"] }
+tokio = { version = "1.24.1", features = [
+    "rt",
+    "macros",
+    "rt-multi-thread",
+    "sync",
+    "parking_lot"
+] }
