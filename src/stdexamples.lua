@@ -1,4 +1,5 @@
 function Make_screenshots()
+    require("display")
     local i = 1
     local screens = display.screens
     for var in pairs(screens) do
@@ -9,6 +10,7 @@ function Make_screenshots()
 end
 
 function Manual_event_handler()
+    require("event_handler")
     while (true) do
         local event = event_handler:read()
         if event.name == "mouse_move" then
@@ -28,7 +30,14 @@ function Manual_event_handler()
 end
 
 function Clipboard_methods()
+    require("clipboard")
     print(clipboard.value)
     clipboard.value = "lol"
     clipboard.clear()
+end
+
+function Version_info()
+    require("versions")
+    print(version_info.version)
+    print(version_info.lua)
 end

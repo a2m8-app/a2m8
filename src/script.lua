@@ -15,6 +15,5 @@ EventHandler:addEventListener("mouse_move", function(event)
 end)
 
 
-require("versions")
 print(version_info.version)
 print(version_info.lua)

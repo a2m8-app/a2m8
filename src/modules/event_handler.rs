@@ -1,9 +1,10 @@
-use mlua::{FromLua, UserData, UserDataMethods, Function};
+use mlua::{FromLua, UserData, UserDataMethods, Function, Chunk, Lua, Error as LuaError};
 use rdev::{Button, Event, EventType};
 use serde::{Deserialize, Serialize};
-use tokio::runtime::Handle;
 
-use crate::event_listener::EVENT_LISTENER;
+use crate::private::event_listener::EVENT_LISTENER;
+
+
 
 #[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]
@@ -15,17 +16,18 @@ pub enum Events {
     Wheel,
 }
 
-impl Events {
-    pub fn to_string(&self) -> &'static str {
-        match self {
-            Events::Click => "click",
-            Events::KeyPress => "key_press",
-            Events::KeyRelease => "key_release",
-            Events::MouseMove => "mouse_move",
-            Events::Wheel => "wheel",
-        }
-    }
-}
+
+// impl Events {
+//     pub fn to_string(&self) -> &'static str {
+//         match self {
+//             Events::Click => "click",
+//             Events::KeyPress => "key_press",
+//             Events::KeyRelease => "key_release",
+//             Events::MouseMove => "mouse_move",
+//             Events::Wheel => "wheel",
+//         }
+//     }
+// }
 
 impl Default for Events {
     fn default() -> Self {
