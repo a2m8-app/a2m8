@@ -1,5 +1,3 @@
-use std::{io::BufReader, thread};
-
 use mlua::{Error as LuaError, Lua};
 
 use crate::modules::require;

@@ -1,5 +1,3 @@
-use std::time::SystemTime;
-
 use mlua::{FromLua, UserData, UserDataMethods};
 use rdev::{Button, Event, EventType, Key};
 use serde::{Deserialize, Serialize};
@@ -72,13 +70,11 @@ impl EventEvent {
 }
 
 pub fn parse_key(key: String) -> mlua::Result<Key> {
-    Ok(
-        serde_json::from_str(&format!("\"{key}\"")).map_err(|e| mlua::Error::FromLuaConversionError {
-            from: "string",
-            to: "Key",
-            message: Some(format!("Invalid key: {e}")),
-        })?,
-    )
+    serde_json::from_str(&format!("\"{key}\"")).map_err(|e| mlua::Error::FromLuaConversionError {
+        from: "string",
+        to: "Key",
+        message: Some(format!("Invalid key: {e}")),
+    })
 }
 
 impl UserData for EventEvent {
