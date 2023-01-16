@@ -1,5 +1,10 @@
-local clock = os.clock
-function Sleep(n)
-    local t0 = clock()
-    while clock() - t0 <= n do end
+---@diagnostic disable: undefined-global
+
+--- 
+--- Sleeps for the given amount of seconds.
+---
+--- @param time number The amount of seconds to sleep.
+function Sleep(time)
+    sleep(time)
 end
+

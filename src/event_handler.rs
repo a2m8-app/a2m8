@@ -2,7 +2,7 @@ use mlua::{FromLua, UserData, UserDataMethods};
 use rdev::{Button, Event, EventType};
 use serde::{Deserialize, Serialize};
 
-use crate::EVENT_LISTENER;
+use crate::event_listener::EVENT_LISTENER;
 
 #[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]
