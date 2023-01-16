@@ -38,7 +38,7 @@ async fn main() -> Result<(), LuaError> {
     lua.globals().set("display", EasyDisplay {})?;
     lua.globals().set("event_handler", EventHandler {})?;
     lua.globals().set("clipboard", Clipboard {})?;
-
-    lua.load(include_str!("./script.lua")).exec_async().await?;
+    std::env::set_current_dir("./src").unwrap();
+    lua.load(&std::fs::read_to_string("script.lua")?).exec_async().await?;
     Ok(())
 }
