@@ -6,18 +6,20 @@
 | Clipboard           |    X    |   X   |   O   |
 | Listening to events |    X    |   X   |   X   |
 | Screenshots         |    X    |   X   |   X   |
+| Command             |    X    |   X   |   X   |
 
 ## List of modules
 
 You can import modules with require("module_name") 
 
-| Module name    | Description                                                                              |
-| :------------- | :--------------------------------------------------------------------------------------- |
-| clipboard      | Clipboard module                                                                         |
-| display        | View screens and make screenshots                                                        |
-| events_handler | Events module                                                                            |
-| sleep          | Add the function Sleep(time_ms) to wait this is more efficient than using pure lua sleep |
-| versions       | Version info                                                                             |
+| Module name    | Description                                                                                |
+| :------------- | :----------------------------------------------------------------------------------------- |
+| clipboard      | Clipboard module                                                                           |
+| display        | View screens and make screenshots                                                          |
+| events_handler | Events module                                                                              |
+| sleep          | Add the function Sleep(time_ms) to wait this is more efficient than using pure lua sleep   |
+| versions       | Version info                                                                               |
+| command        | Run shell commands with deno shell include a few built in commands for cross compatibility |
 
 ## Contributing
 

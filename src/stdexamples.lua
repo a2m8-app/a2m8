@@ -41,3 +41,15 @@ function Version_info()
     print(version_info.version)
     print(version_info.lua)
 end
+
+function Run_commands()
+    require('command')
+    local result = run_command("cat main.rs")
+
+    print(result.stdout)
+    print(result.stderr)
+    print(result.exit_code)
+    local code = run_command_piped("cat main.rs")
+
+    print(code)
+end

@@ -4,7 +4,7 @@ use mlua::Lua;
 use tokio::fs;
 
 use self::{
-    clipboard::Clipboard, displays::EasyDisplay, event_handler::EventHandler, sleep::sleep, versions::VersionInfo, command::run_command,
+    clipboard::Clipboard, displays::EasyDisplay, event_handler::EventHandler, sleep::sleep, versions::VersionInfo, command::{run_command, run_command_piped},
 };
 
 mod clipboard;
@@ -53,6 +53,7 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<()> {
         }
         "command" => {
             globals.set("run_command", lua.create_async_function(run_command)?)?;
+            globals.set("run_command_piped", lua.create_async_function(run_command_piped)?)?;
         }
         "sleep" => {
             globals.set("sleep", lua.create_async_function(sleep)?)?;
