@@ -39,3 +39,4 @@ tokio = { version = "1.24.1", features = [
 tokio-util = { version = "0.7.4" }
 os_pipe = { version = "1.0.1" }
 rodio = { version = "0.16.0" }
+notify-rust = "4"

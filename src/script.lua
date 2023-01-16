@@ -1,10 +1,13 @@
 ---@diagnostic disable: undefined-global
 
-local audio = require("audio")
-local u = require("utils")
+local n = require('notify')
+local u = require('utils')
+n:new()
+    :appname("This is my amazing app")
+    :summary("You died")
+    :body("press f to try again")
+    :icon("spotify")
+    :show()
 
-audio.play_audio("../assets/fireworks_launch_boom.wav")
-audio.play_audio("../assets/assets_music.mp3")
-u.sleep(1)
-audio.play_audio_blocking("../assets/fireworks_launch_boom.wav")
-audio.play_audio_blocking("../assets/assets_music.mp3")
+
+u.sleep(2.5)

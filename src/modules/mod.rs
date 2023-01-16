@@ -2,7 +2,10 @@ use mlua::{Lua, Table};
 
 use tokio::fs;
 
-use crate::modules::audio::{play_audio, play_audio_blocking};
+use crate::modules::{
+    audio::{play_audio, play_audio_blocking},
+    notify::EasyNotification,
+};
 
 use self::{
     clipboard::Clipboard,
@@ -20,6 +23,7 @@ mod command;
 mod displays;
 mod event_handler;
 mod event_sender;
+mod notify;
 mod sleep;
 mod versions;
 
@@ -107,6 +111,11 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
                 "create_button_press" => lua.create_function(create_button_press)?,
                 "create_button_release" => lua.create_function(create_button_release)?,
                 "simulate" => lua.create_function(simulate_event)?
+            }
+        }
+        "notify" => {
+            create_table! {
+                "new" => lua.create_function(EasyNotification::new_lua)?
             }
         }
         "utils" => load_std().await?,

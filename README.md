@@ -1,12 +1,13 @@
 ## Feature support
 
-| Feature             | Windows | Linux | Mac |
-| :------------------ | :-----: | :---: | :-: |
-| Clipboard           |    X    |   X   |  O  |
-| Listening to events |    X    | X/x11 |  X  |
-| Screenshots         |    X    |   X   |  X  |
-| Command             |    X    |   X   |  X  |
-| Audio               |    X    |   X   |  X  |
+| Feature             | Windows | Linux |     Mac     |
+| :------------------ | :-----: | :---: | :---------: |
+| Clipboard           |    X    |   X   |      O      |
+| Listening to events |    X    | X/x11 |      X      |
+| Screenshots         |    X    |   X   |      X      |
+| Command             |    X    |   X   |      X      |
+| Audio               |    X    |   X   |      X      |
+| Notifications       |    X    |   X   | X (partial) |
 
 ## List of modules
 
