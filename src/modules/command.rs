@@ -28,9 +28,9 @@ pub async fn run_command(_: &Lua, (command, cwd): (String, Option<String>)) -> m
     stdout.read_to_end(&mut stdout_buffer)?;
     stderr.read_to_end(&mut stderr_buffer)?;
     let stdout = String::from_utf8(stdout_buffer)
-        .map_err(|x| mlua::Error::RuntimeError(format!("Failed to convert stdout to utf8: {}", x)))?;
+        .map_err(|x| mlua::Error::RuntimeError(format!("Failed to convert stdout to utf8: {x}")))?;
     let stderr = String::from_utf8(stderr_buffer)
-        .map_err(|x| mlua::Error::RuntimeError(format!("Failed to convert stderr to utf8: {}", x)))?;
+        .map_err(|x| mlua::Error::RuntimeError(format!("Failed to convert stderr to utf8: {x}")))?;
     Ok(CommandResult {
         stdout,
         stderr,

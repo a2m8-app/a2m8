@@ -1,6 +1,6 @@
-use mlua::{chunk, Chunk, Lua, Table, Value};
-use once_cell::sync::Lazy;
-use tokio::{fs, sync::Mutex};
+use mlua::{Lua, Table};
+
+use tokio::fs;
 
 use self::{
     clipboard::Clipboard,
