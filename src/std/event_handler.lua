@@ -1,7 +1,7 @@
 ---@diagnostic disable: undefined-global
 
 EventHandler = { eventHandlers = {} }
---- 
+---
 --- Runs the function on every event trigger
 ---
 ---@param eventName string
@@ -11,7 +11,7 @@ function EventHandler:addEventListener(eventName, eventHandler)
         self.eventHandlers[eventName] = {}
     end
     local evenHanlders = self.eventHandlers[eventName]
-    evenHanlders[#evenHanlders+1] = eventHandler
+    evenHanlders[#evenHanlders + 1] = eventHandler
 end
 
 ---

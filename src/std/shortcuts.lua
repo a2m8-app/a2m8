@@ -1,12 +1,10 @@
-require("event_handler")
-
 -- this module requires you to run StartHandler() in order for shortcuts to work
 
 local shortcuts = {}
 local keydowns = {}
 
-EventHandler:addEventListener("key_down", function(event)
-    keydowns[#keydowns+1] = event.key
+EventHandler:addEventListener("key_press", function(event)
+    keydowns[#keydowns + 1] = event.key
     local shortcut = ""
     for i = 1, #keydowns do
         shortcut = shortcut .. keydowns[i]
@@ -19,7 +17,7 @@ EventHandler:addEventListener("key_down", function(event)
     end
 end)
 
-EventHandler:addEventListener("key_up", function(event)
+EventHandler:addEventListener("key_release", function(event)
     for i = 1, #keydowns do
         if (keydowns[i] == event.key) then
             table.remove(keydowns, i)
