@@ -2,9 +2,9 @@ use mlua::{Error as LuaError, Lua};
 
 use crate::modules::require;
 
+mod assets;
 mod modules;
 mod private;
-mod assets;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), LuaError> {

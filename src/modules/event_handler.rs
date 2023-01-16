@@ -1,10 +1,8 @@
-use mlua::{FromLua, UserData, UserDataMethods, Function, Chunk, Lua, Error as LuaError};
+use mlua::{FromLua, UserData, UserDataMethods};
 use rdev::{Button, Event, EventType};
 use serde::{Deserialize, Serialize};
 
 use crate::private::event_listener::EVENT_LISTENER;
-
-
 
 #[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]
@@ -15,7 +13,6 @@ pub enum Events {
     MouseMove,
     Wheel,
 }
-
 
 // impl Events {
 //     pub fn to_string(&self) -> &'static str {
@@ -125,9 +122,8 @@ impl UserData for EventEvent {
     }
 }
 
-#[derive(Debug, PartialEq,  Clone)]
-pub struct EventHandler {
-}
+#[derive(Debug, PartialEq, Clone)]
+pub struct EventHandler {}
 
 impl UserData for EventHandler {
     fn add_methods<'lua, M: UserDataMethods<'lua, Self>>(methods: &mut M) {

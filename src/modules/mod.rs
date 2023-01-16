@@ -1,18 +1,21 @@
-use std::future::Future;
-
 use mlua::Lua;
 use tokio::fs;
 
 use self::{
-    clipboard::Clipboard, displays::EasyDisplay, event_handler::EventHandler, sleep::sleep, versions::VersionInfo, command::{run_command, run_command_piped},
+    clipboard::Clipboard,
+    command::{run_command, run_command_piped},
+    displays::EasyDisplay,
+    event_handler::EventHandler,
+    sleep::sleep,
+    versions::VersionInfo,
 };
 
 mod clipboard;
+mod command;
 mod displays;
 mod event_handler;
 mod sleep;
 mod versions;
-mod command;
 
 pub async fn require(lua: &Lua, module: String) -> mlua::Result<()> {
     let load_std = || async {
