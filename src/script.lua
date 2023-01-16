@@ -1,14 +1,10 @@
 ---@diagnostic disable: undefined-global
 
+local audio = require("audio")
+local u = require("utils")
 
-local events = require("event_handler")
-local shortcuts = require("shortcuts")
-
-events.eventHandler:addEventListener("key_press", function(event)
-    print(event.key)
-end)
-shortcuts.addShortcut("F8", function()
-    print("you died!")
-end)
-
-events.startHandler()
+audio.play_audio("../assets/fireworks_launch_boom.wav")
+audio.play_audio("../assets/assets_music.mp3")
+u.sleep(1)
+audio.play_audio_blocking("../assets/fireworks_launch_boom.wav")
+audio.play_audio_blocking("../assets/assets_music.mp3")

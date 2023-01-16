@@ -2,19 +2,24 @@ use mlua::{Lua, Table};
 
 use tokio::fs;
 
+use crate::modules::audio::{play_audio, play_audio_blocking};
+
 use self::{
     clipboard::Clipboard,
     command::{run_command, run_command_piped},
     displays::EasyDisplay,
     event_handler::EventHandler,
+    event_sender::*,
     sleep::sleep,
     versions::VersionInfo,
 };
 
+mod audio;
 mod clipboard;
 mod command;
 mod displays;
 mod event_handler;
+mod event_sender;
 mod sleep;
 mod versions;
 
@@ -47,6 +52,12 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
     let globals = lua.globals();
 
     let result: Table = match module.as_str() {
+        "audio" => {
+            create_table! {
+                "play_audio_blocking" =>lua.create_function(play_audio_blocking)?,
+                "play_audio" =>lua.create_function(play_audio)?
+            }
+        }
         "event_handler_internal" => {
             create_table! {
                 "event_handler" => EventHandler {}
@@ -85,6 +96,17 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
         "sleep" => {
             create_table! {
                 "sleep" => lua.create_async_function(sleep)?
+            }
+        }
+        "event_sender" => {
+            create_table! {
+                "create_mouse_move" => lua.create_function(create_mouse_move)?,
+                "create_wheel" => lua.create_function(create_wheel)?,
+                "create_key_press" => lua.create_function(create_key_press)?,
+                "create_key_release" => lua.create_function(create_key_release)?,
+                "create_button_press" => lua.create_function(create_button_press)?,
+                "create_button_release" => lua.create_function(create_button_release)?,
+                "simulate" => lua.create_function(simulate_event)?
             }
         }
         "utils" => load_std().await?,

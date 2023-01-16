@@ -1,5 +1,7 @@
+use std::time::SystemTime;
+
 use mlua::{FromLua, UserData, UserDataMethods};
-use rdev::{Button, Event, EventType};
+use rdev::{Button, Event, EventType, Key};
 use serde::{Deserialize, Serialize};
 
 use crate::private::event_listener::EVENT_LISTENER;
@@ -55,7 +57,7 @@ impl<'lua> FromLua<'lua> for Events {
     }
 }
 #[derive(Debug, Deserialize, Serialize, Clone, PartialEq)]
-pub struct EventEvent(Event);
+pub struct EventEvent(pub(crate) Event);
 impl EventEvent {
     pub fn name(&self) -> &'static str {
         match self.0.event_type {
@@ -69,9 +71,20 @@ impl EventEvent {
     }
 }
 
+pub fn parse_key(key: String) -> mlua::Result<Key> {
+    Ok(
+        serde_json::from_str(&format!("\"{key}\"")).map_err(|e| mlua::Error::FromLuaConversionError {
+            from: "string",
+            to: "Key",
+            message: Some(format!("Invalid key: {e}")),
+        })?,
+    )
+}
+
 impl UserData for EventEvent {
     fn add_fields<'lua, F: mlua::UserDataFields<'lua, Self>>(fields: &mut F) {
         fields.add_field_method_get("name", |_, this| Ok(this.name()));
+
         fields.add_field_method_get("key", |_, this| {
             Ok(match this.0.event_type {
                 EventType::KeyPress(key) | EventType::KeyRelease(key) => {
@@ -80,6 +93,7 @@ impl UserData for EventEvent {
                 _ => "".to_string(),
             })
         });
+
         fields.add_field_method_get("button", |_, this| {
             fn button_to_name(button: Button) -> String {
                 match button {

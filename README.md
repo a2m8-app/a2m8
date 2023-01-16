@@ -1,16 +1,16 @@
-
 ## Feature support
 
-| Feature             | Windows | Linux |  Mac  |
-| :------------------ | :-----: | :---: | :---: |
-| Clipboard           |    X    |   X   |   O   |
-| Listening to events |    X    |   X   |   X   |
-| Screenshots         |    X    |   X   |   X   |
-| Command             |    X    |   X   |   X   |
+| Feature             | Windows | Linux | Mac |
+| :------------------ | :-----: | :---: | :-: |
+| Clipboard           |    X    |   X   |  O  |
+| Listening to events |    X    | X/x11 |  X  |
+| Screenshots         |    X    |   X   |  X  |
+| Command             |    X    |   X   |  X  |
+| Audio               |    X    |   X   |  X  |
 
 ## List of modules
 
-You can import modules with require("module_name") 
+You can import modules with require("module_name")
 
 | Module name    | Description                                                                                |
 | :------------- | :----------------------------------------------------------------------------------------- |
