@@ -1,11 +1,27 @@
 
 ## Feature support
 
-| Feature             | Windows | Linux | Mac |
-| :------------------ | :-----: | :---: | :-: |
-| Clipboard           |    X    |   X   |  O  |
-| Listening to events |    X    |   X   |  X  |
-| Screenshots         |    X    |   X   |  X  |
+| Feature             | Windows | Linux |  Mac  |
+| :------------------ | :-----: | :---: | :---: |
+| Clipboard           |    X    |   X   |   O   |
+| Listening to events |    X    |   X   |   X   |
+| Screenshots         |    X    |   X   |   X   |
+
+## List of modules
+
+You can import modules with require("module_name") 
+
+| Module name    | Description                                                                              |
+| :------------- | :--------------------------------------------------------------------------------------- |
+| clipboard      | Clipboard module                                                                         |
+| events_handler | Events module                                                                            |
+| display        | View screens and make screenshots                                                        |
+| sleep          | Add the function Sleep(time_ms) to wait this is more efficient than using pure lua sleep |
+| versions       | Version info                                                                             |
+
+## Contributing
+
+This is a fairly new project and I'm very new to lua so if you know better ways to do things / follow conventions / etc. please let me know with a github issue.
 
 ## TODO:
 

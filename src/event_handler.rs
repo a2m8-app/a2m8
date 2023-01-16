@@ -1,6 +1,7 @@
-use mlua::{FromLua, UserData, UserDataMethods};
+use mlua::{FromLua, UserData, UserDataMethods, Function};
 use rdev::{Button, Event, EventType};
 use serde::{Deserialize, Serialize};
+use tokio::runtime::Handle;
 
 use crate::event_listener::EVENT_LISTENER;
 
@@ -122,8 +123,9 @@ impl UserData for EventEvent {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone, PartialEq)]
-pub struct EventHandler {}
+#[derive(Debug, PartialEq,  Clone)]
+pub struct EventHandler {
+}
 
 impl UserData for EventHandler {
     fn add_methods<'lua, M: UserDataMethods<'lua, Self>>(methods: &mut M) {
@@ -143,6 +145,18 @@ impl UserData for EventHandler {
                 None => Err(mlua::Error::RuntimeError("Could no receive event".to_string())),
             }
         });
+        // methods.add_async_function("read2", |lua, fun: Function| async move {
+        //     let event = EVENT_LISTENER.lock().await.recv().await;
+        //     match event {
+        //         Some(event) => {
+        //             tokio::spawn(async move {
+        //                 let _ = fun.call::<_, ()>(EventEvent(event));
+        //             });
+        //             return Ok(())
+        //         },
+        //         None => Err(mlua::Error::RuntimeError("Could no receive event".to_string())),
+        //     }
+        // });
         // methods.add_async_function(
         //     "on",
         //     |lua, (event, handler): (Events, Function)| async move {

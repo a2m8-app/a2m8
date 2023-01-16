@@ -1,4 +1,4 @@
-use crate::{clipboard::Clipboard, displays::EasyDisplay, event_handler::EventHandler};
+use crate::{clipboard::Clipboard, displays::EasyDisplay, event_handler::EventHandler, versions::VersionInfo};
 use mlua::{Error as LuaError, Lua};
 use tokio::fs;
 
@@ -9,6 +9,12 @@ pub async fn better_require(lua: &Lua, module: String) -> Result<(), LuaError> {
         }
         "display" => {
             lua.globals().set("display", EasyDisplay {})?;
+            return Ok(());
+        }
+        "versions" => {
+            lua.globals().set("version_info", VersionInfo {
+                version: format!("{} {} ({}) {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"), env!("GIT_HASH"), env!("BUILD_TYPE")),
+            })?;
             return Ok(());
         }
         "clipboard" => {
