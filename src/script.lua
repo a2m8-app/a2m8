@@ -1,17 +1,14 @@
 ---@diagnostic disable: undefined-global
 
 
--- io.write('Hello, what is your name? ')
--- local name = io.read()
--- io.write('Nice to meet you, ', name, '!\n')
+local events = require("event_handler")
+local shortcuts = require("shortcuts")
 
-require("event_handler")
-require("shortcuts")
+events.eventHandler:addEventListener("key_press", function(event)
+    print(event.key)
+end)
+shortcuts.addShortcut("F8", function()
+    print("you died!")
+end)
 
-AddShortcut("ControlLeft.F8", function()
-    print("F8-S")
-end)
-EventHandler:addEventListener("key_press", function(event)
-    -- print(event.key)
-end)
-StartHandler()
+events.startHandler()

@@ -1,9 +1,11 @@
 -- this module requires you to run StartHandler() in order for shortcuts to work
 
+local e = require("event_handler")
+
 local shortcuts = {}
 local keydowns = {}
 
-EventHandler:addEventListener("key_press", function(event)
+e.eventHandler:addEventListener("key_press", function(event)
     keydowns[#keydowns + 1] = event.key
     local shortcut = ""
     for i = 1, #keydowns do
@@ -17,7 +19,7 @@ EventHandler:addEventListener("key_press", function(event)
     end
 end)
 
-EventHandler:addEventListener("key_release", function(event)
+e.eventHandler:addEventListener("key_release", function(event)
     for i = 1, #keydowns do
         if (keydowns[i] == event.key) then
             table.remove(keydowns, i)
@@ -29,6 +31,10 @@ end)
 ---comment
 ---@param shortcut string keys to be matched in order `Ctrl.F8` for example
 ---@param callback function the function to run
-function AddShortcut(shortcut, callback)
+local function addShortcut(shortcut, callback)
     shortcuts[shortcut] = callback
 end
+
+return {
+    addShortcut = addShortcut
+}

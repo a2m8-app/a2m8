@@ -1,5 +1,6 @@
-function Prompt(prompt, default )
-    print(prompt)
+local sleep_module = require('sleep')
+local function prompt(question, default)
+    print(question)
     local result = default
     local input = io.read()
     if input ~= "" then
@@ -9,8 +10,19 @@ function Prompt(prompt, default )
 end
 
 --- https://stackoverflow.com/questions/12069109/getting-input-from-the-user-in-lua
-function Read( prompt, default )
-    io.write(prompt)
-    return Prompt(prompt, default)
+local function read()
+    local input = io.read()
+    return input
 end
 
+--- Sleep a amount of seconds periods work
+--- @param seconds number
+local function sleep(seconds)
+    sleep_module.sleep(seconds)
+end
+
+return {
+    prompt = prompt,
+    read = read,
+    sleep = sleep
+}
