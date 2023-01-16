@@ -4,7 +4,6 @@ use mlua::UserData;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
-
 pub struct EasyDisplay {}
 
 impl UserData for EasyDisplay {

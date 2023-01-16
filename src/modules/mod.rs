@@ -62,6 +62,12 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<()> {
             globals.set("sleep", lua.create_async_function(sleep)?)?;
             load_std().await?;
         }
+        "utils" => {
+            load_std().await?;
+        }
+        "shortcuts" => {
+            load_std().await?;
+        }
         _ => {
             globals
                 .get::<_, mlua::Function>("require_ref")?
