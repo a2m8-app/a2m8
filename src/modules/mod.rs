@@ -4,7 +4,7 @@ use mlua::Lua;
 use tokio::fs;
 
 use self::{
-    clipboard::Clipboard, displays::EasyDisplay, event_handler::EventHandler, sleep::sleep, versions::VersionInfo,
+    clipboard::Clipboard, displays::EasyDisplay, event_handler::EventHandler, sleep::sleep, versions::VersionInfo, command::run_command,
 };
 
 mod clipboard;
@@ -12,6 +12,7 @@ mod displays;
 mod event_handler;
 mod sleep;
 mod versions;
+mod command;
 
 pub async fn require(lua: &Lua, module: String) -> mlua::Result<()> {
     let load_std = || async {
@@ -19,11 +20,12 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<()> {
         path.push("std");
         path.push(module.clone());
         path.set_extension("lua");
-        let code = fs::read_to_string(&module).await?;
+        let code = fs::read_to_string(&path).await?;
         lua.load(&code).exec_async().await?;
         Ok::<(), mlua::Error>(())
     };
     let globals = lua.globals();
+
     match module.as_str() {
         "event_handler" => {
             globals.set("event_handler", EventHandler {})?;
@@ -49,16 +51,20 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<()> {
         "clipboard" => {
             globals.set("clipboard", Clipboard {})?;
         }
+        "command" => {
+            globals.set("run_command", lua.create_async_function(run_command)?)?;
+        }
         "sleep" => {
             globals.set("sleep", lua.create_async_function(sleep)?)?;
             load_std().await?;
         }
-        _ => {}
+        _ => {
+            globals
+                .get::<_, mlua::Function>("require_ref")?
+                .call_async(module)
+                .await?;
+        }
     }
 
-    lua.globals()
-        .get::<_, mlua::Function>("require_ref")?
-        .call_async(module)
-        .await?;
     Ok(())
 }

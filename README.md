@@ -14,8 +14,8 @@ You can import modules with require("module_name")
 | Module name    | Description                                                                              |
 | :------------- | :--------------------------------------------------------------------------------------- |
 | clipboard      | Clipboard module                                                                         |
-| events_handler | Events module                                                                            |
 | display        | View screens and make screenshots                                                        |
+| events_handler | Events module                                                                            |
 | sleep          | Add the function Sleep(time_ms) to wait this is more efficient than using pure lua sleep |
 | versions       | Version info                                                                             |
 

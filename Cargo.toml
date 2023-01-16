@@ -7,6 +7,7 @@ edition = "2021"
 [dependencies]
 cli-clipboard = "0.4.0"
 clipboard-ext = "0.2.0"
+deno_task_shell = { version = "0.8.2", features = ["serde", "serialization"] }
 mlua = { version = "0.8", features = ["lua54", "vendored", "parking_lot", "async", "serde", "serialize", "mlua_derive", "macros"] }
 once_cell = { version = "1.17.0", features = ["parking_lot"] }
 rdev = { version = "0.5.2", features = ["serde", "serialize"] }
