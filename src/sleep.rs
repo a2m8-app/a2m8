@@ -1,4 +1,4 @@
-use mlua::{Lua, Error as LuaError};
+use mlua::{Error as LuaError, Lua};
 use tokio::time;
 
 pub async fn sleep(_: &Lua, time: f64) -> Result<(), LuaError> {

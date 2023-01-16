@@ -1,15 +1,11 @@
-
 use std::thread;
 
-use mlua::{Error as LuaError, Lua};
 use once_cell::sync::Lazy;
 use rdev::{listen, Event};
-use tokio::{sync::{
+use tokio::sync::{
     mpsc::{self, UnboundedReceiver},
     Mutex,
-}, fs};
-use tokio::time;
-
+};
 
 pub static EVENT_LISTENER: Lazy<Mutex<UnboundedReceiver<Event>>> = Lazy::new(|| {
     let (schan, rchan) = mpsc::unbounded_channel();

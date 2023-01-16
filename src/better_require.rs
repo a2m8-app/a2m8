@@ -1,9 +1,8 @@
-use crate::{event_handler::EventHandler, displays::EasyDisplay, clipboard::Clipboard};
-use mlua::{Lua, Error as LuaError};
+use crate::{clipboard::Clipboard, displays::EasyDisplay, event_handler::EventHandler};
+use mlua::{Error as LuaError, Lua};
 use tokio::fs;
 
-
-pub async fn better_require(lua: &Lua, module:String) -> Result<(), LuaError> {
+pub async fn better_require(lua: &Lua, module: String) -> Result<(), LuaError> {
     match module.as_str() {
         "event_handler" => {
             lua.globals().set("event_handler", EventHandler {})?;
@@ -24,11 +23,14 @@ pub async fn better_require(lua: &Lua, module:String) -> Result<(), LuaError> {
     path.push(module.clone());
     path.set_extension("lua");
 
-    if let Ok(code)  = fs::read_to_string(path).await {
+    if let Ok(code) = fs::read_to_string(path).await {
         lua.load(&code).exec_async().await?;
-        return Ok(());
+        Ok(())
     } else {
-        lua.globals().get::<_, mlua::Function>("require_ref")?.call_async(module).await?;
+        lua.globals()
+            .get::<_, mlua::Function>("require_ref")?
+            .call_async(module)
+            .await?;
         Ok(())
     }
 }

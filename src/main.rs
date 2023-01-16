@@ -1,26 +1,13 @@
-use std::thread;
-
-use clipboard::Clipboard;
-use displays::EasyDisplay;
-use event_handler::EventHandler;
 use mlua::{Error as LuaError, Lua};
-use once_cell::sync::Lazy;
-use rdev::{listen, Event};
-use tokio::{sync::{
-    mpsc::{self, UnboundedReceiver},
-    Mutex,
-}, fs};
-use tokio::time;
 
+use crate::{better_require::better_require, sleep::sleep};
+
+mod better_require;
 mod clipboard;
 mod displays;
 mod event_handler;
-mod sleep;
-mod better_require;
 mod event_listener;
-
-use crate::sleep::sleep;
-use crate::better_require::better_require;
+mod sleep;
 
 
 #[tokio::main(flavor = "current_thread")]
