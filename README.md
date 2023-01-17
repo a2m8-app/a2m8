@@ -26,6 +26,14 @@ You can import modules with require("module_name")
 
 This is a fairly new project and I'm very new to lua so if you know better ways to do things / follow conventions / etc. please let me know with a github issue.
 
+### Development tip
+
+only run with the features you want to test, for example if you want to test the clipboard module only run with the clipboard feature
+
+```sh   
+cargo run --features clipboard --no-default-features
+```
+
 ## TODO:
 
 - figure out how to make src/std work without having the files in the filesystem [x] partially done rust-embed still needs to be implemented

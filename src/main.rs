@@ -1,4 +1,6 @@
 use mlua::{Error as LuaError, Lua};
+use tracing::metadata::LevelFilter;
+use tracing_subscriber::EnvFilter;
 
 use crate::modules::require;
 
@@ -8,6 +10,17 @@ mod private;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), LuaError> {
+    tracing_subscriber::fmt()
+        .compact()
+        .without_time()
+        .with_target(false)
+        .with_env_filter(
+            EnvFilter::builder()
+                .with_default_directive(LevelFilter::INFO.into())
+                .from_env_lossy(),
+        )
+        .init();
+
     let lua = Lua::new();
 
     let globals = lua.globals();

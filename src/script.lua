@@ -1,13 +1,9 @@
 ---@diagnostic disable: undefined-global
 
-local n = require('notify')
-local u = require('utils')
-n:new()
-    :appname("This is my amazing app")
-    :summary("You died")
-    :body("press f to try again")
-    :icon("spotify")
-    :show()
+local l = require("log")
 
-
-u.sleep(2.5)
+l.warn("huge warning something broke!")
+l.info("cool info")
+l.error("Error beep boop")
+l.debug("debug only works with RUST_LOG=DEBUG")
+l.trace("tracing o.0 RUST_LOG=TRACE")
