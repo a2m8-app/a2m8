@@ -31,7 +31,7 @@ async fn main() -> Result<(), LuaError> {
 
     std::env::set_current_dir("./src").unwrap();
     if let Err(e) = lua.load(&std::fs::read_to_string("script.lua")?).exec_async().await {
-        println!("{:#?}", e);
+        println!("{e:#?}");
     }
     Ok(())
 }

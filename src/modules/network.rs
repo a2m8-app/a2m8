@@ -1,7 +1,7 @@
 use std::{io::Cursor, path::PathBuf};
 
 use mlua::Lua;
-use reqwest::{Method, Url};
+use reqwest::Method;
 
 use crate::create_body;
 
@@ -28,8 +28,7 @@ async fn download_file(_: &Lua, (url, path): (String, String)) -> mlua::Result<b
 async fn fetch_text(_: &Lua, (method, url, body): (String, String, Option<String>)) -> mlua::Result<String> {
     let client = reqwest::Client::new();
     let mut req = client.request(
-        Method::from_bytes(method.as_bytes())
-            .map_err(|x| mlua::Error::RuntimeError(format!("Invalid method: {}", x)))?,
+        Method::from_bytes(method.as_bytes()).map_err(|x| mlua::Error::RuntimeError(format!("Invalid method: {x}")))?,
         url,
     );
     if let Some(body) = body {

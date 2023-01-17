@@ -23,10 +23,4 @@ macro_rules! create_log_macros {
     };
 }
 
-create_log_macros!(
-    trace,
-    info,
-    debug,
-    warn,
-    error
-);
+create_log_macros!(trace, info, debug, warn, error);
