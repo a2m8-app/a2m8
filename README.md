@@ -9,6 +9,8 @@
 | Audio               |    X    |   X   |      X      |
 | Notifications       |    X    |   X   | X (partial) |
 
+\*bsd is not supported by any of the packages so you wont be able to use this on bsd
+
 ## List of modules
 
 You can import modules with require("module_name")
@@ -30,7 +32,7 @@ This is a fairly new project and I'm very new to lua so if you know better ways 
 
 only run with the features you want to test, for example if you want to test the clipboard module only run with the clipboard feature
 
-```sh   
+```sh
 cargo run --features clipboard --no-default-features
 ```
 
@@ -38,7 +40,8 @@ cargo run --features clipboard --no-default-features
 
 - potentially switch out rdev for https://github.com/ostrosco/device_query
 - potentially switch out clipboard libs for https://github.com/1Password/arboard
-  
+- improve consistency of modules
+
 ## Dependencies
 
 ubuntu/debian:

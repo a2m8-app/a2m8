@@ -119,3 +119,11 @@ local function logging()
     l.debug("debug only works with RUST_LOG=DEBUG")
     l.trace("tracing o.0 RUST_LOG=TRACE")
 end
+
+local function networking()
+    local network = require("network")
+
+    print(
+        network.fetch_text("POST", "https://httpbin.org/post", "deez nuts")
+    )
+end
