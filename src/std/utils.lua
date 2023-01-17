@@ -21,8 +21,15 @@ local function sleep(seconds)
     sleep_module.sleep(seconds)
 end
 
+local function loop(fun)
+    while true do
+        fun()
+    end
+end
+
 return {
     prompt = prompt,
     read = read,
-    sleep = sleep
+    sleep = sleep,
+    loop = loop
 }

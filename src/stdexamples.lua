@@ -127,3 +127,31 @@ local function networking()
         network.fetch_text("POST", "https://httpbin.org/post", "deez nuts")
     )
 end
+
+local function tipping()
+    local s = require('event_sender')
+    s:type("Hello World")
+end
+
+local function env_stuff()
+    local env = require("env")
+
+    for k, v in pairs(env) do
+        print(k, v)
+    end
+end
+
+local function block_typing()
+    local internal = require("event_handler_internal")
+    while (true) do
+        internal.event_handler.grab(function(event)
+            if event.key == "F8" then
+                os.exit()
+            end
+            if event.name == "key_press" and event.key ~= nil then
+                return nil
+            end
+            return event
+        end)
+    end
+end

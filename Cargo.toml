@@ -5,16 +5,7 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [features]
-default = [
-    "audio",
-    "clipboard",
-    "command",
-    "displays",
-    "notify",
-    "events",
-    "network",
-    "open"
-]
+default = ["audio", "clipboard", "command", "displays", "notify", "events", "network", "open"]
 audio = ["rodio"]
 clipboard = ["cli-clipboard", "clipboard-ext"]
 command = ["os_pipe", "deno_task_shell"]
@@ -39,7 +30,7 @@ os_pipe = { version = "1.0.1", optional = true }
 # display
 screenshots = { version = "0.4.6", optional = true }
 # events
-rdev = { version = "0.5.2", features = ["serde", "serialize"], optional = true }
+rdev = { version = "0.5.2", features = ["serde", "serialize", "unstable_grab"], optional = true }
 # notify
 notify-rust = { version = "4", optional = true }
 # network
@@ -76,3 +67,4 @@ tracing-subscriber = { version = "0.3.16", features = [
     "env-filter",
     "parking_lot"
 ] }
+anyhow = { version = "1.0.68", features = ["backtrace"] }

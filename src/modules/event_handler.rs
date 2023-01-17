@@ -1,8 +1,11 @@
-use mlua::{FromLua, Lua, UserData, UserDataMethods};
+use mlua::{FromLua, Function, Lua, UserData, UserDataMethods};
 use rdev::{Button, Event, EventType, Key};
 use serde::{Deserialize, Serialize};
 
-use crate::{create_body, private::event_listener::EVENT_LISTENER};
+use crate::{
+    create_body,
+    private::event_listener::{EVENT_GRABBER, EVENT_LISTENER},
+};
 
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body!(lua,
@@ -155,9 +158,21 @@ impl UserData for EventHandler {
         methods.add_async_function("read", |lua, ()| async move {
             let event = EVENT_LISTENER.lock().await.recv().await;
             match event {
-                Some(event) => Ok(lua.create_ser_userdata(EventEvent(event))?),
+                Some(event) => Ok(lua.create_userdata(EventEvent(event))?),
                 None => Err(mlua::Error::RuntimeError("Could no receive event".to_string())),
             }
+        });
+        methods.add_async_function("grab", |_, fun: Function| async move {
+            let (event, responder) = match EVENT_GRABBER.lock().await.recv().await {
+                Some(event) => event,
+                None => return Err(mlua::Error::RuntimeError("Could no receive event".to_string())),
+            };
+
+            let result = fun.call_async::<_, Option<EventEvent>>(EventEvent(event)).await?;
+            responder
+                .send(result.map(|x| x.0))
+                .map_err(|_| mlua::Error::RuntimeError("Could no send event".to_string()))?;
+            Ok(())
         });
         // methods.add_async_function("read2", |lua, fun: Function| async move {
         //     let event = EVENT_LISTENER.lock().await.recv().await;

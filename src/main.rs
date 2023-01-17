@@ -9,7 +9,7 @@ mod modules;
 mod private;
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> Result<(), LuaError> {
+async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt()
         .compact()
         .without_time()
@@ -30,8 +30,6 @@ async fn main() -> Result<(), LuaError> {
     globals.set("__INTERNAL_LOADED_MODULES", lua.create_table()?)?;
 
     std::env::set_current_dir("./src").unwrap();
-    if let Err(e) = lua.load(&std::fs::read_to_string("script.lua")?).exec_async().await {
-        println!("{e:#?}");
-    }
+    lua.load(&std::fs::read_to_string("script.lua")?).exec_async().await?;
     Ok(())
 }

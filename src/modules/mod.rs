@@ -9,6 +9,7 @@ mod clipboard;
 mod command;
 #[cfg(feature = "displays")]
 mod displays;
+mod env;
 #[cfg(feature = "events")]
 mod event_handler;
 #[cfg(feature = "events")]
@@ -59,6 +60,7 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
 #[cfg(feature = "clipboard")]   "clipboard" => clipboard::init(lua)?,
 #[cfg(feature = "command")]     "command" => command::init(lua)?,
 #[cfg(feature = "displays")]    "displays" => displays::init(lua)?,
+/* always-on */                 "env" => env::init(lua)?,
 #[cfg(feature = "events")]      "event_handler_internal" => event_handler::init(lua)?,
 #[cfg(feature = "events")]      "event_handler" => load_std().await?,
 #[cfg(feature = "events")]      "event_sender_internal" => event_sender::init(lua)?,
