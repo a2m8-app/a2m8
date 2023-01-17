@@ -1,7 +1,15 @@
 use std::fs;
 
-use mlua::UserData;
+use mlua::{Lua, UserData};
 use serde::{Deserialize, Serialize};
+
+use crate::create_body;
+
+pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
+    create_body!(lua,
+        "displays" => EasyDisplay {}
+    )
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct EasyDisplay {}

@@ -3,7 +3,21 @@ use std::time::SystemTime;
 use mlua::Lua;
 use rdev::{simulate, Button, Event, EventType};
 
+use crate::create_body;
+
 use super::event_handler::{parse_key, EventEvent};
+
+pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
+    create_body! (lua,
+        "create_mouse_move" => lua.create_function(create_mouse_move)?,
+        "create_wheel" => lua.create_function(create_wheel)?,
+        "create_key_press" => lua.create_function(create_key_press)?,
+        "create_key_release" => lua.create_function(create_key_release)?,
+        "create_button_press" => lua.create_function(create_button_press)?,
+        "create_button_release" => lua.create_function(create_button_release)?,
+        "simulate" => lua.create_function(simulate_event)?
+    )
+}
 
 fn ev(event_type: EventType) -> mlua::Result<EventEvent> {
     Ok(EventEvent(Event {

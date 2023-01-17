@@ -1,8 +1,14 @@
-use mlua::{FromLua, UserData, UserDataMethods};
+use mlua::{FromLua, Lua, UserData, UserDataMethods};
 use rdev::{Button, Event, EventType, Key};
 use serde::{Deserialize, Serialize};
 
-use crate::private::event_listener::EVENT_LISTENER;
+use crate::{create_body, private::event_listener::EVENT_LISTENER};
+
+pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
+    create_body!(lua,
+        "event_handler" => EventHandler {}
+    )
+}
 
 #[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]

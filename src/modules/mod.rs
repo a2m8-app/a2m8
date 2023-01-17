@@ -1,31 +1,33 @@
 use mlua::{Lua, Table};
-
 use tokio::fs;
 
-use crate::modules::{
-    audio::{play_audio, play_audio_blocking},
-    notify::EasyNotification,
-};
-
-use self::{
-    clipboard::Clipboard,
-    command::{run_command, run_command_piped},
-    displays::EasyDisplay,
-    event_handler::EventHandler,
-    event_sender::*,
-    sleep::sleep,
-    versions::VersionInfo,
-};
-
+#[cfg(feature = "audio")]
 mod audio;
+#[cfg(feature = "clipboard")]
 mod clipboard;
+#[cfg(feature = "command")]
 mod command;
+#[cfg(feature = "displays")]
 mod displays;
+#[cfg(feature = "events")]
 mod event_handler;
+#[cfg(feature = "events")]
 mod event_sender;
+#[cfg(feature = "notify")]
 mod notify;
 mod sleep;
 mod versions;
+
+#[macro_export]
+macro_rules! create_body {
+    ($lua:expr, $($key:expr => $value:expr),*) => {
+        {
+            let tb = $lua.create_table()?;
+            $(tb.set($key, $value)?;)*
+            Ok(tb)
+        }
+    }
+}
 
 pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
     let loaded_modules = lua.globals().get::<_, Table>("__INTERNAL_LOADED_MODULES")?;
@@ -42,84 +44,24 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
         let table: Table = lua.load(&code).call_async(()).await?;
         Ok::<_, mlua::Error>(table)
     };
-    /* Creates a table */
-    macro_rules! create_table {
-        ($($key:expr => $value:expr),*) => {
-            {
-                let tb = lua.create_table()?;
-                $(tb.set($key, $value)?;)*
-                tb
-            }
-        }
-    }
 
     let globals = lua.globals();
 
+    //TODO(everyone): keep this sorted alphabetically
+    #[rustfmt::skip]
     let result: Table = match module.as_str() {
-        "audio" => {
-            create_table! {
-                "play_audio_blocking" =>lua.create_function(play_audio_blocking)?,
-                "play_audio" =>lua.create_function(play_audio)?
-            }
-        }
-        "event_handler_internal" => {
-            create_table! {
-                "event_handler" => EventHandler {}
-            }
-        }
-        "event_handler" => load_std().await?,
-        "display" => {
-            create_table! {
-                "display" => EasyDisplay {}
-            }
-        }
-        "versions" => {
-            create_table! {
-                "version_info" => VersionInfo {
-                    version: format!(
-                        "{} {} ({}) {}",
-                        env!("CARGO_PKG_NAME"),
-                        env!("CARGO_PKG_VERSION"),
-                        env!("GIT_HASH"),
-                        env!("BUILD_TYPE")
-                    ),
-                }
-            }
-        }
-        "clipboard" => {
-            create_table! {
-                "clipboard" => Clipboard {}
-            }
-        }
-        "command" => {
-            create_table! {
-                "run_command" => lua.create_async_function(run_command)?,
-                "run_command_piped" => lua.create_async_function(run_command_piped)?
-            }
-        }
-        "sleep" => {
-            create_table! {
-                "sleep" => lua.create_async_function(sleep)?
-            }
-        }
-        "event_sender" => {
-            create_table! {
-                "create_mouse_move" => lua.create_function(create_mouse_move)?,
-                "create_wheel" => lua.create_function(create_wheel)?,
-                "create_key_press" => lua.create_function(create_key_press)?,
-                "create_key_release" => lua.create_function(create_key_release)?,
-                "create_button_press" => lua.create_function(create_button_press)?,
-                "create_button_release" => lua.create_function(create_button_release)?,
-                "simulate" => lua.create_function(simulate_event)?
-            }
-        }
-        "notify" => {
-            create_table! {
-                "new" => lua.create_function(EasyNotification::new_lua)?
-            }
-        }
-        "utils" => load_std().await?,
-        "shortcuts" => load_std().await?,
+#[cfg(feature = "audio")]       "audio" => audio::init(lua)?,
+#[cfg(feature = "clipboard")]   "clipboard" => clipboard::init(lua)?,
+#[cfg(feature = "command")]     "command" => command::init(lua)?,
+#[cfg(feature = "displays")]    "displays" => displays::init(lua)?,
+#[cfg(feature = "events")]      "event_handler_internal" => event_handler::init(lua)?,
+#[cfg(feature = "events")]      "event_handler" => load_std().await?,
+#[cfg(feature = "events")]      "event_sender" => event_sender::init(lua)?,
+#[cfg(feature = "notify")]      "notify" => notify::init(lua)?,
+/* always-on */                 "sleep" => sleep::init(lua)?,
+/* always-on */                 "versions" => versions::init(lua)?,
+#[cfg(feature = "events")]      "shortcuts" => load_std().await?,
+/* always-on */                 "utils" => load_std().await?,
         _ => {
             /* early return so other modules can be cached */
             return globals
@@ -130,6 +72,5 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
     };
 
     loaded_modules.set(module, result.clone())?;
-
     Ok(result)
 }

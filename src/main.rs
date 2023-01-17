@@ -17,6 +17,8 @@ async fn main() -> Result<(), LuaError> {
     globals.set("__INTERNAL_LOADED_MODULES", lua.create_table()?)?;
 
     std::env::set_current_dir("./src").unwrap();
-    lua.load(&std::fs::read_to_string("script.lua")?).exec_async().await?;
+    if let Err(e) = lua.load(&std::fs::read_to_string("script.lua")?).exec_async().await {
+        println!("{:#?}", e);
+    }
     Ok(())
 }

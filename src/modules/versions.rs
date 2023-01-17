@@ -1,4 +1,21 @@
-use mlua::UserData;
+use mlua::{Lua, Table, UserData};
+
+use crate::create_body;
+
+pub fn init(lua: &Lua) -> mlua::Result<Table> {
+    create_body!(
+        lua,
+        "version_info" => VersionInfo {
+            version: format!(
+                "{} {} ({}) {}",
+                env!("CARGO_PKG_NAME"),
+                env!("CARGO_PKG_VERSION"),
+                env!("GIT_HASH"),
+                env!("BUILD_TYPE")
+            ),
+        }
+    )
+}
 
 #[derive(Debug, Clone)]
 pub struct VersionInfo {

@@ -2,6 +2,15 @@ use std::io::BufReader;
 
 use mlua::Lua;
 
+use crate::create_body;
+
+pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
+    create_body!(lua,
+        "play_audio_blocking" =>lua.create_function(play_audio_blocking)?,
+        "play_audio" =>lua.create_function(play_audio)?
+    )
+}
+
 // DO NOT MAKE A SEPARATE FUNCTION FOR THIS THINGS WILL BREAK!
 
 pub fn play_audio_blocking(_: &Lua, fname: String) -> mlua::Result<()> {

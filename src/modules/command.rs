@@ -4,6 +4,15 @@ use deno_task_shell::{ShellPipeReader, ShellPipeWriter};
 use mlua::{Lua, UserData};
 use std::io::Read;
 
+use crate::create_body;
+
+pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
+    create_body!(lua,
+        "run_command" => lua.create_async_function(run_command)?,
+        "run_command_piped" => lua.create_async_function(run_command_piped)?
+    )
+}
+
 pub async fn run_command(_: &Lua, (command, cwd): (String, Option<String>)) -> mlua::Result<CommandResult> {
     let list = deno_task_shell::parser::parse(&command).map_err(|x| mlua::Error::RuntimeError(x.to_string()))?;
 

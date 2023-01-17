@@ -1,6 +1,14 @@
 use cli_clipboard::{ClipboardContext, ClipboardProvider};
 use mlua::UserData;
 
+use crate::create_body;
+
+pub fn init(lua: &mlua::Lua) -> mlua::Result<mlua::Table> {
+    create_body!(lua,
+        "clipboard" => Clipboard {}
+    )
+}
+
 pub struct Clipboard {}
 
 impl Clipboard {

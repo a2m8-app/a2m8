@@ -35,5 +35,5 @@ This is a fairly new project and I'm very new to lua so if you know better ways 
 ubuntu/debian:
 
 ```sh
-libxi-dev libxtst-dev libxcb-composite0-dev
+libxi-dev libxtst-dev libxcb-composite0-dev librust-alsa-sys-dev
 ```

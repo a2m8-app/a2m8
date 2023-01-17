@@ -1,6 +1,14 @@
 use mlua::{Lua, UserData};
 use notify_rust::Notification;
 
+use crate::create_body;
+
+pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
+    create_body!(lua,
+        "new" => lua.create_function(EasyNotification::new_lua)?
+    )
+}
+
 #[derive(Debug, Clone)]
 pub struct EasyNotification(Notification);
 impl EasyNotification {

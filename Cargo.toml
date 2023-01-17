@@ -4,13 +4,34 @@ version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
+default = ["audio", "clipboard", "command", "displays", "notify", "events"]
+audio = ["rodio"]
+clipboard = ["cli-clipboard", "clipboard-ext"]
+command = ["os_pipe", "deno_task_shell"]
+displays = ["screenshots"]
+notify = ["notify-rust"]
+events = ["rdev"]
+
 [dependencies]
-cli-clipboard = "0.4.0"
-clipboard-ext = "0.2.0"
+# audio
+rodio = { version = "0.16.0", optional = true }
+# clipboard
+cli-clipboard ={version= "0.4.0", optional = true}
+clipboard-ext = {version="0.2.0", optional = true}
+# command
 deno_task_shell = { version = "0.8.2", features = [
     "serde",
     "serialization"
-], git = "https://github.com/Tricked-dev/deno_task_shell", rev = "59e72b67566444152a0fbe963235424d8b52c954" }
+], git = "https://github.com/Tricked-dev/deno_task_shell", rev = "59e72b67566444152a0fbe963235424d8b52c954", optional = true }
+os_pipe = { version = "1.0.1", optional = true }
+# display
+screenshots = {version="0.4.6", optional = true}
+# events
+rdev = { version = "0.5.2", features = ["serde", "serialize"], optional = true }
+# notify
+notify-rust = {version="4", optional = true}
+# misc
 mlua = { version = "0.8", features = [
     "lua54",
     "vendored",
@@ -22,9 +43,7 @@ mlua = { version = "0.8", features = [
     "macros"
 ] }
 once_cell = { version = "1.17.0", features = ["parking_lot"] }
-rdev = { version = "0.5.2", features = ["serde", "serialize"] }
 rust-embed = "6.4.2"
-screenshots = "0.4.6"
 serde = { version = "1.0.152", features = ["derive"] }
 serde_json = "1.0.91"
 tokio = { version = "1.24.1", features = [
@@ -37,6 +56,3 @@ tokio = { version = "1.24.1", features = [
     "fs"
 ] }
 tokio-util = { version = "0.7.4" }
-os_pipe = { version = "1.0.1" }
-rodio = { version = "0.16.0" }
-notify-rust = "4"
