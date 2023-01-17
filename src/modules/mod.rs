@@ -18,6 +18,8 @@ mod notify;
 mod sleep;
 mod versions;
 mod log;
+#[cfg(feature = "network")]
+mod network;
 
 #[macro_export]
 macro_rules! create_body {
@@ -57,8 +59,10 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
 #[cfg(feature = "displays")]    "displays" => displays::init(lua)?,
 #[cfg(feature = "events")]      "event_handler_internal" => event_handler::init(lua)?,
 #[cfg(feature = "events")]      "event_handler" => load_std().await?,
-#[cfg(feature = "events")]      "event_sender" => event_sender::init(lua)?,
+#[cfg(feature = "events")]      "event_sender_internal" => event_sender::init(lua)?,
+#[cfg(feature = "events")]      "event_sender" => load_std().await?,
 /* always-on */                 "log" => log::init(lua)?,
+#[cfg(feature = "network")]     "network" => network::init(lua)?,
 #[cfg(feature = "notify")]      "notify" => notify::init(lua)?,
 /* always-on */                 "sleep" => sleep::init(lua)?,
 /* always-on */                 "versions" => versions::init(lua)?,

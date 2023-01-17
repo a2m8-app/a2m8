@@ -36,8 +36,9 @@ cargo run --features clipboard --no-default-features
 
 ## TODO:
 
-- figure out how to make src/std work without having the files in the filesystem [x] partially done rust-embed still needs to be implemented
-
+- potentially switch out rdev for https://github.com/ostrosco/device_query
+- potentially switch out clipboard libs for https://github.com/1Password/arboard
+  
 ## Dependencies
 
 ubuntu/debian:

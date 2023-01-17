@@ -5,13 +5,14 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [features]
-default = ["audio", "clipboard", "command", "displays", "notify", "events"]
+default = ["audio", "clipboard", "command", "displays", "notify", "events", "network"]
 audio = ["rodio"]
 clipboard = ["cli-clipboard", "clipboard-ext"]
 command = ["os_pipe", "deno_task_shell"]
 displays = ["screenshots"]
 notify = ["notify-rust"]
 events = ["rdev"]
+network = ["reqwest"]
 
 [dependencies]
 # audio
@@ -31,6 +32,8 @@ screenshots = {version="0.4.6", optional = true}
 rdev = { version = "0.5.2", features = ["serde", "serialize"], optional = true }
 # notify
 notify-rust = {version="4", optional = true}
+# network
+reqwest = {version = "0.11.13", optional = true }
 # misc
 mlua = { version = "0.8", features = [
     "lua54",
