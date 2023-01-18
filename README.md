@@ -49,6 +49,10 @@ cargo run --features clipboard --no-default-features
 - https://github.com/khvzak/mlua/issues/120
 - https://github.com/khvzak/mlua/issues/128
 
+## notes
+
+- ~~window isnt a optional feature since a frontend is going to be made eventually~~
+
 ## Dependencies
 
 ubuntu/debian:
