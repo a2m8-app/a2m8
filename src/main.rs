@@ -1,4 +1,4 @@
-use mlua::{Error as LuaError, Lua};
+use mlua::Lua;
 use tracing::metadata::LevelFilter;
 use tracing_subscriber::EnvFilter;
 

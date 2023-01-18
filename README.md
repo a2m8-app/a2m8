@@ -42,6 +42,7 @@ cargo run --features clipboard --no-default-features
 - potentially switch out clipboard libs for https://github.com/1Password/arboard
 - improve consistency of modules
 - make blocking lua functions async with tokio
+- include https://github.com/lenscas/tealr for typed lua and maybe that other lua transpiler
 
 ## useful mlua issues
 

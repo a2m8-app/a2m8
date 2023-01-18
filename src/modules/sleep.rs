@@ -1,5 +1,5 @@
-use mlua::{Error as LuaError, Function, Lua};
-use tokio::{task::LocalSet, time};
+use mlua::{Error as LuaError, Lua};
+use tokio::time;
 
 use crate::create_body;
 

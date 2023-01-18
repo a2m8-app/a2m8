@@ -1,16 +1,91 @@
-use std::{io::Cursor, path::PathBuf};
+use std::{collections::HashMap, io::Cursor, path::PathBuf};
 
-use mlua::Lua;
+use mlua::{Lua, LuaSerdeExt, Table, UserData, Value};
 use reqwest::Method;
+use serde::{Deserialize, Serialize};
 
 use crate::create_body;
 
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body! (lua,
         "download_file" => lua.create_async_function(download_file)?,
-        "fetch_text" => lua.create_async_function(fetch_text)?
+        "fetch_text" => lua.create_async_function(fetch_text)?,
+        "request" => lua.create_async_function(request)?
     )
 }
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct RequestInit {
+    method: Option<String>,
+    body: Option<String>,
+    headers: Option<HashMap<String, String>>,
+    query: Option<HashMap<String, String>>,
+    timeout: Option<u64>,
+    basic_auth: Option<(String, String)>,
+    bearer_auth: Option<String>,
+    form: Option<HashMap<String, String>>,
+}
+
+impl UserData for RequestInit {}
+
+async fn request<'lua>(lua: &'lua Lua, (url, data): (String, Value<'lua>)) -> mlua::Result<Table<'lua>> {
+    let client = reqwest::Client::new();
+    let data: RequestInit = lua.from_value(data)?;
+    let mut req = client.request(
+        Method::from_bytes(data.method.unwrap_or("GET".to_owned()).as_bytes())
+            .map_err(|x| mlua::Error::RuntimeError(format!("Invalid method: {x}")))?,
+        url,
+    );
+    if let Some(body) = data.body {
+        req = req.body(body);
+    }
+    if let Some(headers) = data.headers {
+        for (key, value) in headers {
+            req = req.header(key, value);
+        }
+    }
+    if let Some(query) = data.query {
+        for (key, value) in query {
+            req = req.query(&[(key, value)]);
+        }
+    }
+    if let Some(timeout) = data.timeout {
+        req = req.timeout(std::time::Duration::from_millis(timeout));
+    }
+    if let Some((username, password)) = data.basic_auth {
+        req = req.basic_auth(username, Some(password));
+    }
+    if let Some(token) = data.bearer_auth {
+        req = req.bearer_auth(token);
+    }
+    if let Some(form) = data.form {
+        req = req.form(&form);
+    }
+
+    let resp = req
+        .send()
+        .await
+        .map_err(|x| mlua::Error::RuntimeError(format!("Error while sending request: {x}")))?;
+
+    let table = lua.create_table()?;
+    table.set("status", resp.status().as_u16())?;
+    table.set(
+        "headers",
+        resp.headers()
+            .clone()
+            .iter()
+            .map(|(key, value)| (key.as_str().to_string(), value.to_str().unwrap().to_string()))
+            .collect::<HashMap<String, String>>(),
+    )?;
+    table.set(
+        "text",
+        resp.text()
+            .await
+            .map_err(|x| mlua::Error::RuntimeError(format!("Error while reading response: {x}")))?,
+    )?;
+    Ok(table)
+}
+
 async fn download_file(_: &Lua, (url, path): (String, String)) -> mlua::Result<bool> {
     let resp = reqwest::get(url).await;
     if let Ok(resp) = resp {

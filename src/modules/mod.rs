@@ -52,7 +52,6 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
     };
 
     let globals = lua.globals();
-
     //TODO(everyone): keep this sorted alphabetically
     #[rustfmt::skip]
     let result: Table = match module.as_str() {
