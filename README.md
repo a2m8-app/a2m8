@@ -41,6 +41,13 @@ cargo run --features clipboard --no-default-features
 - potentially switch out rdev for https://github.com/ostrosco/device_query
 - potentially switch out clipboard libs for https://github.com/1Password/arboard
 - improve consistency of modules
+- make blocking lua functions async with tokio
+
+## useful mlua issues
+
+- https://github.com/khvzak/mlua/issues/169
+- https://github.com/khvzak/mlua/issues/120
+- https://github.com/khvzak/mlua/issues/128
 
 ## Dependencies
 
