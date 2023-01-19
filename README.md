@@ -43,6 +43,7 @@ cargo run --features clipboard --no-default-features
 - improve consistency of modules
 - make blocking lua functions async with tokio
 - include https://github.com/lenscas/tealr for typed lua and maybe that other lua transpiler
+- make it so all things autohotkey can do can be done with this
 
 ## useful mlua issues
 
@@ -53,6 +54,7 @@ cargo run --features clipboard --no-default-features
 ## notes
 
 - ~~window isnt a optional feature since a frontend is going to be made eventually~~
+- https://github.com/kikito/inspect.lua
 
 ## Dependencies
 

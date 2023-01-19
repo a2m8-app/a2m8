@@ -30,6 +30,9 @@ async fn main() -> anyhow::Result<()> {
     globals.set("__INTERNAL_LOADED_MODULES", lua.create_table()?)?;
 
     std::env::set_current_dir("./src").unwrap();
-    lua.load(&std::fs::read_to_string("script.lua")?).exec_async().await?;
+    lua.load(&std::fs::read_to_string("script.lua")?)
+        .set_name("main")?
+        .exec_async()
+        .await?;
     Ok(())
 }

@@ -8,7 +8,9 @@
 
 local network = require("network")
 local json = require("json")
+local u = require("utils")
 
+local perf = u.performance.now()
 local r = network.request("https://ipinfo.io", {
     headers = {
         ["User-Agent"] = "curl/7.64.1",
@@ -16,6 +18,9 @@ local r = network.request("https://ipinfo.io", {
     }
 })
 
+
+
 local table = json.parse(r.text)
 print("Your IP is: " .. table["ip"])
+print("took " .. perf:elapsed() .. "s")
 

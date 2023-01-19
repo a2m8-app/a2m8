@@ -22,7 +22,7 @@ mod network;
 mod notify;
 #[cfg(feature = "open")]
 mod open;
-mod sleep;
+mod utils;
 mod versions;
 
 #[macro_export]
@@ -48,7 +48,7 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
         path.push(module.clone());
         path.set_extension("lua");
         let code = fs::read_to_string(&path).await?;
-        let table: Table = lua.load(&code).call_async(()).await?;
+        let table: Table = lua.load(&code).set_name(&module)?.call_async(()).await?;
         Ok::<_, mlua::Error>(table)
     };
 
@@ -70,7 +70,7 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
 #[cfg(feature = "network")]     "network" => network::init(lua)?,
 #[cfg(feature = "notify")]      "notify" => notify::init(lua)?,
 #[cfg(feature = "open")]        "open" => open::init(lua)?,
-/* always-on */                 "sleep" => sleep::init(lua)?,
+/* always-on */                 "utils_internal" => utils::init(lua)?,
 /* always-on */                 "versions" => versions::init(lua)?,
 #[cfg(feature = "events")]      "shortcuts" => load_std().await?,
 /* always-on */                 "utils" => load_std().await?,
