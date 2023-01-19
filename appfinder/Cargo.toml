@@ -2,9 +2,11 @@
 name = "appfinder"
 version = "0.1.0"
 edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["Tricked-dev <tricked@tricked.dev>"]
+description = "Find the location to applications on Linux, Windows and MacOS"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 cfg-if = "1.0.0"
 
