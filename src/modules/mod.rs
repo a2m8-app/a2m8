@@ -14,6 +14,7 @@ mod env;
 mod event_handler;
 #[cfg(feature = "events")]
 mod event_sender;
+mod json;
 mod log;
 #[cfg(feature = "network")]
 mod network;
@@ -64,6 +65,7 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
 #[cfg(feature = "events")]      "event_handler" => load_std().await?,
 #[cfg(feature = "events")]      "event_sender_internal" => event_sender::init(lua)?,
 #[cfg(feature = "events")]      "event_sender" => load_std().await?,
+/* always-on */                 "json" => json::init(lua)?,
 /* always-on */                 "log" => log::init(lua)?,
 #[cfg(feature = "network")]     "network" => network::init(lua)?,
 #[cfg(feature = "notify")]      "notify" => notify::init(lua)?,

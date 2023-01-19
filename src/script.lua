@@ -7,13 +7,15 @@
 -- sender.enter()
 
 local network = require("network")
+local json = require("json")
 
-local r = network.request("https://httpbin.org/get", {
-    method = "POST",
+local r = network.request("https://ipinfo.io", {
     headers = {
-        ["Content-Type"] = "application/json",
-        ["user-agent"] = "curl/7.64.1"
-    },
+        ["User-Agent"] = "curl/7.64.1",
+        ["Accept"] = "application/json"
+    }
 })
 
-print(r.text)
+local table = json.parse(r.text)
+print("Your IP is: " .. table["ip"])
+

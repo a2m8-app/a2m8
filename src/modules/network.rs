@@ -14,7 +14,7 @@ pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     )
 }
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone, Default)]
 pub struct RequestInit {
     method: Option<String>,
     body: Option<String>,
@@ -28,9 +28,13 @@ pub struct RequestInit {
 
 impl UserData for RequestInit {}
 
-async fn request<'lua>(lua: &'lua Lua, (url, data): (String, Value<'lua>)) -> mlua::Result<Table<'lua>> {
+async fn request<'lua>(lua: &'lua Lua, (url, data): (String, Option<Value<'lua>>)) -> mlua::Result<Table<'lua>> {
     let client = reqwest::Client::new();
-    let data: RequestInit = lua.from_value(data)?;
+    let data: RequestInit = if let Some(data) = data {
+        lua.from_value(data)?
+    } else {
+        RequestInit::default()
+    };
     let mut req = client.request(
         Method::from_bytes(data.method.unwrap_or("GET".to_owned()).as_bytes())
             .map_err(|x| mlua::Error::RuntimeError(format!("Invalid method: {x}")))?,
