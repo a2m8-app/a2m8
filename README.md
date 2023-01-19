@@ -1,5 +1,10 @@
 ## Feature support
 
+```
+a   2   m 8
+a-u two m ate
+```
+
 | Feature             | Windows | Linux |     Mac     |
 | :------------------ | :-----: | :---: | :---------: |
 | Clipboard           |    X    |   X   |      O      |
