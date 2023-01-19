@@ -24,7 +24,6 @@ async fn main() -> anyhow::Result<()> {
     let lua = Lua::new();
 
     let globals = lua.globals();
-
     globals.set("require_ref", globals.get::<_, mlua::Function>("require")?)?;
     globals.set("require", lua.create_async_function(require)?)?;
     globals.set("__INTERNAL_LOADED_MODULES", lua.create_table()?)?;

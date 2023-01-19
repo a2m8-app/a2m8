@@ -42,8 +42,17 @@ local function startHandler()
     end
 end
 
+local function start_handler_coroutine()
+    return coroutine.create(function()
+        while (true) do
+            coroutine.yield(internal.event_handler:read())
+        end
+    end)
+end
+
 return {
     eventHandler = eventHandler,
     startHandler = startHandler,
-    internal = internal
+    internal = internal,
+    start_handler_coroutine = start_handler_coroutine
 }

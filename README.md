@@ -44,6 +44,7 @@ cargo run --features clipboard --no-default-features
 - make blocking lua functions async with tokio
 - include https://github.com/lenscas/tealr for typed lua and maybe that other lua transpiler
 - make it so all things autohotkey can do can be done with this
+- possibly use lua.load_from_function instead of replacing require
 
 ## useful mlua issues
 
