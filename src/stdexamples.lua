@@ -175,7 +175,7 @@ local function performance()
     local network = require("network")
     local json = require("json")
     local u = require("utils")
-    
+
     local perf = u.performance.now()
     local r = network.request("https://ipinfo.io", {
         headers = {
@@ -183,10 +183,19 @@ local function performance()
             ["Accept"] = "application/json"
         }
     })
-    
-    
-    
+
+
+
     local table = json.parse(r.text)
     print("Your IP is: " .. table["ip"])
     print("took " .. perf:elapsed() .. "s")
-end    
+end
+
+local function app_starting()
+    local u = require("utils")
+
+    local dpath = u.find_app("discord")
+    print("discord is at " .. dpath)
+    print("opening discord")
+    u.open_app("discord")
+end

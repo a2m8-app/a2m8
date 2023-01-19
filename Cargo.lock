@@ -59,7 +59,9 @@ dependencies = [
 
 [[package]]
 name = "appfinder"
-version = "0.1.0"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b7ba8faf5181403f4c380698cbf817af560c8b793de709f53e033039438f809"
 dependencies = [
  "cfg-if",
  "freedesktop-desktop-entry",
