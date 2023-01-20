@@ -1,5 +1,5 @@
 import { useState } from "preact/hooks";
-import { FaStar, FaEllipsisV } from "react-icons/fa";
+import { FaStar, FaEllipsisV, FaCheck, FaBolt } from "react-icons/fa";
 import { Menu, Popover, Transition } from '@headlessui/react'
 import { Fragment } from "preact";
 
@@ -17,10 +17,22 @@ export type scriptStatus = typeof scriptStatus[keyof typeof scriptStatus];
 export const scriptStatus = {
     running: 1,
     stopped: 2,
-    error: 3,
+    ended: 3,
+    error: 4,
 } as const;
 
-
+function statusToText(status: scriptStatus) {
+    switch (status) {
+        case scriptStatus.running:
+            return "Running";
+        case scriptStatus.stopped:
+            return "Stopped";
+        case scriptStatus.ended:
+            return "Ended";
+        case scriptStatus.error:
+            return "Error";
+    }
+}
 
 export default function ScriptComponent({ script }: { script: Script }) {
     const [isFavorite, setIsFavorite] = useState(script.favorite);
@@ -29,20 +41,26 @@ export default function ScriptComponent({ script }: { script: Script }) {
     const [showContent, setShowContent] = useState(false);
 
     const handleFavorite = () => setIsFavorite(!isFavorite);
-    const handleStartup = (e) => {
+    const handleStartup = (e:any) => {
         setStartup(!startup)
         e.stopPropagation();
     };
     const handleViewContent = () => setShowContent(!showContent);
 
     return (
-        <div class="bg-base-300 rounded-lg p-4 flex">
+        <div class={`bg-base-300 rounded-lg p-4 flex `}>
             <div >
                 <div class="flex items-center justify-between">
                     <div class="">
-                        <h3 class="text-lg font-medium">{script.name}    <button onClick={handleFavorite}>
-                            <FaStar color={isFavorite ? "yellow" : "gray"} />
-                        </button>
+                        <h3 class="text-lg font-medium">
+                            {script.name}
+                            <button class={`mx-2 tooltip tooltip-info transition duration-200 ease-in-out  ${isFavorite ? " text-yellow-400" : "text-gray-700"}`} data-tip={isFavorite ? "Favorited" : "Favorite"} onClick={handleFavorite}>
+                                <FaStar  />
+                            </button>
+                            
+                            <button class={`${status == scriptStatus.running ? "text-success" : status ==  scriptStatus.error ? "text-error" : "text-info"} tooltip tooltip-info`} data-tip={statusToText(status)}>
+                                <FaBolt />
+                            </button>
                         </h3>
                         <p class="text-base-content">{script.description}</p>
                     </div>
@@ -59,8 +77,8 @@ export default function ScriptComponent({ script }: { script: Script }) {
 
 
 
-            <Popover class="relative ml-auto">
-                <Popover.Button><span class="sr-only">Options</span> <FaEllipsisV aria-hidden="true" /></Popover.Button>
+            <Popover class="relative ml-auto" >
+                <Popover.Button><span class="sr-only">Options</span><FaEllipsisV aria-hidden="true" /></Popover.Button>
                 <Transition
                     as={Fragment}
                     enter="transition ease-out duration-100"
@@ -70,12 +88,28 @@ export default function ScriptComponent({ script }: { script: Script }) {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                 >
-                    <Popover.Panel class="absolute z-10">
+                    <Popover.Panel class="absolute z-10 right-4"  >
                         <div class="px-4 py-2 bg-neutral rounded-md">
                             <div class="form-control w-52">
                                 <label class="cursor-pointer label">
                                     <span class="label-text">Run on startup</span>
                                     <input type="checkbox" class="toggle toggle-primary" checked={startup} onChange={handleStartup} />
+                                </label>
+                            </div>
+                            <div class="form-control w-52">
+                                <label class="cursor-pointer label">
+                                    <span class="label-text">View content</span>
+                                    <button type="button" class="btn btn-square btn-outline btn-sm" checked={showContent} onChange={handleViewContent} >
+                                        <FaCheck />
+                                    </button>
+                                </label>
+                            </div>
+                            <div class="form-control w-52">
+                                <label class="cursor-pointer label">
+                                    <span class="label-text">Reload</span>
+                                    <button type="button" class="btn btn-square btn-outline btn-sm" checked={showContent} onChange={handleViewContent} >
+                                        <FaCheck />
+                                    </button>
                                 </label>
                             </div>
                         </div>
