@@ -1,14 +1,12 @@
 import { useState } from "preact/hooks";
 import preactLogo from "./assets/preact.svg";
 import { invoke } from "@tauri-apps/api/tauri";
-import Router from 'preact-router';
+import Router from "preact-router";
 import Home from "./routes/Home";
 
 export function App<FC>() {
   const [greetMsg, setGreetMsg] = useState<string>("");
   const [name, setName] = useState<string>("");
-
-
 
   const greet = async () => {
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -16,10 +14,9 @@ export function App<FC>() {
   };
 
   return (
-
-  <Router>
-    <Home path="/" />
-  </Router>
+    <Router>
+      <Home path="/" />
+    </Router>
     // <div class="container">
     //   <h1>Welcome to Tauri!</h1>
     //   <div class="row">

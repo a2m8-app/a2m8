@@ -95,6 +95,13 @@ export default function ScriptComponent({ script }: { script: Script }) {
             <p class="text-gray-700">{script.error}</p>
           </div>
         )}
+        <button
+          class={`btn btn-sm p-1 mt-auto ${
+            status == scriptStatus.running ? "btn-secondary" : "btn-primary"
+          }`}
+        >
+          {status == scriptStatus.running ? "Stop" : "Run"}
+        </button>
       </div>
 
       <Popover class="relative ml-auto">
