@@ -1,4 +1,7 @@
 import { useState } from "preact/hooks";
+import { FaStar, FaEllipsisV } from "react-icons/fa";
+import { Menu, Popover, Transition } from '@headlessui/react'
+import { Fragment } from "preact";
 
 export type Script = {
     id: string,
@@ -17,6 +20,8 @@ export const scriptStatus = {
     error: 3,
 } as const;
 
+
+
 export default function ScriptComponent({ script }: { script: Script }) {
     const [isFavorite, setIsFavorite] = useState(script.favorite);
     const [status, setStatus] = useState(script.status);
@@ -24,52 +29,60 @@ export default function ScriptComponent({ script }: { script: Script }) {
     const [showContent, setShowContent] = useState(false);
 
     const handleFavorite = () => setIsFavorite(!isFavorite);
-    const handleStartup = () => setStartup(!startup);
+    const handleStartup = (e) => {
+        setStartup(!startup)
+        e.stopPropagation();
+    };
     const handleViewContent = () => setShowContent(!showContent);
 
     return (
-        <div className="bg-base-300 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-                <div class={"grid grid-cols-2"}>
-                    <h3 className="text-lg font-medium">{script.name}</h3><div 
-                    className={`${status === 1 ? "bg-green-500" : status === 2 ? "bg-red-500" : "bg-orange-500"} rounded-full h-4 w-4 my-auto`}
-                    />
-                    <p className="text-base-content">{script.description}</p>
+        <div class="bg-base-300 rounded-lg p-4 flex">
+            <div >
+                <div class="flex items-center justify-between">
+                    <div class="">
+                        <h3 class="text-lg font-medium">{script.name}    <button onClick={handleFavorite}>
+                            <FaStar color={isFavorite ? "yellow" : "gray"} />
+                        </button>
+                        </h3>
+                        <p class="text-base-content">{script.description}</p>
+                    </div>
+                    <input type="button" name="rating-9" class={`mask text-xl mask-star-2 ${isFavorite ? "text-yellow-500" : "text-gray-500"}`} onClick={handleFavorite} />
                 </div>
-                <button
-                    className={`${isFavorite ? "text-yellow-500" : "text-gray-500"
-                        } p-1 text-xl hover:text-black`}
-                    onClick={handleFavorite}
-                >
-                    ❤️
-                </button>
+
+                {script.error && (
+                    <div class="my-2 flex items-center">
+                        <p class="text-red-500 mr-4">Error:</p>
+                        <p class="text-gray-700">{script.error}</p>
+                    </div>
+                )}
             </div>
 
-            {script.error && (
-                <div className="my-2 flex items-center">
-                    <p className="text-red-500 mr-4">Error:</p>
-                    <p className="text-gray-700">{script.error}</p>
-                </div>
-            )}
-            <div className="my-2 flex items-center">
-                <p className="text-gray-700 mr-4">Startup:</p>
-                <select
-                    className="bg-gray-200 rounded-lg p-2"
-                    value={startup}
-                    onChange={handleStartup}
+
+
+            <Popover class="relative ml-auto">
+                <Popover.Button><span class="sr-only">Options</span> <FaEllipsisV aria-hidden="true" /></Popover.Button>
+                <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
                 >
-                    <option value={true}>Yes</option>
-                    <option value={false}>No</option>
-                </select>
-            </div>
-            <div className="my-2 flex items-center">
-                <button
-                    className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
-                    onClick={handleViewContent}
-                >
-                    View Content
-                </button>
-            </div>
+                    <Popover.Panel class="absolute z-10">
+                        <div class="px-4 py-2 bg-neutral rounded-md">
+                            <div class="form-control w-52">
+                                <label class="cursor-pointer label">
+                                    <span class="label-text">Run on startup</span>
+                                    <input type="checkbox" class="toggle toggle-primary" checked={startup} onChange={handleStartup} />
+                                </label>
+                            </div>
+                        </div>
+                    </Popover.Panel>
+                </Transition>
+            </Popover>
+
         </div>
     );
 }

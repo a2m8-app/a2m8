@@ -10,9 +10,11 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.7",
     "@tauri-apps/api": "^1.2.0",
     "preact": "^10.11.3",
-    "preact-router": "^4.1.0"
+    "preact-router": "^4.1.0",
+    "react-icons": "^4.7.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

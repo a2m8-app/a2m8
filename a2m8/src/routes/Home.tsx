@@ -47,7 +47,7 @@ export default function Home({ path }: { path: string }) {
                 {scripts.map((script) => (
                     <ScriptComponent script={script} />
                 ))}
-                
+            
             </div>
         </div>
     );
