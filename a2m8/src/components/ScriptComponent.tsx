@@ -48,45 +48,55 @@ export default function ScriptComponent({ script }: { script: Script }) {
   const handleViewContent = () => setShowContent(!showContent);
 
   return (
-    <div class={`bg-base-300 rounded-lg p-4 flex `}>
-      <div>
-        <div class="flex items-center justify-between">
-          <div class="">
-            <h3 class="text-lg font-medium">
-              {script.name}
-              <button
-                class={`mx-2 tooltip tooltip-info transition duration-200 ease-in-out  ${
-                  isFavorite ? " text-yellow-400" : "text-gray-700"
-                }`}
-                data-tip={isFavorite ? "Un-favorite" : "Favorite"}
-                onClick={handleFavorite}
-              >
-                <FaStar />
-              </button>
-
-              <button
-                class={`${
-                  status == scriptStatus.running
-                    ? "text-success"
-                    : status == scriptStatus.error
-                    ? "text-error"
-                    : "text-info"
-                } tooltip tooltip-info cursor-default`}
-                data-tip={statusToText(status)}
-              >
-                <FaBolt />
-              </button>
-            </h3>
-            <p class="text-base-content">{script.description}</p>
+    <div class={`bg-base-300 rounded-lg flex  `}>
+      <button
+        class={`btn btn-sm p-4 mt-auto h-full w-9 rounded-r-none border-accent border-2 ${
+          status == scriptStatus.running ? "btn-secondary" : "btn-primary"
+        }`}
+      >
+        <span class="-rotate-90">
+          {status == scriptStatus.running ? "Stop" : "Run"}
+        </span>
+      </button>
+      <div class="flex p-4 w-full">
+        <div>
+          <div class="flex items-center justify-between">
+            <div class="">
+              <h3 class="text-lg font-medium">
+                {script.name}
+                <button
+                  class={`mx-2 tooltip tooltip-info transition duration-200 ease-in-out  ${
+                    isFavorite ? " text-yellow-400" : "text-gray-700"
+                  }`}
+                  data-tip={isFavorite ? "Un-favorite" : "Favorite"}
+                  onClick={handleFavorite}
+                >
+                  <FaStar />
+                </button>
+                <button
+                  class={`${
+                    status == scriptStatus.running
+                      ? "text-success"
+                      : status == scriptStatus.error
+                      ? "text-error"
+                      : "text-info"
+                  } tooltip tooltip-info cursor-default`}
+                  data-tip={statusToText(status)}
+                >
+                  <FaBolt />
+                </button>
+              </h3>
+              <p class="text-base-content">{script.description}</p>
+            </div>
+            <input
+              type="button"
+              name="rating-9"
+              class={`mask text-xl mask-star-2 ${
+                isFavorite ? "text-yellow-500" : "text-gray-500"
+              }`}
+              onClick={handleFavorite}
+            />
           </div>
-          <input
-            type="button"
-            name="rating-9"
-            class={`mask text-xl mask-star-2 ${
-              isFavorite ? "text-yellow-500" : "text-gray-500"
-            }`}
-            onClick={handleFavorite}
-          />
         </div>
 
         {script.error && (
@@ -95,85 +105,77 @@ export default function ScriptComponent({ script }: { script: Script }) {
             <p class="text-gray-700">{script.error}</p>
           </div>
         )}
-        <button
-          class={`btn btn-sm p-1 mt-auto ${
-            status == scriptStatus.running ? "btn-secondary" : "btn-primary"
-          }`}
-        >
-          {status == scriptStatus.running ? "Stop" : "Run"}
-        </button>
+        <Popover class="relative ml-auto">
+          <Popover.Button>
+            <span class="sr-only">Options</span>
+            <FaEllipsisV aria-hidden="true" />
+          </Popover.Button>
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <Popover.Panel class="absolute z-10 right-4">
+              <div class="px-4 py-2 bg-neutral rounded-md">
+                <div class="form-control w-52">
+                  <label class="cursor-pointer label">
+                    <span class="label-text">Run on startup</span>
+                    <input
+                      type="checkbox"
+                      class="toggle toggle-primary"
+                      checked={startup}
+                      onChange={handleStartup}
+                    />
+                  </label>
+                </div>
+                <div class="form-control w-52">
+                  <label class="cursor-pointer label">
+                    <span class="label-text">Edit script</span>
+                    <button
+                      type="button"
+                      class="btn btn-square btn-outline btn-sm"
+                      checked={showContent}
+                      onChange={handleViewContent}
+                    >
+                      <FaCheck />
+                    </button>
+                  </label>
+                </div>
+                <div class="form-control w-52">
+                  <label class="cursor-pointer label">
+                    <span class="label-text">Reload</span>
+                    <button
+                      type="button"
+                      class="btn btn-square btn-outline btn-sm"
+                      checked={showContent}
+                      onChange={handleViewContent}
+                    >
+                      <FaCheck />
+                    </button>
+                  </label>
+                </div>
+                <div class="form-control w-52 hover:bg-red-600 duration-300">
+                  <label class="cursor-pointer label">
+                    <span class="label-text">Delete</span>
+                    <button
+                      type="button"
+                      class="btn btn-square btn-outline btn-sm"
+                      checked={showContent}
+                      onChange={handleViewContent}
+                    >
+                      <FaCheck />
+                    </button>
+                  </label>
+                </div>
+              </div>
+            </Popover.Panel>
+          </Transition>
+        </Popover>
       </div>
-
-      <Popover class="relative ml-auto">
-        <Popover.Button>
-          <span class="sr-only">Options</span>
-          <FaEllipsisV aria-hidden="true" />
-        </Popover.Button>
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-100"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
-        >
-          <Popover.Panel class="absolute z-10 right-4">
-            <div class="px-4 py-2 bg-neutral rounded-md">
-              <div class="form-control w-52">
-                <label class="cursor-pointer label">
-                  <span class="label-text">Run on startup</span>
-                  <input
-                    type="checkbox"
-                    class="toggle toggle-primary"
-                    checked={startup}
-                    onChange={handleStartup}
-                  />
-                </label>
-              </div>
-              <div class="form-control w-52">
-                <label class="cursor-pointer label">
-                  <span class="label-text">Edit script</span>
-                  <button
-                    type="button"
-                    class="btn btn-square btn-outline btn-sm"
-                    checked={showContent}
-                    onChange={handleViewContent}
-                  >
-                    <FaCheck />
-                  </button>
-                </label>
-              </div>
-              <div class="form-control w-52">
-                <label class="cursor-pointer label">
-                  <span class="label-text">Reload</span>
-                  <button
-                    type="button"
-                    class="btn btn-square btn-outline btn-sm"
-                    checked={showContent}
-                    onChange={handleViewContent}
-                  >
-                    <FaCheck />
-                  </button>
-                </label>
-              </div>
-              <div class="form-control w-52 hover:bg-red-600 duration-300">
-                <label class="cursor-pointer label">
-                  <span class="label-text">Delete</span>
-                  <button
-                    type="button"
-                    class="btn btn-square btn-outline btn-sm"
-                    checked={showContent}
-                    onChange={handleViewContent}
-                  >
-                    <FaCheck />
-                  </button>
-                </label>
-              </div>
-            </div>
-          </Popover.Panel>
-        </Transition>
-      </Popover>
     </div>
   );
 }
