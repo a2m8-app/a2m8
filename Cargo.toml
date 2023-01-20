@@ -83,3 +83,7 @@ tracing-subscriber = { version = "0.3.16", features = [
 ] }
 anyhow = { version = "1.0.68", features = ["backtrace"] }
 appfinder = { version = "0.1.1" }
+
+[workspace]
+resolver = "2"
+members = [".", "a2m8/src-tauri"]
