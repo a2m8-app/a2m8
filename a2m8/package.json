@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.7",
+    "@nanostores/react": "^0.4.1",
     "@tauri-apps/api": "^1.2.0",
+    "nanostores": "^0.7.1",
     "preact": "^10.11.3",
     "preact-router": "^4.1.0",
     "react-icons": "^4.7.1"

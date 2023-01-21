@@ -1,9 +1,11 @@
 use crate::prelude::*;
 
-#[tauri::command]
+#[tauri::command(async)]
 pub async fn create_script(config: tauri::State<'_, A2>, script: A2M8Script) -> Result<()> {
+    println!("test");
     let mut config = config.lock().await;
     config.create_script(script).await?;
+    println!("test-end");
     Ok(())
 }
 

@@ -28,7 +28,11 @@ impl A2M8Config {
         Ok(rmp_serde::from_slice(input)?)
     }
     pub async fn load_scripts(&mut self) -> Result<()> {
-        let script = fs::read(self.data_dir.join(Self::SCRIPT_FILE)).await?;
+        let path = self.data_dir.join(Self::SCRIPT_FILE);
+        if fs::metadata(&path).await.is_err() {
+            fs::write(&path, Self::to_vec(&self.scripts).await?).await?;
+        }
+        let script = fs::read(path).await?;
         self.scripts = Self::from_slice(&script)?;
         Ok(())
     }

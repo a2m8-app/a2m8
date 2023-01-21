@@ -1,38 +1,8 @@
-import { useState } from "preact/hooks";
+import { useReducer, useState } from "preact/hooks";
 import { FaStar, FaEllipsisV, FaCheck, FaBolt } from "react-icons/fa";
 import { Menu, Popover, Transition } from "@headlessui/react";
 import { Fragment } from "preact";
-
-export type Script = {
-  id: string;
-  name: `${string}.lua`;
-  description: string;
-  startup: boolean;
-  favorite: boolean;
-  content: string;
-  error?: string;
-  status: scriptStatus;
-};
-export type scriptStatus = typeof scriptStatus[keyof typeof scriptStatus];
-export const scriptStatus = {
-  running: 1,
-  stopped: 2,
-  ended: 3,
-  error: 4,
-} as const;
-
-function statusToText(status: scriptStatus) {
-  switch (status) {
-    case scriptStatus.running:
-      return "Running";
-    case scriptStatus.stopped:
-      return "Stopped";
-    case scriptStatus.ended:
-      return "Ended";
-    case scriptStatus.error:
-      return "Error";
-  }
-}
+import { Script, scriptStatus, statusToText } from "../lib/script";
 
 export default function ScriptComponent({ script }: { script: Script }) {
   const [isFavorite, setIsFavorite] = useState(script.favorite);
