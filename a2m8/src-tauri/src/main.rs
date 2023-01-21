@@ -1,49 +1,43 @@
 #![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows")]
 
-use typeshare::typeshare;
+use directories::ProjectDirs;
+use tauri::async_runtime::Mutex;
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+macro_rules! import_modules {
+    ($($x:ident),*) => {
+        $(
+            mod $x;
+        )*
+    };
 }
 
-fn main() {
+import_modules! {
+    a2m8_config,
+    commands,
+    error,
+    prelude,
+    script
+}
+
+use crate::{commands::*, prelude::*};
+
+#[tokio::main(flavor = "current_thread")]
+async fn main() -> Result<()> {
+    let dirs = ProjectDirs::from("dev", "tricked", "A2M8").unwrap();
+    let mut config = A2M8Config {
+        scripts: Vec::new(),
+        data_dir: dirs.data_dir().to_path_buf(),
+    };
+    config.load_scripts().await?;
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
-}
-#[typeshare]
-pub struct A2M8Config {}
-
-// export type Script = {
-//   id: string;
-//   name: `${string}.lua`;
-//   description: string;
-//   startup: boolean;
-//   favorite: boolean;
-//   content: string;
-//   error?: string;
-//   status: scriptStatus;
-// };
-use uuid::Uuid;
-
-#[typeshare]
-pub struct A2M8Script {
-    pub id: Uuid,
-    pub name: String,
-    pub description: String,
-    pub startup: bool,
-    pub favorite: bool,
-    pub content: String,
-    pub error: Option<String>,
-    pub status: ScriptStatus,
-}
-#[typeshare]
-enum ScriptStatus {
-    Running,
-    Stopped,
-    Ended,
-    Error,
+        .manage(Mutex::new(config))
+        .invoke_handler(tauri::generate_handler![
+            create_script,
+            update_script,
+            delete_script,
+            get_scripts,
+            get_script
+        ])
+        .run(tauri::generate_context!())?;
+    Ok(())
 }

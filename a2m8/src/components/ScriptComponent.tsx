@@ -48,10 +48,12 @@ export default function ScriptComponent({ script }: { script: Script }) {
   const handleViewContent = () => setShowContent(!showContent);
 
   return (
-    <div class={`bg-base-300 rounded-lg flex  `}>
+    <div class={`bg-base-300 rounded-lg flex`}>
       <button
-        class={`btn btn-sm p-4 mt-auto h-full w-9 rounded-r-none border-accent border-2 ${
-          status == scriptStatus.running ? "btn-secondary" : "btn-primary"
+        class={`btn btn-sm p-4 mt-auto h-full w-9 rounded-r-none border-2 font-extrabold tracking-widest ${
+          status == scriptStatus.running
+            ? "btn-secondary-focus border-secondary"
+            : "btn-primary-focus border-primary"
         }`}
       >
         <span class="-rotate-90">

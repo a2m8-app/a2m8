@@ -18,6 +18,17 @@ serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.2", features = ["shell-open"] }
 typeshare = "1.0.0"
 uuid = { version = "1.2.2", features = ["serde", "v6"] }
+tokio = { version = "1.24.2", features = [
+    "rt",
+    "macros",
+    "sync",
+    "parking_lot"
+] }
+directories = "4.0.1"
+anyhow = { version = "1.0.68", features = ["backtrace"] }
+rmp-serde = "1.1.1"
+parking_lot = { version = "0.12.1", features = ["serde"] }
+thiserror = "1.0.38"
 
 [features]
 # by default Tauri runs in production mode
