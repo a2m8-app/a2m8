@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 
-use tokio::fs;
+use tokio::{fs, sync::mpsc};
 
-use crate::prelude::*;
+use crate::{prelude::*, ScriptEnd};
 
 pub type A2 = Mutex<A2M8Config>;
 
@@ -10,6 +10,7 @@ pub type A2 = Mutex<A2M8Config>;
 pub struct A2M8Config {
     pub scripts: Vec<A2M8Script>,
     pub data_dir: PathBuf,
+    pub stop_sender: mpsc::Sender<ScriptEnd>,
     pub script_handles: Vec<A2M8ScriptRunningHandle>,
 }
 

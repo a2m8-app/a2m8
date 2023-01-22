@@ -1,6 +1,5 @@
 use mlua::{Lua, Table};
 use rust_embed::RustEmbed;
-use tokio::fs;
 
 #[cfg(feature = "audio")]
 mod audio;

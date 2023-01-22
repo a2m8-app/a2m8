@@ -3,10 +3,11 @@ import { useEffect, useState } from "preact/hooks";
 import ScriptComponent from "../components/ScriptComponent";
 import UploadScripts from "../components/UploadScripts";
 import { useStore } from "@nanostores/react";
-import { scripts, setScripts } from "../lib/scriptStore";
+import { scripts, setScripts, updateScript } from "../lib/scriptStore";
 import { Script } from "../lib/script";
 import { Transition } from "@headlessui/react";
 import { Fragment } from "preact";
+import { emit, listen } from "@tauri-apps/api/event";
 
 export default function Home({ path }: { path: string }) {
   const list = useStore(scripts);
@@ -15,7 +16,24 @@ export default function Home({ path }: { path: string }) {
     invoke<Script[]>("get_scripts").then((data) => {
       setScripts(data);
     });
+
+    let unlisten = listen<Pick<Script, "status" | "id">>(
+      "script_end",
+      (event) => {
+        const { id, status } = event.payload;
+        const script = list.find((s) => s.id === id);
+        if (script) {
+          script.status = status;
+
+          updateScript(script);
+        }
+      }
+    );
+    return () => {
+      unlisten.then((unlisten) => unlisten());
+    };
   }, []);
+
   return (
     <div>
       <h1>Home</h1>

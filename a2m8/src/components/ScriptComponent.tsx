@@ -27,9 +27,15 @@ export default function ScriptComponent({
       startup: e.target.checked,
     });
   const start = () => {
-    invoke("start_script", { id: script.id }).then((r) => {
-      updateScript({ status: scriptStatus.running });
-    });
+    if (script.status == scriptStatus.running) {
+      invoke("stop_script", { id: script.id }).then((r) => {
+        updateScript({ status: scriptStatus.stopped });
+      });
+    } else {
+      invoke("start_script", { id: script.id }).then((r) => {
+        updateScript({ status: scriptStatus.running });
+      });
+    }
   };
   const handleViewContent = () => {};
 

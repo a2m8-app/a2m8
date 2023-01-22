@@ -1,8 +1,7 @@
-use std::{sync::Arc, thread};
+use std::thread;
 
 use easyhotkeys::require;
 use mlua::Lua;
-use tauri::async_runtime::TokioJoinHandle;
 use tokio::{
     select,
     sync::oneshot::{self, Receiver, Sender},
@@ -26,7 +25,6 @@ pub struct A2M8Script {
 pub struct A2M8ScriptRunningHandle {
     pub id: Uuid,
     pub handle: thread::JoinHandle<Result<()>>,
-    pub receiver: Receiver<Result<()>>,
     pub sender: Sender<Result<()>>,
 }
 
@@ -56,13 +54,12 @@ impl A2M8Script {
         self.status == Self::STATUS_RUNNING
     }
 
-    pub async fn start(&mut self) -> Result<A2M8ScriptRunningHandle> {
-        self.status = Self::STATUS_RUNNING;
+    pub async fn start(&mut self) -> Result<(Receiver<Result<()>>, A2M8ScriptRunningHandle)> {
         let content = self.content.clone();
         let name = self.name.clone();
         let (sender, receiver) = oneshot::channel();
         let (finish_sender, finish_receiver) = oneshot::channel();
-        let handle = thread::spawn(move || -> Result<()> {
+        let handle = thread::Builder::new().name(name.clone()).spawn(move || -> Result<()> {
             tokio::runtime::Builder::new_current_thread()
                 .enable_all()
                 .build()?
@@ -74,15 +71,11 @@ impl A2M8Script {
                         globals.set("require_ref", globals.get::<_, mlua::Function>("require")?)?;
                         globals.set("require", lua.create_async_function(require)?)?;
                         globals.set("__INTERNAL_LOADED_MODULES", lua.create_table()?)?;
-                        println!("loading script!");
                         select! {
-                            res = receiver => {
-                                println!("{res:?}");
-                                println!("Force ending")
+                            _ = receiver => {
+                                finish_sender.send(Ok(())).unwrap();
                             },
                             res = lua.load(&content).set_name(name)?.exec_async() => {
-                                println!("Script done!");
-                                println!("result: {res:?}");
                                 finish_sender.send(res.map_err(Error::from)).unwrap();
                             }
                         }
@@ -92,16 +85,17 @@ impl A2M8Script {
                     Ok::<_, Error>(())
                 })?;
             Ok(())
-        });
-        // let res = receiver.await;
-        // let tokio_handle = res.unwrap();
+        })?;
+        self.status = Self::STATUS_RUNNING;
 
-        Ok(A2M8ScriptRunningHandle {
-            id: self.id,
-            handle,
-            receiver: finish_receiver,
-            sender: sender,
-        })
+        Ok((
+            finish_receiver,
+            A2M8ScriptRunningHandle {
+                id: self.id,
+                handle,
+                sender,
+            },
+        ))
     }
 }
 // #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, PartialOrd, Ord, Eq)]

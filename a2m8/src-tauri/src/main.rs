@@ -1,11 +1,16 @@
 #![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows")]
 
+use std::thread::JoinHandle;
+
 use directories::ProjectDirs;
 use tauri::{
     async_runtime::Mutex, AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
     SystemTrayMenuItem, SystemTraySubmenu, Wry,
 };
-use tokio::fs;
+use tokio::{
+    fs,
+    sync::{mpsc, oneshot},
+};
 
 macro_rules! import_modules {
     ($($x:ident),*) => {
@@ -65,22 +70,53 @@ fn create_tray(scripts: &Vec<A2M8Script>) -> Result<SystemTray> {
     Ok(system_tray)
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
+pub struct ScriptEnd {
+    id: Uuid,
+    status: i8,
+}
+
+fn spawn_script_handle(tx: mpsc::Sender<ScriptEnd>, receiver: oneshot::Receiver<Result<()>>, id: Uuid) {
+    tokio::spawn(async move {
+        println!("spawned script handle");
+        let status = receiver.await;
+        tx.send(ScriptEnd {
+            id,
+            status: if status.is_ok() {
+                A2M8Script::STATUS_STOPPED
+            } else {
+                A2M8Script::STATUS_ERROR
+            },
+        })
+        .await
+    });
+}
+
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<()> {
     let dirs = ProjectDirs::from("dev", "tricked", "A2M8").unwrap();
     let path = dirs.data_dir().to_path_buf();
     fs::create_dir_all(&path).await?;
+    let (tx, mut rx) = tokio::sync::mpsc::channel(10);
+
     let mut config = A2M8Config {
         scripts: Vec::new(),
         script_handles: Vec::new(),
+        stop_sender: tx.clone(),
         data_dir: dirs.data_dir().to_path_buf(),
     };
     config.load_scripts().await?;
 
     for script in &mut config.scripts {
+        if script.running() {
+            script.status = A2M8Script::STATUS_STOPPED;
+        }
         if script.startup {
-            let handle = script.start().await?;
+            let (receiver, handle) = script.start().await?;
             config.script_handles.push(handle);
+            let id = script.id;
+            let tx_clone = tx.clone();
+            spawn_script_handle(tx_clone, receiver, id);
         }
     }
 
@@ -88,6 +124,17 @@ async fn main() -> Result<()> {
         .system_tray(create_tray(&config.scripts)?)
         .manage(Mutex::new(config))
         .on_system_tray_event(handle_tray_event)
+        .setup(|app| {
+            let main_window = app.get_window("main").unwrap();
+            tokio::spawn(async move {
+                while let Some(val) = rx.recv().await {
+                    println!("script ended: {:?}", val);
+                    main_window.emit("script_end", val)?;
+                }
+                Ok::<_, error::Error>(())
+            });
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             create_script,
             update_script,

@@ -14,6 +14,16 @@ export function addScript(script: Script) {
 export function removeScript(id: string) {
   scripts.set(scripts.get().filter((script) => script.id !== id));
 }
+export function updateScript(script: Script) {
+  scripts.set(
+    scripts.get().map((s) => {
+      if (s.id === script.id) {
+        return script;
+      }
+      return s;
+    }),
+  );
+}
 
 export const fullReloadScripts = () =>
   invoke<Script[]>("get_scripts").then((data) => {
