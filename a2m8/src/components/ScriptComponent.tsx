@@ -1,10 +1,11 @@
-import { useReducer, useState } from "preact/hooks";
+import { useEffect, useReducer, useState } from "preact/hooks";
 import { FaStar, FaEllipsisV, FaCheck, FaBolt } from "react-icons/fa";
 import { Menu, Popover, Transition } from "@headlessui/react";
 import { Fragment } from "preact";
 import { Script, scriptStatus, statusToText } from "../lib/script";
 import { invoke } from "@tauri-apps/api";
-import { removeScript } from "../lib/scriptStore";
+import { fullReloadScripts, removeScript, scripts } from "../lib/scriptStore";
+import { listen } from "@tauri-apps/api/event";
 
 export default function ScriptComponent({
   script: scriptThing,
@@ -21,10 +22,10 @@ export default function ScriptComponent({
   );
 
   const handleFavorite = (e: any) =>
-    updateScript({ favorite: e.target.checked });
+    updateScript({ favorite: !script.favorite });
   const handleStartup = (e: any) =>
     updateScript({
-      startup: e.target.checked,
+      startup: !script.startup,
     });
   const start = () => {
     if (script.status == scriptStatus.running) {
@@ -44,6 +45,22 @@ export default function ScriptComponent({
       removeScript(script.id);
     });
   };
+
+  useEffect(() => {
+    let unlisten = listen<Pick<Script, "status" | "id">>(
+      "script_end",
+      (event) => {
+        const { id, status } = event.payload;
+        console.log(id, script.id);
+        if (id != script.id) return;
+        updateScript({ status, id });
+        updateScript(script);
+      }
+    );
+    return () => {
+      unlisten.then((x) => x());
+    };
+  }, []);
 
   return (
     <div class={`bg-base-300 rounded-lg flex`}>

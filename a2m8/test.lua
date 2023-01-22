@@ -15,3 +15,10 @@ n:new()
 
 
 u.sleep(2.5)
+
+n:new()
+    :appname("This is my amazing app")
+    :summary("Wow the script will now end!")
+    :body("press f to try again")
+    :icon("discord")
+    :show()

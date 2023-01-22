@@ -1,6 +1,6 @@
 #![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows")]
 
-use std::thread::JoinHandle;
+use std::thread::{self, JoinHandle};
 
 use directories::ProjectDirs;
 use tauri::{
@@ -126,13 +126,14 @@ async fn main() -> Result<()> {
         .on_system_tray_event(handle_tray_event)
         .setup(|app| {
             let main_window = app.get_window("main").unwrap();
-            tokio::spawn(async move {
-                while let Some(val) = rx.recv().await {
-                    println!("script ended: {:?}", val);
-                    main_window.emit("script_end", val)?;
-                }
-                Ok::<_, error::Error>(())
-            });
+            thread::Builder::new()
+                .name("script_stop_receiver".to_owned())
+                .spawn(move || {
+                    while let Some(val) = rx.blocking_recv() {
+                        main_window.emit("script_end", val)?;
+                    }
+                    Ok::<_, error::Error>(())
+                })?;
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

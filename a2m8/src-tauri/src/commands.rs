@@ -60,7 +60,8 @@ pub async fn stop_script(config: tauri::State<'_, A2>, id: Uuid) -> Result<()> {
 
     let h = config.script_handles.remove(handle);
 
-    h.sender.send(Ok(())).unwrap();
+    //  if it errors here, it means the script has already stopped otherwise this will stop the script
+    h.sender.send(Ok(())).ok();
     h.handle.join().unwrap()?;
 
     script.status = A2M8Script::STATUS_STOPPED;
