@@ -72,9 +72,17 @@ async fn main() -> Result<()> {
     fs::create_dir_all(&path).await?;
     let mut config = A2M8Config {
         scripts: Vec::new(),
+        script_handles: Vec::new(),
         data_dir: dirs.data_dir().to_path_buf(),
     };
     config.load_scripts().await?;
+
+    for script in &mut config.scripts {
+        if script.startup {
+            let handle = script.start().await?;
+            config.script_handles.push(handle);
+        }
+    }
 
     let app = tauri::Builder::default()
         .system_tray(create_tray(&config.scripts)?)
@@ -84,6 +92,8 @@ async fn main() -> Result<()> {
             create_script,
             update_script,
             delete_script,
+            start_script,
+            stop_script,
             get_scripts,
             get_script
         ]);

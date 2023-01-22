@@ -1,4 +1,5 @@
 use mlua::{Lua, Table};
+use rust_embed::RustEmbed;
 use tokio::fs;
 
 #[cfg(feature = "audio")]
@@ -35,6 +36,17 @@ macro_rules! create_body {
         }
     }
 }
+#[derive(RustEmbed)]
+#[folder = "src/std/"]
+struct StdFiles;
+
+impl StdFiles {
+    pub fn get_lua_file(name: &str) -> Option<String> {
+        std::str::from_utf8(Self::get(&format!("{name}.lua"))?.data.as_ref())
+            .ok()
+            .map(|x| x.to_string())
+    }
+}
 
 pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
     let loaded_modules = lua.globals().get::<_, Table>("__INTERNAL_LOADED_MODULES")?;
@@ -43,11 +55,9 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
     }
     /* loads the module from the filesystem this needs to be updated when released */
     let load_std = || async {
-        let mut path = std::env::current_dir().unwrap();
-        path.push("std");
-        path.push(module.clone());
-        path.set_extension("lua");
-        let code = fs::read_to_string(&path).await?;
+        let code = StdFiles::get_lua_file(&module)
+            .ok_or(mlua::Error::RuntimeError(format!("module {} not found", module).into()))?;
+
         let table: Table = lua.load(&code).set_name(&module)?.call_async(()).await?;
         Ok::<_, mlua::Error>(table)
     };

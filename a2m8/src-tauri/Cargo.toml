@@ -1,12 +1,12 @@
 [package]
 name = "a2m8"
-version = "0.0.0"
 description = "A Tauri App"
-authors = ["you"]
+version = "0.1.0"
+edition = "2021"
+authors = ["Tricked-dev <tricked@tricked.dev>"]
+documentation = ""
 license = ""
 repository = ""
-edition = "2021"
-rust-version = "1.57"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [build-dependencies]
@@ -17,18 +17,17 @@ serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.2", features = ["api-all", "global-shortcut", "reqwest-client", "system-tray"] }
 typeshare = "1.0.0"
-uuid = { version = "1.2.2", features = ["serde", "v6"] }
-tokio = { version = "1.24.2", features = [
-    "rt",
-    "macros",
-    "sync",
-    "parking_lot"
-] }
 directories = "4.0.1"
-anyhow = { version = "1.0.68", features = ["backtrace"] }
 rmp-serde = "1.1.1"
 parking_lot = { version = "0.12.1", features = ["serde"] }
 thiserror = "1.0.38"
+easyhotkeys = { path = "../../" }
+mlua = { workspace = true }
+anyhow = { workspace = true }
+uuid = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
 
 [features]
 # by default Tauri runs in production mode

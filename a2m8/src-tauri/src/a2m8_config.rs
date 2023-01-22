@@ -10,6 +10,7 @@ pub type A2 = Mutex<A2M8Config>;
 pub struct A2M8Config {
     pub scripts: Vec<A2M8Script>,
     pub data_dir: PathBuf,
+    pub script_handles: Vec<A2M8ScriptRunningHandle>,
 }
 
 impl A2M8Config {

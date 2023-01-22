@@ -2,10 +2,23 @@
 name = "easyhotkeys"
 version = "0.1.0"
 edition = "2021"
+authors = ["Tricked-dev <tricked@tricked.dev>"]
+documentation = ""
+license = ""
+repository = ""
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [features]
-default = ["audio", "clipboard", "command", "displays", "notify", "events", "network", "open"]
+default = [
+    "audio",
+    "clipboard",
+    "command",
+    "displays",
+    "notify",
+    "events",
+    "network",
+    "open"
+]
 audio = ["rodio"]
 clipboard = ["cli-clipboard", "clipboard-ext"]
 command = ["os_pipe", "deno_task_shell"]
@@ -36,12 +49,48 @@ rdev = { version = "0.5.2", features = [
     "unstable_grab"
 ], optional = true }
 # notify
-notify-rust = { version = "4", optional = true }
+notify-rust = { version = "4", optional = true, default-features = false, features = [
+    "d"
+] }
 # network
 reqwest = { version = "0.11.13", optional = true }
 # open
 opener = { version = "0.5.0", optional = true }
 # misc
+once_cell = { version = "1.17.0", features = ["parking_lot"] }
+rust-embed = "6.4.2"
+serde = { version = "1.0.152", features = ["derive"] }
+serde_json = "1.0.91"
+tokio-util = { version = "0.7.4" }
+appfinder = { version = "0.1.1" }
+mlua = { workspace = true }
+anyhow = { workspace = true }
+uuid = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+[workspace]
+resolver = "2"
+members = [".", "a2m8/src-tauri"]
+
+[workspace.dependencies]
+anyhow = { version = "1.0.68", features = ["backtrace"] }
+uuid = { version = "1.2.2", features = ["serde", "v6"] }
+tokio = { version = "1.24.1", features = [
+    "rt",
+    "macros",
+    "rt-multi-thread",
+    "sync",
+    "parking_lot",
+    "time",
+    "fs"
+] }
+tracing = "0.1.37"
+tracing-subscriber = { version = "0.3.16", features = [
+    "env-filter",
+    "parking_lot"
+] }
 mlua = { version = "0.8", features = [
     "lua54",
     "vendored",
@@ -53,29 +102,3 @@ mlua = { version = "0.8", features = [
     "macros",
     "send"
 ] }
-once_cell = { version = "1.17.0", features = ["parking_lot"] }
-rust-embed = "6.4.2"
-serde = { version = "1.0.152", features = ["derive"] }
-serde_json = "1.0.91"
-tokio = { version = "1.24.1", features = [
-    "rt",
-    "macros",
-    "rt-multi-thread",
-    "sync",
-    "parking_lot",
-    "time",
-    "fs"
-] }
-tokio-util = { version = "0.7.4" }
-tracing = "0.1.37"
-tracing-subscriber = { version = "0.3.16", features = [
-    "env-filter",
-    "parking_lot"
-] }
-anyhow = { version = "1.0.68", features = ["backtrace"] }
-appfinder = { version = "0.1.1" }
-uuid = { version = "1.2.2", features = ["serde", "v6"] }
-
-[workspace]
-resolver = "2"
-members = [".", "a2m8/src-tauri"]

@@ -1,6 +1,16 @@
-use crate::prelude::*;
+use std::{sync::Arc, thread};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+use easyhotkeys::require;
+use mlua::Lua;
+use tauri::async_runtime::TokioJoinHandle;
+use tokio::{
+    select,
+    sync::oneshot::{self, Receiver, Sender},
+};
+
+use crate::{error::Error, prelude::*};
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct A2M8Script {
     pub id: Uuid,
     pub name: String,
@@ -12,28 +22,86 @@ pub struct A2M8Script {
     pub status: i8,
 }
 
-impl Ord for A2M8Script {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.favorite.cmp(&other.favorite)
-    }
+#[derive(Debug)]
+pub struct A2M8ScriptRunningHandle {
+    pub id: Uuid,
+    pub handle: thread::JoinHandle<Result<()>>,
+    pub receiver: Receiver<Result<()>>,
+    pub sender: Sender<Result<()>>,
 }
 
-impl PartialOrd for A2M8Script {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
+// impl Ord for A2M8Script {
+//     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+//         self.favorite.cmp(&other.favorite)
+//     }
+// }
+
+// impl PartialOrd for A2M8Script {
+//     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+//         Some(self.cmp(other))
+//     }
+// }
+
+mod script_status {}
 
 impl A2M8Script {
-    const STATUS_RUNNING: i8 = 1;
+    pub const STATUS_RUNNING: i8 = 1;
     #[allow(dead_code)]
-    const STATUS_STOPPED: i8 = 2;
+    pub const STATUS_STOPPED: i8 = 2;
     #[allow(dead_code)]
-    const STATUS_ENDED: i8 = 3;
+    pub const STATUS_ENDED: i8 = 3;
     #[allow(dead_code)]
-    const STATUS_ERROR: i8 = 4;
+    pub const STATUS_ERROR: i8 = 4;
     pub fn running(&self) -> bool {
         self.status == Self::STATUS_RUNNING
+    }
+
+    pub async fn start(&mut self) -> Result<A2M8ScriptRunningHandle> {
+        self.status = Self::STATUS_RUNNING;
+        let content = self.content.clone();
+        let name = self.name.clone();
+        let (sender, receiver) = oneshot::channel();
+        let (finish_sender, finish_receiver) = oneshot::channel();
+        let handle = thread::spawn(move || -> Result<()> {
+            tokio::runtime::Builder::new_current_thread()
+                .enable_all()
+                .build()?
+                .block_on(async {
+                    let inner = || async move {
+                        let lua = Lua::new();
+
+                        let globals = lua.globals();
+                        globals.set("require_ref", globals.get::<_, mlua::Function>("require")?)?;
+                        globals.set("require", lua.create_async_function(require)?)?;
+                        globals.set("__INTERNAL_LOADED_MODULES", lua.create_table()?)?;
+                        println!("loading script!");
+                        select! {
+                            res = receiver => {
+                                println!("{res:?}");
+                                println!("Force ending")
+                            },
+                            res = lua.load(&content).set_name(name)?.exec_async() => {
+                                println!("Script done!");
+                                println!("result: {res:?}");
+                                finish_sender.send(res.map_err(Error::from)).unwrap();
+                            }
+                        }
+                        Ok::<_, Error>(())
+                    };
+                    inner().await?;
+                    Ok::<_, Error>(())
+                })?;
+            Ok(())
+        });
+        // let res = receiver.await;
+        // let tokio_handle = res.unwrap();
+
+        Ok(A2M8ScriptRunningHandle {
+            id: self.id,
+            handle,
+            receiver: finish_receiver,
+            sender: sender,
+        })
     }
 }
 // #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, PartialOrd, Ord, Eq)]

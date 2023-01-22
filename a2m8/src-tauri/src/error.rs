@@ -16,6 +16,8 @@ pub enum Error {
     SerdeRmpEncode(#[from] rmp_serde::encode::Error),
     #[error(transparent)]
     Uuid(#[from] uuid::Error),
+    #[error(transparent)]
+    Lua(#[from] mlua::Error),
 }
 pub type Result<T> = std::result::Result<T, Error>;
 

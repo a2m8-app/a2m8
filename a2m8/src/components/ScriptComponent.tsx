@@ -3,31 +3,54 @@ import { FaStar, FaEllipsisV, FaCheck, FaBolt } from "react-icons/fa";
 import { Menu, Popover, Transition } from "@headlessui/react";
 import { Fragment } from "preact";
 import { Script, scriptStatus, statusToText } from "../lib/script";
+import { invoke } from "@tauri-apps/api";
+import { removeScript } from "../lib/scriptStore";
 
-export default function ScriptComponent({ script }: { script: Script }) {
-  const [isFavorite, setIsFavorite] = useState(script.favorite);
-  const [status, setStatus] = useState(script.status);
-  const [startup, setStartup] = useState(script.startup);
-  const [showContent, setShowContent] = useState(false);
+export default function ScriptComponent({
+  script: scriptThing,
+}: {
+  script: Script;
+}) {
+  const [script, updateScript] = useReducer(
+    (state: Script, data: Partial<Script>) => {
+      let newScript = { ...state, ...data };
+      invoke("update_script", { script: newScript });
+      return newScript;
+    },
+    scriptThing
+  );
 
-  const handleFavorite = () => setIsFavorite(!isFavorite);
-  const handleStartup = (e: any) => {
-    setStartup(!startup);
-    e.stopPropagation();
+  const handleFavorite = (e: any) =>
+    updateScript({ favorite: e.target.checked });
+  const handleStartup = (e: any) =>
+    updateScript({
+      startup: e.target.checked,
+    });
+  const start = () => {
+    invoke("start_script", { id: script.id }).then((r) => {
+      updateScript({ status: scriptStatus.running });
+    });
   };
-  const handleViewContent = () => setShowContent(!showContent);
+  const handleViewContent = () => {};
+
+  const deleteScript = () => {
+    invoke("delete_script", { id: script.id }).then((r) => {
+      removeScript(script.id);
+    });
+  };
 
   return (
     <div class={`bg-base-300 rounded-lg flex`}>
       <button
+        onClick={start}
         class={`btn btn-sm p-4 mt-auto h-full w-9 rounded-r-none border-2 font-extrabold tracking-widest ${
-          status == scriptStatus.running
+          script.status == scriptStatus.running
             ? "btn-secondary-focus border-secondary"
             : "btn-primary-focus border-primary"
         }`}
       >
         <span class="-rotate-90">
-          {status == scriptStatus.running ? "Stop" : "Run"}
+          {script.status == scriptStatus.running ? "Stop" : "Run"}
         </span>
       </button>
       <div class="flex p-4 w-full">
@@ -38,22 +61,22 @@ export default function ScriptComponent({ script }: { script: Script }) {
                 {script.name}
                 <button
                   class={`mx-2 tooltip tooltip-info transition duration-200 ease-in-out  ${
-                    isFavorite ? " text-yellow-400" : "text-gray-700"
+                    script.favorite ? " text-yellow-400" : "text-gray-700"
                   }`}
-                  data-tip={isFavorite ? "Un-favorite" : "Favorite"}
+                  data-tip={script.favorite ? "Un-favorite" : "Favorite"}
                   onClick={handleFavorite}
                 >
                   <FaStar />
                 </button>
                 <button
                   class={`${
-                    status == scriptStatus.running
+                    script.status == scriptStatus.running
                       ? "text-success"
-                      : status == scriptStatus.error
+                      : script.status == scriptStatus.error
                       ? "text-error"
                       : "text-info"
                   } tooltip tooltip-info cursor-default`}
-                  data-tip={statusToText(status)}
+                  data-tip={statusToText(script.status)}
                 >
                   <FaBolt />
                 </button>
@@ -64,7 +87,7 @@ export default function ScriptComponent({ script }: { script: Script }) {
               type="button"
               name="rating-9"
               class={`mask text-xl mask-star-2 ${
-                isFavorite ? "text-yellow-500" : "text-gray-500"
+                script.favorite ? "text-yellow-500" : "text-gray-500"
               }`}
               onClick={handleFavorite}
             />
@@ -99,7 +122,7 @@ export default function ScriptComponent({ script }: { script: Script }) {
                     <input
                       type="checkbox"
                       class="toggle toggle-primary"
-                      checked={startup}
+                      checked={script.startup}
                       onChange={handleStartup}
                     />
                   </label>
@@ -110,7 +133,6 @@ export default function ScriptComponent({ script }: { script: Script }) {
                     <button
                       type="button"
                       class="btn btn-square btn-outline btn-sm"
-                      checked={showContent}
                       onChange={handleViewContent}
                     >
                       <FaCheck />
@@ -123,7 +145,6 @@ export default function ScriptComponent({ script }: { script: Script }) {
                     <button
                       type="button"
                       class="btn btn-square btn-outline btn-sm"
-                      checked={showContent}
                       onChange={handleViewContent}
                     >
                       <FaCheck />
@@ -136,8 +157,7 @@ export default function ScriptComponent({ script }: { script: Script }) {
                     <button
                       type="button"
                       class="btn btn-square btn-outline btn-sm"
-                      checked={showContent}
-                      onChange={handleViewContent}
+                      onClick={deleteScript}
                     >
                       <FaCheck />
                     </button>
