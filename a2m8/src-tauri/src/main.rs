@@ -92,7 +92,7 @@ fn spawn_script_handle(tx: mpsc::Sender<ScriptEnd>, receiver: oneshot::Receiver<
     });
 }
 
-#[tokio::main(flavor = "current_thread")]
+#[tokio::main]
 async fn main() -> Result<()> {
     let dirs = ProjectDirs::from("dev", "tricked", "A2M8").unwrap();
     let path = dirs.data_dir().to_path_buf();
@@ -119,6 +119,8 @@ async fn main() -> Result<()> {
             spawn_script_handle(tx_clone, receiver, id);
         }
     }
+
+    tauri::async_runtime::set(tokio::runtime::Handle::current());
 
     let app = tauri::Builder::default()
         .system_tray(create_tray(&config.scripts)?)
