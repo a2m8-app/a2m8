@@ -58,7 +58,7 @@ impl A2M8Config {
             .scripts
             .iter()
             .position(|s| s.id == script.id)
-            .ok_or(anyhow::anyhow!("Script not found"))?;
+            .ok_or_else(|| anyhow::anyhow!("Script not found"))?;
         self.scripts[index] = script;
         self.save_scripts().await?;
         Ok(())
@@ -68,7 +68,7 @@ impl A2M8Config {
             .scripts
             .iter()
             .position(|s| s.id == id)
-            .ok_or(anyhow::anyhow!("Script not found"))?;
+            .ok_or_else(|| anyhow::anyhow!("Script not found"))?;
         self.scripts.remove(index);
         self.save_scripts().await?;
         Ok(())

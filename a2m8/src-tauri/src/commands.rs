@@ -34,7 +34,7 @@ pub async fn start_script(config: tauri::State<'_, A2>, id: Uuid) -> Result<()> 
         .scripts
         .iter()
         .find(|s| s.id == id)
-        .ok_or(anyhow::anyhow!("Script not found"))?
+        .ok_or_else(|| anyhow::anyhow!("Script not found"))?
         .clone();
     let (receiver, handle) = script.start().await?;
     config.script_handles.push(handle);
@@ -50,13 +50,13 @@ pub async fn stop_script(config: tauri::State<'_, A2>, id: Uuid) -> Result<()> {
         .scripts
         .iter()
         .find(|s| s.id == id)
-        .ok_or(anyhow::anyhow!("Script not found"))?
+        .ok_or_else(|| anyhow::anyhow!("Script not found"))?
         .clone();
     let handle = config
         .script_handles
         .iter()
         .position(|h| h.id == id)
-        .ok_or(anyhow::anyhow!("Script not found"))?;
+        .ok_or_else(|| anyhow::anyhow!("Script not found"))?;
 
     let h = config.script_handles.remove(handle);
 
@@ -76,6 +76,6 @@ pub async fn get_script(config: tauri::State<'_, A2>, id: Uuid) -> Result<A2M8Sc
         .scripts
         .iter()
         .find(|s| s.id == id)
-        .ok_or(anyhow::anyhow!("Script not found"))?;
+        .ok_or_else(|| anyhow::anyhow!("Script not found"))?;
     Ok(script.clone())
 }
