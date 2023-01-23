@@ -2,14 +2,19 @@ import { Dialog, Transition } from "@headlessui/react";
 import Editor from "@monaco-editor/react";
 import { useStore } from "@nanostores/react";
 import { Fragment } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { Script } from "../lib/script";
-import { getScriptFromId } from "../lib/scriptStore";
+import { getScriptFromId, updateScript } from "../lib/scriptStore";
 import { closeScript, viewScript } from "../lib/viewScriptState";
 
 export default function ViewSource() {
   const data = useStore(viewScript);
   const [script, setScript] = useState<Script>();
+  const editorRef = useRef<any | null>(null);
+
+  function handleEditorDidMount(editor: any, _monaco: unknown) {
+    editorRef.current = editor;
+  }
 
   useEffect(() => {
     if (data.id) {
@@ -59,6 +64,7 @@ export default function ViewSource() {
                         width="100%"
                         theme="vs-dark"
                         defaultLanguage="lua"
+                        onMount={handleEditorDidMount}
                         defaultValue={script.content}
                         settings={{
                           scrollBeyondLastColumn: 5,
@@ -80,7 +86,13 @@ export default function ViewSource() {
                   <button
                     type="button"
                     class="inline-flex btn btn-success w-auto"
-                    onClick={closeScript}
+                    onClick={() => {
+                      updateScript({
+                        ...script,
+                        content: editorRef.current.getValue(),
+                      });
+                      closeScript();
+                    }}
                   >
                     Save & quit
                   </button>

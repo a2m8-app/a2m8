@@ -1,6 +1,6 @@
 #![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows")]
 
-use std::thread::{self, JoinHandle};
+use std::thread::{self};
 
 use directories::ProjectDirs;
 use tauri::{
@@ -30,21 +30,21 @@ import_modules! {
 
 use crate::{commands::*, prelude::*};
 
-fn create_tray(scripts: &Vec<A2M8Script>) -> Result<SystemTray> {
+fn create_tray(scripts: &[A2M8Script]) -> Result<SystemTray> {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
     let hide = CustomMenuItem::new("hide".to_string(), "Hide");
     let open = CustomMenuItem::new("open".to_string(), "Open");
     let mut starter_menu = SystemTrayMenu::new();
     let mut stop_menu = SystemTrayMenu::new();
 
-    let mut scripts = scripts.clone();
+    let mut scripts = scripts.to_owned();
     scripts.sort_by_key(|s| s.favorite);
     for script in scripts {
         if !script.running() {
-            let start = CustomMenuItem::new(script.id.to_string(), &format!("Start {}", script.name));
+            let start = CustomMenuItem::new(script.id.to_string(), format!("Start {}", script.name));
             starter_menu = starter_menu.add_item(start);
         } else {
-            let stop = CustomMenuItem::new(script.id.to_string(), &format!("Stop {}", script.name));
+            let stop = CustomMenuItem::new(script.id.to_string(), format!("Stop {}", script.name));
             stop_menu = stop_menu.add_item(stop);
         }
     }
