@@ -1,5 +1,17 @@
 import { defineConfig } from "vite";
 import preact from "@preact/preset-vite";
+import pkg from "./package.json" assert { type: "json" };
+
+const exclusions = [
+  "tsMode",
+  "ts.worker",
+  "jsonMode",
+  "json.worker",
+  "cssMode",
+  "css.worker",
+  "htmlMode",
+  "html.worker",
+];
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,12 +28,28 @@ export default defineConfig({
   // to make use of `TAURI_DEBUG` and other env variables
   // https://tauri.studio/v1/api/config#buildconfig.beforedevcommand
   envPrefix: ["VITE_", "TAURI_"],
+
   build: {
+    chunkSizeWarningLimit: 100000,
     // Tauri supports es2021
     target: process.env.TAURI_PLATFORM == "windows" ? "chrome105" : "safari13",
     // don't minify for debug builds
     minify: !process.env.TAURI_DEBUG ? "esbuild" : false,
     // produce sourcemaps for debug builds
     sourcemap: !!process.env.TAURI_DEBUG,
+    rollupOptions: {
+      output: {
+        chunkFileNames: (chunkInfo) => {
+          if (chunkInfo.isDynamicEntry) {
+            if (exclusions.includes(chunkInfo.name)) {
+              return `assets/editor/${chunkInfo.name}.js`;
+            } else {
+              return `assets/editor/languages/${chunkInfo.name}.js`;
+            }
+          }
+          return `assets/${chunkInfo.name}.js`;
+        },
+      },
+    },
   },
 });

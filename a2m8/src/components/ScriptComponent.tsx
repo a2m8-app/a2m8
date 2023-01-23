@@ -6,6 +6,8 @@ import { Script, scriptStatus, statusToText } from "../lib/script";
 import { invoke } from "@tauri-apps/api";
 import { fullReloadScripts, removeScript, scripts } from "../lib/scriptStore";
 import { listen } from "@tauri-apps/api/event";
+import ViewSource from "./ViewSource";
+import { openScript } from "../lib/viewScriptState";
 
 export default function ScriptComponent({
   script: scriptThing,
@@ -38,7 +40,6 @@ export default function ScriptComponent({
       });
     }
   };
-  const handleViewContent = () => {};
 
   const deleteScript = () => {
     invoke("delete_script", { id: script.id }).then((r) => {
@@ -51,7 +52,6 @@ export default function ScriptComponent({
       "script_end",
       (event) => {
         const { id, status } = event.payload;
-        console.log(id, script.id);
         if (id != script.id) return;
         updateScript({ status, id });
         updateScript(script);
@@ -61,6 +61,10 @@ export default function ScriptComponent({
       unlisten.then((x) => x());
     };
   }, []);
+
+  const openEditor = () => {
+    openScript(script.id);
+  };
 
   return (
     <div class={`bg-base-300 rounded-lg flex`}>
@@ -76,6 +80,16 @@ export default function ScriptComponent({
           {script.status == scriptStatus.running ? "Stop" : "Run"}
         </span>
       </button>
+      <label class="cursor-pointer label">
+        <span class="label-text">Edit script</span>
+        <button
+          type="button"
+          class="btn btn-square btn-outline btn-sm"
+          onClick={openEditor}
+        >
+          <FaCheck />
+        </button>
+      </label>
       <div class="flex p-4 w-full">
         <div>
           <div class="flex items-center justify-between">
@@ -156,7 +170,7 @@ export default function ScriptComponent({
                     <button
                       type="button"
                       class="btn btn-square btn-outline btn-sm"
-                      onChange={handleViewContent}
+                      onClick={openEditor}
                     >
                       <FaCheck />
                     </button>
@@ -168,7 +182,7 @@ export default function ScriptComponent({
                     <button
                       type="button"
                       class="btn btn-square btn-outline btn-sm"
-                      onChange={handleViewContent}
+                      onClick={openEditor}
                     >
                       <FaCheck />
                     </button>

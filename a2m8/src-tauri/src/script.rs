@@ -74,6 +74,7 @@ impl A2M8Script {
                         select! {
                             _ = receiver => {
                                 finish_sender.send(Ok(())).unwrap();
+                                println!("Script  stopped",);
                             },
                             res = lua.load(&content).set_name(name)?.exec_async() => {
                                 finish_sender.send(res.map_err(Error::from)).unwrap();

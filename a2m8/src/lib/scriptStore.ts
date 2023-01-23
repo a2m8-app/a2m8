@@ -25,6 +25,10 @@ export function updateScript(script: Script) {
   );
 }
 
+export const getScriptFromId = (id: string) => {
+  return scripts.get().find((script) => script.id === id);
+};
+
 export const fullReloadScripts = () =>
   invoke<Script[]>("get_scripts").then((data) => {
     setScripts(data);
