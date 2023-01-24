@@ -1,6 +1,6 @@
 use std::thread;
 
-use easyhotkeys::require;
+use a2m8_lib::require;
 use mlua::Lua;
 use tokio::{
     select,

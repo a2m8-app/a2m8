@@ -1,6 +1,5 @@
 use crate::create_body;
-use mlua::Lua;
-use mlua::LuaSerdeExt;
+use mlua::{Lua, LuaSerdeExt};
 
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body! (lua,
@@ -23,6 +22,6 @@ fn stringify(lua: &Lua, (v, pretty): (mlua::Value, bool)) -> mlua::Result<String
         serde_json::to_string(&value)
     }
     .map_err(mlua::Error::external)?;
-    
+
     Ok(json)
 }

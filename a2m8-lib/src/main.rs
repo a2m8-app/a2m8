@@ -2,7 +2,7 @@ use mlua::Lua;
 use tracing::metadata::LevelFilter;
 use tracing_subscriber::EnvFilter;
 
-use easyhotkeys::require;
+use a2m8_lib::require;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> anyhow::Result<()> {
