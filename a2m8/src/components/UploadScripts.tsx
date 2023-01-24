@@ -34,9 +34,9 @@ export default function UploadScripts() {
   };
 
   return (
-    <div class="mx-auto bg-red w-64">
-      <div
-        className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md cursor-pointer"
+    <div class="flex justify-center">
+      <button
+        class="btn btn-accent btn-sm"
         onDrop={handleDrop}
         onClick={(_) => inputRef.current!.click()}
         onDragOver={(event) => event.preventDefault()}
@@ -48,8 +48,8 @@ export default function UploadScripts() {
           ref={inputRef}
           onChange={(event: any) => onFileSubmit(event.target!.files[0])}
         />
-        {"Drop file here or click to browse"}
-      </div>
+        Drop file here or click to browse
+      </button>
     </div>
   );
 }

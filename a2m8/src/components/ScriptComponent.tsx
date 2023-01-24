@@ -80,16 +80,7 @@ export default function ScriptComponent({
           {script.status == scriptStatus.running ? "Stop" : "Run"}
         </span>
       </button>
-      <label class="cursor-pointer label">
-        <span class="label-text">Edit script</span>
-        <button
-          type="button"
-          class="btn btn-square btn-outline btn-sm"
-          onClick={openEditor}
-        >
-          <FaCheck />
-        </button>
-      </label>
+
       <div class="flex p-4 w-full">
         <div>
           <div class="flex items-center justify-between">
@@ -181,6 +172,7 @@ export default function ScriptComponent({
                     <span class="label-text">Reload</span>
                     <button
                       type="button"
+                      disabled
                       class="btn btn-square btn-outline btn-sm"
                       onClick={openEditor}
                     >
