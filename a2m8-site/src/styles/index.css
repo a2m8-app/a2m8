@@ -1,13 +1,3 @@
-* {
-	box-sizing: border-box;
-	margin: 0;
-}
-
-/* Global focus outline reset */
-*:focus:not(:focus-visible) {
-	outline: none;
-}
-
 :root {
 	--user-font-scale: 1rem - 16px;
 	--max-width: calc(100% - 1rem);
@@ -30,7 +20,7 @@ body {
 	max-width: 100vw;
 }
 
-nav ul {
+.layout nav ul {
 	list-style: none;
 	padding: 0;
 }
@@ -68,28 +58,28 @@ h2 {
 	margin-top: 2rem;
 }
 
-h1 {
+.layout h1 {
 	font-size: 3.25rem;
 	font-weight: 800;
 }
 
-h2 {
+.layout h2 {
 	font-size: 2.5rem;
 }
 
-h3 {
+.layout h3 {
 	font-size: 1.75rem;
 }
 
-h4 {
+.layout h4 {
 	font-size: 1.3rem;
 }
 
-h5 {
+.layout h5 {
 	font-size: 1rem;
 }
 
-p {
+.layout p {
 	line-height: 1.65em;
 }
 
@@ -97,7 +87,7 @@ p {
 	line-height: 1.1em;
 }
 
-p,
+.layout p,
 .content ul {
 	color: var(--theme-text-light);
 }
@@ -107,7 +97,7 @@ small,
 	font-size: 0.833rem;
 }
 
-a {
+.layout a {
 	color: var(--theme-text-accent);
 	font-weight: 400;
 	text-underline-offset: 0.08em;
