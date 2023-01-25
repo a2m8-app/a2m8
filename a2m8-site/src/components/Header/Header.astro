@@ -1,41 +1,32 @@
 ---
-import { SITE } from '../../consts';
-import AstroLogo from './AstroLogo.astro';
-import SkipToContent from './SkipToContent.astro';
-import SidebarToggle from './SidebarToggle';
-
-type Props = {
-	currentPage: string;
-};
-
-const { currentPage } = Astro.props;
+import { SITE } from "../../consts";
+import AstroLogo from "./AstroLogo.astro";
+import SkipToContent from "./SkipToContent.astro";
+import SidebarToggle from "./SidebarToggle";
 ---
 
 <header class="bg-base-200/20 w-full rounded-lg">
-		<SkipToContent />
-		<nav class="navbar max-w-[75rem] mx-auto">
-			<div class="menu-toggle md:hidden">
-				<SidebarToggle client:idle />
-			</div>
-			<a class="ml-4 flex-1 text-3xl underline-none" href="/">
-				<p class="font-bold">A2</p>
-				<p>M8</p>
-			</a>
-			<div class="flex-none">
-				<ul class="menu menu-horizontal px-1">
-					<li>
-						<a href="/docs/introduction">Wiki</a>
-					</li>
-					<li>
-						<a>Workshop</a>
-					</li>
-					<li>
-						<a>Discord</a>
-					</li>
-				</ul>
-			</div>
-		</nav>
-	</div>
+  <SkipToContent />
+  <nav class="navbar max-w-[75rem] mx-auto">
+    <div class="menu-toggle md:hidden">
+      <SidebarToggle client:idle />
+    </div>
+    <a class="ml-4 flex-1 text-3xl underline-none" href="/">
+      <p class="font-bold">A2</p>
+      <p>M8</p>
+    </a>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        <li>
+          <a href="/docs/introduction">Wiki</a>
+        </li>
+        <li>
+          <a>Workshop</a>
+        </li>
+        <li>
+          <a>Discord</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
 </header>
-
-

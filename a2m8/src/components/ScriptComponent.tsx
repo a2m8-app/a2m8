@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "preact/hooks";
+import { useEffect, useReducer, useRef, useState } from "preact/hooks";
 import { FaStar, FaEllipsisV, FaCheck, FaBolt } from "react-icons/fa";
 import { Menu, Popover, Transition } from "@headlessui/react";
 import { Fragment } from "preact";
@@ -22,6 +22,8 @@ export default function ScriptComponent({
     },
     scriptThing
   );
+
+  const ref = useRef<HTMLDivElement>(null);
 
   const handleFavorite = (e: any) =>
     updateScript({ favorite: !script.favorite });
@@ -81,7 +83,13 @@ export default function ScriptComponent({
         </span>
       </button>
 
-      <div class="flex p-4 w-full">
+      <div
+        class="flex p-4 w-full"
+        onContextMenu={(e) => {
+          e.preventDefault();
+          ref.current?.click();
+        }}
+      >
         <div>
           <div class="flex items-center justify-between">
             <div class="">
@@ -129,7 +137,7 @@ export default function ScriptComponent({
           </div>
         )}
         <Popover class="relative ml-auto">
-          <Popover.Button>
+          <Popover.Button ref={ref}>
             <span class="sr-only">Options</span>
             <FaEllipsisV aria-hidden="true" />
           </Popover.Button>

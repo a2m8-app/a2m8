@@ -3,80 +3,68 @@ import Layout from "../layouts/Layout.astro";
 import { Code } from "astro/components";
 import CodeSnippet from "../components/CodeSnippet/CodeSnippet.astro";
 import fs from "node:fs/promises";
+import { ImageCarousel } from "../components/ImageList";
 
 let examplesNames = ["ip_info", "app_starting", "sendNotifaction"];
 
-const codes = await fs.readFile("../a2m8-lib/src/stdexamples.lua", "utf8").then(
-	(x) => {
-		return x
-			.split("--ex")
-			.map((x) => x.trim())
-			.map((x) => {
-				let name = x.split("function")[1]?.split("(")[0]?.trim();
-				let code = x.replace("local ", "");
-				return {
-					name,
-					code,
-				};
-			})
-			.filter((x) => x.name && examplesNames.includes(x.name));
-	}
+const codes = await fs
+  .readFile("../a2m8-lib/src/stdexamples.lua", "utf8")
+  .then((x) => {
+    return x
+      .split("--ex")
+      .map((x) => x.trim())
+      .map((x) => {
+        let name = x.split("function")[1]?.split("(")[0]?.trim();
+        let code = x.replace("local ", "");
+        return {
+          name,
+          code,
+        };
+      })
+      .filter((x) => x.name && examplesNames.includes(x.name));
+  });
+const screenshots: string[] = await Astro.glob("../../public/pics/*.png").then(
+  (r) => r.map((x) => x["default"].replace("public/", ""))
 );
-const screenshots = [
-	{
-		name: "Viewing scripts",
-		src: ""
-	}
-]
 ---
 
-<Layout title="Welcome to Astro.">
-	<main>
-		<div class="hero min-h-screen bg-base-200">
-			<div class="hero-content flex-col lg:flex-row-reverse">
-				<!-- <img src="https://placeimg.com/260/400/arch" class="max-w-sm rounded-lg shadow-2xl" /> -->
-				<div>
-					<h1 class="text-5xl font-bold">A2M8!</h1>
-					<p class="py-6">
-						<strong>A2M8</strong> allows you to write lua scripts that
-						automate things for any platform
-					</p>
-					<button class="btn btn-primary">Download the app</button>
-				</div>
-				<div></div>
-			</div>
-		</div>
-		<div class="bg-base-300 py-2">
-			<h2 class="text-2xl text-center">Create scripts!</h2>
-			<div class="max-w-[44rem] mx-auto">
-				{
-					codes.map((x,index) => {
-						return (
-							<div class={`w-auto my-4 ${index % 2 ? "md:ml-36": "md:mr-20"}`}>
-								<CodeSnippet title={x.name}>
-									<Code code={x.code} lang="lua"></Code>
-								</CodeSnippet>
-							</div>
-						);
-					})
-				}
-			</div>
-		</div>
-		<div>
-			<h2 class="text-2xl text-center">Screenshots!</h2>
-			<div>
-				{
-					screenshots.map((x) => {
-						return (
-							<div>
-								<h3>{x.name}</h3>
-								<img src={x.src} />
-							</div>
-						);
-					})
-				}
-			</div>
-		</div>
-	</main>
-	
+<Layout title="Welcome to A2M8.">
+  <main>
+    <div class="hero min-h-screen bg-base-200">
+      <div class="hero-content flex-col lg:flex-row-reverse">
+        <!-- <img src="https://placeimg.com/260/400/arch" class="max-w-sm rounded-lg shadow-2xl" /> -->
+        <div>
+          <h1 class="text-5xl font-bold">A2M8!</h1>
+          <p class="py-6">
+            <strong>A2M8</strong> allows you to write lua scripts that automate things
+            for any platform
+          </p>
+          <button class="btn btn-primary">Download the app</button>
+        </div>
+        <div></div>
+      </div>
+    </div>
+    <div class="bg-base-300 py-2">
+      <h2 class="text-2xl text-center">Create scripts!</h2>
+      <div class="max-w-[44rem] mx-auto">
+        {
+          codes.map((x, index) => {
+            return (
+              <div class={`w-auto my-4 ${index % 2 ? "md:ml-36" : "md:mr-20"}`}>
+                <CodeSnippet title={x.name}>
+                  <Code code={x.code} lang="lua" />
+                </CodeSnippet>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+    <div>
+      <h2 class="text-2xl text-center">Screenshots!</h2>
+      <div>
+        <ImageCarousel client:visible images={screenshots} />
+      </div>
+    </div>
+  </main>
 </Layout>
