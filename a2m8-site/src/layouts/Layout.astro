@@ -15,8 +15,53 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
+	
 	<body>
+		<div class="bg-base-200/20 w-full rounded-lg">
+			<nav class="navbar max-w-[75rem] mx-auto">
+				<div class="ml-4 flex-1 text-3xl">
+					<p class="font-bold">A2</p>
+					<p>M8</p>
+				</div>
+				<div class="flex-none">
+					<ul class="menu menu-horizontal px-1">
+						<li>
+							<a>Wiki</a>
+						</li>
+						<li>
+							<a>Workshop</a>
+						</li>
+						<li>
+							<a>Discord</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</div>
 		<slot />
+		<footer class="footer p-10 bg-neutral text-neutral-content">
+			<div>
+			  <span class="footer-title">Services</span> 
+			  <a class="link link-hover">Look</a>
+			  <a class="link link-hover">im</a>
+			  <a class="link link-hover">supposed</a>
+			  <a class="link link-hover">to</a>
+	
+			</div> 
+			<div>
+			  <span class="footer-title">Company</span> 
+			  <a class="link link-hover">put</a>
+			  <a class="link link-hover">stuff</a>
+			  <a class="link link-hover">here</a>
+			  <a class="link link-hover">but</a>
+			</div> 
+			<div>
+			  <span class="footer-title">Legal</span> 
+			  <a class="link link-hover">i</a>
+			  <a class="link link-hover">dunno</a>
+			  <a class="link link-hover">what</a>
+			</div>
+		  </footer>
 	</body>
 </html>
 
