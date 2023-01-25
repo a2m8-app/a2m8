@@ -30,10 +30,10 @@ export const ALGOLIA = {
 export type Sidebar =
 	Record<string, { text: string; link: string }[]>;
 export const SIDEBAR: Sidebar = {
-	'Section Header': [
+	'Main': [
 		{ text: 'Introduction', link: 'introduction' },
 		{ text: 'Page 2', link: 'page-2' },
 		{ text: 'Page 3', link: 'page-3' },
 	],
-	'Another Section': [{ text: 'Page 4', link: 'page-4' }],
+	// 'Another Section': [{ text: 'Page 4', link: 'page-4' }],
 };
