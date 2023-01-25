@@ -11,6 +11,12 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^2.0.1"
+    "@astrojs/cloudflare": "^6.0.0",
+    "@astrojs/mdx": "^0.15.0",
+    "@astrojs/tailwind": "^3.0.0",
+    "a2m8-shared": "workspace:a2m8-shared",
+    "astro": "^2.0.1",
+    "daisyui": "^2.47.0",
+    "tailwindcss": "^3.0.24"
   }
 }
