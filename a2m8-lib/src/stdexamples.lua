@@ -1,58 +1,4 @@
--- function Make_screenshots()
---     require("display")
---     local i = 1
---     local screens = display.screens
---     for var in pairs(screens) do
---         screens[var]:capture("hi" .. i .. ".png")
---         screens[var]:capture_area(0, 20, 40, 40, "hi-point" .. i .. ".png")
---         i = i + 1
---     end
--- end
-
--- function Manual_event_handler()
---     require("event_handler")
---     while (true) do
---         local event = event_handler:read()
---         if event.name == "mouse_move" then
---             -- print(event.x, event.y)
---         elseif event.name == "key_press" then
---             print(event.key)
---             print("F1")
---             if event.key == "Escape" then
---                 print("Stopping")
---                 break
---             elseif event.key == "F1" then
---                 print("F1 screenshot time")
---                 Make_screenshots()
---             end
---         end
---     end
--- end
-
--- function Clipboard_methods()
---     require("clipboard")
---     print(clipboard.value)
---     clipboard.value = "lol"
---     clipboard.clear()
--- end
-
--- function Version_info()
---     require("versions")
---     print(version_info.version)
---     print(version_info.lua)
--- end
-
--- function Run_commands()
---     require('command')
---     local result = run_command("cat main.rs")
-
---     print(result.stdout)
---     print(result.stderr)
---     print(result.exit_code)
---     local code = run_command_piped("cat main.rs")
-
---     print(code)
--- end
+--ex
 local function misc()
     local events = require("event_handler")
     local shortcuts = require("shortcuts")
@@ -67,6 +13,7 @@ local function misc()
     events.startHandler()
 end
 
+--ex
 local function trollMouse()
     local e = require("event_sender")
     local h = require("event_handler")
@@ -86,6 +33,7 @@ local function trollMouse()
     h.startHandler()
 end
 
+--ex
 local function playAudio()
     local audio = require("audio")
     local u = require("utils")
@@ -97,6 +45,7 @@ local function playAudio()
     audio.play_audio_blocking("../assets/assets_music.mp3")
 end
 
+--ex
 local function sendNotifaction()
     local n = require('notify')
     local u = require('utils')
@@ -111,6 +60,7 @@ local function sendNotifaction()
     u.sleep(2.5)
 end
 
+--ex
 local function logging()
     local l = require("log")
     l.warn("huge warning something broke!")
@@ -120,6 +70,7 @@ local function logging()
     l.trace("tracing o.0 RUST_LOG=TRACE")
 end
 
+--ex
 local function networking()
     local network = require("network")
 
@@ -128,11 +79,13 @@ local function networking()
     )
 end
 
+--ex
 local function tipping()
     local s = require('event_sender')
     s:type("Hello World")
 end
 
+--ex
 local function env_stuff()
     local env = require("env")
 
@@ -141,6 +94,7 @@ local function env_stuff()
     end
 end
 
+--ex
 local function block_typing()
     local internal = require("event_handler_internal")
     while (true) do
@@ -156,6 +110,7 @@ local function block_typing()
     end
 end
 
+--ex
 local function ip_info()
     local network = require("network")
     local json = require("json")
@@ -171,6 +126,7 @@ local function ip_info()
     print("Your IP is: " .. table["ip"])
 end
 
+--ex
 local function performance()
     local network = require("network")
     local json = require("json")
@@ -191,6 +147,7 @@ local function performance()
     print("took " .. perf:elapsed() .. "s")
 end
 
+--ex
 local function app_starting()
     local u = require("utils")
 

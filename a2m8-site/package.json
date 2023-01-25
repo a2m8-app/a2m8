@@ -16,7 +16,11 @@
     "@astrojs/tailwind": "^3.0.0",
     "a2m8-shared": "workspace:a2m8-shared",
     "astro": "^2.0.1",
+    "chroma-js": "^2.4.2",
     "daisyui": "^2.47.0",
+    "html-escaper": "^3.0.3",
+    "parse-numeric-range": "^1.3.0",
+    "sass": "^1.57.1",
     "tailwindcss": "^3.0.24"
   }
 }
