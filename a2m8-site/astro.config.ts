@@ -15,6 +15,6 @@ export default defineConfig({
     react(),
   ],
 	site: `https://astro.build`,
-  output: "server",
-  adapter: cloudflare()
+  // output: "server",
+  // adapter: cloudflare()
 });

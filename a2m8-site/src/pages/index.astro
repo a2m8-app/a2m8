@@ -2,11 +2,11 @@
 import Layout from "../layouts/Layout.astro";
 import { Code } from "astro/components";
 import CodeSnippet from "../components/CodeSnippet/CodeSnippet.astro";
-import { readFile } from "fs/promises";
+import fs from "node:fs/promises";
 
 let examplesNames = ["ip_info", "app_starting", "sendNotifaction"];
 
-const codes = await readFile("../a2m8-lib/src/stdexamples.lua", "utf8").then(
+const codes = await fs.readFile("../a2m8-lib/src/stdexamples.lua", "utf8").then(
 	(x) => {
 		return x
 			.split("--ex")
