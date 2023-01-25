@@ -1,4 +1,4 @@
-use std::thread;
+use std::{path::PathBuf, thread};
 
 use a2m8_lib::require;
 use mlua::Lua;
@@ -19,6 +19,23 @@ pub struct A2M8Script {
     pub content: String,
     pub error: Option<String>,
     pub status: i8,
+}
+
+impl A2M8Script {
+    pub fn from_file(path: PathBuf) -> Result<Self> {
+        let name = path.file_name().unwrap().to_str().unwrap().to_string();
+        let content = std::fs::read_to_string(path)?;
+        Ok(Self {
+            id: Uuid::new_v4(),
+            name,
+            description: "".to_string(),
+            startup: false,
+            favorite: false,
+            content,
+            error: None,
+            status: 0,
+        })
+    }
 }
 
 #[derive(Debug)]
