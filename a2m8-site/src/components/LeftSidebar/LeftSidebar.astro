@@ -12,7 +12,7 @@ const currentPageMatch = currentPage.endsWith('/')
 const sidebar = SIDEBAR;
 ---
 
-<nav aria-labelledby="grid-left">
+<nav aria-labelledby="grid-left" class="sm:bg-base-100 bg-none">
 	<ul class="nav-groups">
 		{
 			Object.entries(sidebar).map(([header, children]) => (
