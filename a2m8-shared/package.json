@@ -1,0 +1,14 @@
+{
+  "name": "a2m8-shared",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+  },
+  "keywords": [],
+  "exports": {
+    "./theme": "./theme.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

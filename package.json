@@ -1,0 +1,9 @@
+{
+    "name": "a2m8-workspace",
+    "version": "0.0.0",
+    "private": true,
+    "workspaces": [
+      "a2m8-site",
+      "a2m8"
+    ]
+}

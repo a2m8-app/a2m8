@@ -1,0 +1,4 @@
+packages:
+  - 'a2m8'
+  - 'a2m8-site'
+  - "a2m8-shared"

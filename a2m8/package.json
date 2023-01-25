@@ -19,7 +19,8 @@
     "nanostores": "^0.7.1",
     "preact": "^10.11.3",
     "preact-router": "^4.1.0",
-    "react-icons": "^4.7.1"
+    "react-icons": "^4.7.1",
+    "a2m8-shared": "workspace:a2m8-shared"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
