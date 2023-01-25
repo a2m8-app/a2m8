@@ -1,10 +1,15 @@
 import { Dialog, Transition } from "@headlessui/react";
 import Editor from "@monaco-editor/react";
 import { useStore } from "@nanostores/react";
+import { invoke } from "@tauri-apps/api";
 import { Fragment } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Script } from "../lib/script";
-import { getScriptFromId, updateScript } from "../lib/scriptStore";
+import {
+  getScriptFromId,
+  removeScript,
+  updateScript,
+} from "../lib/scriptStore";
 import { closeScript, viewScript } from "../lib/viewScriptState";
 
 export default function ViewSource() {
@@ -95,6 +100,17 @@ export default function ViewSource() {
                     }}
                   >
                     Save & quit
+                  </button>
+                  <button
+                    type="button"
+                    class="ml-auto inline-flex btn btn-warning w-auto"
+                    onClick={() => {
+                      invoke("delete_script", { id: script.id }).then((r) => {
+                        removeScript(script.id);
+                      });
+                    }}
+                  >
+                    Delete Script this cannot be undone
                   </button>
                 </div>
               </Dialog.Panel>

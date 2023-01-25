@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api";
 import { useRef } from "preact/hooks";
 import { Script, scriptStatus } from "../lib/script";
 import { addScript } from "../lib/scriptStore";
+import { openScript } from "../lib/viewScriptState";
 
 export default function UploadScripts() {
   const accept = "application/lua, text/x-lua, .lua";
@@ -29,6 +30,7 @@ export default function UploadScripts() {
 
     await invoke("create_script", { script: script });
     addScript(script);
+    openScript(script.id);
     // @ts-ignore (us this comment if typescript raises an error)
     inputRef.current.value = "";
   };

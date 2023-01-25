@@ -35,9 +35,11 @@ export default function Home({ path }: { path: string }) {
       </p>
 
       <div class={"max-w-[75rem] mx-auto grid grid-cols-1 gap-2 px-2 my-2"}>
-        {list?.map((script) => (
-          <ScriptComponent key={script.id} script={script} />
-        ))}
+        {list
+          ?.filter((x) => !x.draft)
+          .map((script) => (
+            <ScriptComponent key={script.id} script={script} />
+          ))}
       </div>
 
       <UploadScripts />

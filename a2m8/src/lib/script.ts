@@ -7,6 +7,7 @@ export type Script = {
   content: string;
   error?: string;
   status: scriptStatus;
+  draft?: boolean;
 };
 export type scriptStatus = typeof scriptStatus[keyof typeof scriptStatus];
 export const scriptStatus = {
