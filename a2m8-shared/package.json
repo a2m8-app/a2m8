@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "keywords": [],
   "exports": {
     "./theme": "./theme.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "",
+  "dependencies": {
+    "daisyui": "^2.49.0"
+  }
 }

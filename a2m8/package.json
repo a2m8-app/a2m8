@@ -15,23 +15,23 @@
     "@monaco-editor/react": "^4.4.6",
     "@nanostores/react": "^0.4.1",
     "@tauri-apps/api": "^1.2.0",
+    "a2m8-shared": "workspace:a2m8-shared",
     "monaco-editor": "^0.34.1",
     "nanostores": "^0.7.1",
     "preact": "^10.11.3",
     "preact-router": "^4.1.0",
-    "react-icons": "^4.7.1",
-    "a2m8-shared": "workspace:a2m8-shared"
+    "react-icons": "^4.7.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@preact/preset-vite": "^2.4.0",
-    "@tauri-apps/cli": "^1.2.2",
-    "@types/node": "^18.7.14",
+    "@babel/core": "^7.20.12",
+    "@preact/preset-vite": "^2.5.0",
+    "@tauri-apps/cli": "^1.2.3",
+    "@types/node": "^18.11.18",
     "autoprefixer": "^10.4.13",
-    "daisyui": "^2.47.0",
+    "daisyui": "^2.49.0",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.4",
-    "typescript": "^4.6.4",
-    "vite": "^4.0.0"
+    "typescript": "^4.9.4",
+    "vite": "^4.0.4"
   }
 }
