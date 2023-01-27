@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::create_body;
 
+#[doc(hidden)]
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body!(lua,
         "screens" => lua.create_function(screens)?,
@@ -12,7 +13,7 @@ pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     )
 }
 
-fn screens(_: &Lua, _: ()) -> mlua::Result<Vec<SerdeDisplayInfo>> {
+pub fn screens(_: &Lua, _: ()) -> mlua::Result<Vec<SerdeDisplayInfo>> {
     Ok(screenshots::DisplayInfo::all()
         .unwrap_or_default()
         .into_iter()
@@ -23,7 +24,7 @@ fn screens(_: &Lua, _: ()) -> mlua::Result<Vec<SerdeDisplayInfo>> {
         .collect::<Vec<_>>())
 }
 
-fn screen_from_point(_: &Lua, (x, y): (i32, i32)) -> mlua::Result<SerdeDisplayInfo> {
+pub fn screen_from_point(_: &Lua, (x, y): (i32, i32)) -> mlua::Result<SerdeDisplayInfo> {
     Ok(screenshots::DisplayInfo::from_point(x, y)
         .map(|x| {
             let x: SerdeDisplayInfo = x.into();

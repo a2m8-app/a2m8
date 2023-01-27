@@ -4,6 +4,7 @@ use mlua::Lua;
 
 use crate::create_body;
 
+#[doc(hidden)]
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body!(lua,
         "play_audio_blocking" => lua.create_function(play_audio_blocking)?,

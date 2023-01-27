@@ -54,6 +54,12 @@ impl Performance {
     }
 }
 
+impl Default for Performance {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl UserData for Performance {
     fn add_methods<'lua, M: mlua::UserDataMethods<'lua, Self>>(methods: &mut M) {
         methods.add_function("new", |_, ()| Ok(Performance::new()));

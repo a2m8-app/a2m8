@@ -2,6 +2,7 @@ use cli_clipboard::{ClipboardContext, ClipboardProvider};
 
 use crate::create_body;
 
+#[doc(hidden)]
 pub fn init(lua: &mlua::Lua) -> mlua::Result<mlua::Table> {
     create_body!(lua,
         "set"=> lua.create_function(set)?,
@@ -10,7 +11,7 @@ pub fn init(lua: &mlua::Lua) -> mlua::Result<mlua::Table> {
     )
 }
 
-fn set(_: &mlua::Lua, value: String) -> mlua::Result<()> {
+pub fn set(_: &mlua::Lua, value: String) -> mlua::Result<()> {
     #[cfg(not(target_os = "linux"))]
     {
         let mut ctx = ClipboardContext::new().map_err(|x| mlua::Error::RuntimeError(x.to_string()))?;
@@ -34,12 +35,12 @@ fn set(_: &mlua::Lua, value: String) -> mlua::Result<()> {
     Ok(())
 }
 
-fn get(_: &mlua::Lua, args: ()) -> mlua::Result<String> {
+pub fn get(_: &mlua::Lua, _: ()) -> mlua::Result<String> {
     let mut ctx = ClipboardContext::new().unwrap();
     ctx.get_contents().map_err(|x| mlua::Error::RuntimeError(x.to_string()))
 }
 
-fn clear(_: &mlua::Lua, args: ()) -> mlua::Result<()> {
+pub fn clear(_: &mlua::Lua, _: ()) -> mlua::Result<()> {
     let mut ctx = ClipboardContext::new().map_err(|x| mlua::Error::RuntimeError(x.to_string()))?;
     ctx.clear().map_err(|x| mlua::Error::RuntimeError(x.to_string()))
 }

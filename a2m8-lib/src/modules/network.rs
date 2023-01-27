@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::create_body;
 
+#[doc(hidden)]
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body! (lua,
         "download_file" => lua.create_async_function(download_file)?,
@@ -28,7 +29,7 @@ pub struct RequestInit {
 
 impl UserData for RequestInit {}
 
-async fn request<'lua>(lua: &'lua Lua, (url, data): (String, Option<Value<'lua>>)) -> mlua::Result<Table<'lua>> {
+pub async fn request<'lua>(lua: &'lua Lua, (url, data): (String, Option<Value<'lua>>)) -> mlua::Result<Table<'lua>> {
     let client = reqwest::Client::new();
     let data: RequestInit = if let Some(data) = data {
         lua.from_value(data)?
@@ -90,7 +91,7 @@ async fn request<'lua>(lua: &'lua Lua, (url, data): (String, Option<Value<'lua>>
     Ok(table)
 }
 
-async fn download_file(_: &Lua, (url, path): (String, String)) -> mlua::Result<bool> {
+pub async fn download_file(_: &Lua, (url, path): (String, String)) -> mlua::Result<bool> {
     let resp = reqwest::get(url).await;
     if let Ok(resp) = resp {
         let mut content = Cursor::new(resp.bytes().await.unwrap());
@@ -104,7 +105,7 @@ async fn download_file(_: &Lua, (url, path): (String, String)) -> mlua::Result<b
     }
     Ok(false)
 }
-async fn fetch_text(_: &Lua, (method, url, body): (String, String, Option<String>)) -> mlua::Result<String> {
+pub async fn fetch_text(_: &Lua, (method, url, body): (String, String, Option<String>)) -> mlua::Result<String> {
     let client = reqwest::Client::new();
     let mut req = client.request(
         Method::from_bytes(method.as_bytes()).map_err(|x| mlua::Error::RuntimeError(format!("Invalid method: {x}")))?,

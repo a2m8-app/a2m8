@@ -2,28 +2,28 @@ use mlua::{Lua, Table};
 use rust_embed::RustEmbed;
 
 #[cfg(feature = "audio")]
-mod audio;
+pub mod audio;
 #[cfg(feature = "clipboard")]
-mod clipboard;
+pub mod clipboard;
 #[cfg(feature = "command")]
-mod command;
+pub mod command;
 #[cfg(feature = "displays")]
-mod displays;
-mod env;
+pub mod displays;
+pub mod env;
 #[cfg(feature = "events")]
-mod event_handler;
+pub mod event_handler;
 #[cfg(feature = "events")]
-mod event_sender;
-mod json;
-mod log;
+pub mod event_sender;
+pub mod json;
+pub mod log;
 #[cfg(feature = "network")]
-mod network;
+pub mod network;
 #[cfg(feature = "notify")]
-mod notify;
+pub mod notify;
 #[cfg(feature = "open")]
-mod open;
-mod utils;
-mod versions;
+pub mod open;
+pub mod utils;
+pub mod versions;
 
 #[macro_export]
 macro_rules! create_body {
@@ -54,8 +54,8 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
     }
     /* loads the module from the filesystem this needs to be updated when released */
     let load_std = || async {
-        let code = StdFiles::get_lua_file(&module)
-            .ok_or(mlua::Error::RuntimeError(format!("module {} not found", module).into()))?;
+        let code =
+            StdFiles::get_lua_file(&module).ok_or(mlua::Error::RuntimeError(format!("module {module} not found")))?;
 
         let table: Table = lua.load(&code).set_name(&module)?.call_async(()).await?;
         Ok::<_, mlua::Error>(table)

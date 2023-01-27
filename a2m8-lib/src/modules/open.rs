@@ -2,6 +2,7 @@ use mlua::Lua;
 
 use crate::create_body;
 
+#[doc(hidden)]
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body! (lua,
         "open" => lua.create_function(open)?,

@@ -1,4 +1,4 @@
-use mlua::{AnyUserData, FromLua, Function, Lua, UserData, UserDataMethods};
+use mlua::{FromLua, Function, Lua, UserData};
 use rdev::{Button, Event, EventType, Key};
 use serde::{Deserialize, Serialize};
 
@@ -7,6 +7,7 @@ use crate::{
     private::event_listener::{EVENT_GRABBER, EVENT_LISTENER},
 };
 
+#[doc(hidden)]
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body!(lua,
         "read" => lua.create_async_function(read)?,

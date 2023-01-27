@@ -6,6 +6,7 @@ use std::io::Read;
 
 use crate::create_body;
 
+#[doc(hidden)]
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body!(lua,
         "run_command" => lua.create_async_function(run_command)?,

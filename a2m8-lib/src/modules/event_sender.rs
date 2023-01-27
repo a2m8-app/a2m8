@@ -7,6 +7,7 @@ use crate::create_body;
 
 use super::event_handler::{parse_key, EventEvent};
 
+#[doc(hidden)]
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body! (lua,
         "create_mouse_move" => lua.create_function(create_mouse_move)?,

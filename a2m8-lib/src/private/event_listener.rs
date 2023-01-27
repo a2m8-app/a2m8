@@ -19,7 +19,8 @@ pub static EVENT_LISTENER: Lazy<Mutex<UnboundedReceiver<Event>>> = Lazy::new(|| 
     });
     Mutex::new(rchan)
 });
-pub static EVENT_GRABBER: Lazy<Mutex<UnboundedReceiver<(Event, oneshot::Sender<Option<Event>>)>>> = Lazy::new(|| {
+type LazyMutexUnboundReceiver<T> = Lazy<Mutex<UnboundedReceiver<T>>>;
+pub static EVENT_GRABBER: LazyMutexUnboundReceiver<(Event, oneshot::Sender<Option<Event>>)> = Lazy::new(|| {
     let (schan, rchan) = mpsc::unbounded_channel();
     let _listener = thread::spawn(move || {
         grab(move |event| {

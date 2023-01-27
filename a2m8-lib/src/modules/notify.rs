@@ -3,6 +3,7 @@ use notify_rust::Notification;
 
 use crate::create_body;
 
+#[doc(hidden)]
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body!(lua,
         "new" => lua.create_function(EasyNotification::new_lua)?
@@ -18,6 +19,12 @@ impl EasyNotification {
     }
     pub fn new_lua(_: &Lua, _: ()) -> mlua::Result<Self> {
         Ok(Self(Notification::new()))
+    }
+}
+
+impl Default for EasyNotification {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
