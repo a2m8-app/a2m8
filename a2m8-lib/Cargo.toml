@@ -1,11 +1,11 @@
 [package]
 name = "a2m8-lib"
-version = "0.1.0"
+version = { workspace = true }
 edition = "2021"
-authors = ["Tricked-dev <tricked@tricked.dev>"]
-documentation = ""
-license = ""
-repository = ""
+authors = { workspace = true }
+documentation = { workspace = true }
+license = { workspace = true }
+repository = { workspace = true }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [features]
@@ -59,10 +59,10 @@ opener = { version = "0.5.0", optional = true }
 # misc
 once_cell = { version = "1.17.0", features = ["parking_lot"] }
 rust-embed = "6.4.2"
-serde = { version = "1.0.152", features = ["derive"] }
-serde_json = "1.0.91"
 tokio-util = { version = "0.7.4" }
 appfinder = { version = "0.1.1" }
+serde = { workspace = true }
+serde_json = { workspace = true }
 mlua = { workspace = true }
 anyhow = { workspace = true }
 uuid = { workspace = true }

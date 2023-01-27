@@ -2,6 +2,13 @@
 resolver = "2"
 members = ["a2m8-lib", "a2m8/src-tauri"]
 
+[workspace.package]
+version = "0.1.0"
+authors = ["trickeddev <tricked@tricked.dev"]
+documentation = "https://a2m8.tricked.dev"
+license = ""
+repository = "https://github.com/a2m8-app/a2m8"
+
 [workspace.dependencies]
 anyhow = { version = "1.0.68", features = ["backtrace"] }
 uuid = { version = "1.2.2", features = ["serde", "v6"] }
@@ -30,3 +37,5 @@ mlua = { version = "0.8", features = [
     "macros",
     "send"
 ] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
