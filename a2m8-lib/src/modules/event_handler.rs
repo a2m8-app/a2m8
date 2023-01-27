@@ -1,7 +1,9 @@
 use mlua::{FromLua, Function, Lua, UserData, UserDataMethods};
 use rdev::{Button, Event, EventType, Key};
 use serde::{Deserialize, Serialize};
+use tealr::TypeName;
 
+use crate::prelude::*;
 use crate::{
     create_body,
     private::event_listener::{EVENT_GRABBER, EVENT_LISTENER},
@@ -63,7 +65,7 @@ impl<'lua> FromLua<'lua> for Events {
         }
     }
 }
-#[derive(Debug, Deserialize, Serialize, Clone, PartialEq)]
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, TypeName)]
 pub struct EventEvent(pub(crate) Event);
 impl EventEvent {
     pub fn name(&self) -> &'static str {
@@ -141,11 +143,12 @@ impl UserData for EventEvent {
     }
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, tealr::mlu::UserData, TypeName)]
 pub struct EventHandler {}
 
-impl UserData for EventHandler {
-    fn add_methods<'lua, M: UserDataMethods<'lua, Self>>(methods: &mut M) {
+impl tealr::mlu::TealData for EventHandler {
+    //implement your methods/functions
+    fn add_methods<'lua, T: tealr::mlu::TealDataMethods<'lua, Self>>(methods: &mut T) {
         // methods.add_async_method("read", |lua, this, ()| async move {
         //     let event = EVENT_LISTENER.lock().await.try_recv();
         //     match event {
@@ -158,11 +161,11 @@ impl UserData for EventHandler {
         methods.add_async_function("read", |lua, ()| async move {
             let event = EVENT_LISTENER.lock().await.recv().await;
             match event {
-                Some(event) => Ok(lua.create_userdata(EventEvent(event))?),
+                Some(event) => Ok(EventEvent(event)),
                 None => Err(mlua::Error::RuntimeError("Could no receive event".to_string())),
             }
         });
-        methods.add_async_function("grab", |_, fun: Function| async move {
+        methods.add_async_function("grab", |_, fun: TypedFunction<(), EventEvent>| async move {
             let (event, responder) = match EVENT_GRABBER.lock().await.recv().await {
                 Some(event) => event,
                 None => return Err(mlua::Error::RuntimeError("Could no receive event".to_string())),
