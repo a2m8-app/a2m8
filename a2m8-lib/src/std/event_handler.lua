@@ -37,7 +37,7 @@ end
 --- TODO: make it so new events can be received while EventHandler:invoke is being called
 local function startHandler()
     while (true) do
-        local event = internal.event_handler:read()
+        local event = internal.read()
         eventHandler:invoke(event.name, event)
     end
 end
@@ -45,7 +45,7 @@ end
 local function start_handler_coroutine()
     return coroutine.create(function()
         while (true) do
-            coroutine.yield(internal.event_handler:read())
+            coroutine.yield(internal.read())
         end
     end)
 end
