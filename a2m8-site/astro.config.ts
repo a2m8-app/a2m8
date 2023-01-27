@@ -5,6 +5,7 @@ import mdx from "@astrojs/mdx";
 import cloudflare from "@astrojs/cloudflare";
 import preact from "@astrojs/preact";
 import react from "@astrojs/react";
+import image from "@astrojs/image";
 
 import { replaceCodePlugin } from "vite-plugin-replace";
 
@@ -15,6 +16,9 @@ export default defineConfig({
     mdx(),
     preact(),
     react(),
+    image({
+      serviceEntryPoint: "@astrojs/image/sharp",
+    }),
   ],
   site: `https://astro.build`,
   vite: {

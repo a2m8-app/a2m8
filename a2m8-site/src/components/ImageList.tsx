@@ -13,7 +13,7 @@ export const ImageCarousel = ({ images }: { images: string[] }) => {
   //   }, [recentlyClicked]);
 
   return (
-    <div class="carousel w-[74rem] mx-auto h-[40rem]">
+    <div class="carousel max-w-[74rem] mx-auto h-[40rem]">
       {images.map((image, index) => {
         return (
           <div id={`slide${index}`} class="carousel-item relative w-full">

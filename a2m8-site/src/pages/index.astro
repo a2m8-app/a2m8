@@ -23,9 +23,10 @@ const codes = await fs
       })
       .filter((x) => x.name && examplesNames.includes(x.name));
   });
-const screenshots: string[] = await Astro.glob("../../public/pics/*.png").then(
-  (r) => r.map((x) => x["default"].replace("public/", ""))
-);
+
+const screenshots: string[] = await Astro.glob("../../public/pics/*.png")
+  .then((r) => r.map((x) => x["default"]?.src?.replace?.("public/", "")))
+  .then((x) => x.filter((x) => x));
 ---
 
 <Layout title="Welcome to A2M8.">

@@ -22,6 +22,7 @@ const WorkShop = () => {
         }
       });
     });
+    //@ts-ignore -
     observerRef.current.observe(loadingRef.current);
     fetchMore(20);
   }, []);
@@ -67,10 +68,6 @@ const WorkShop = () => {
 
   return (
     <>
-      <div class="w-full bg-base-200 py-7 pl-10">
-        <h1 class="text-xl text-">Workshop</h1>
-        <p>Download and use Script from here</p>
-      </div>
       <div class="flex flex-wrap gap-2 px-2 py-4 justify-center">
         {AVAILABLE_TAGS.map((tag) => (
           <button
@@ -91,7 +88,7 @@ const WorkShop = () => {
       </div>
       <div class="mb-8">
         <div class="flex flex-wrap mx-auto grid-cols-3 justify-center gap-2">
-          {data.map((item) => (
+          {data.map((item: any) => (
             <div class="card bg-base-300 p-0">
               <div class="card-body p-2 rounded-sm">
                 <figure>
