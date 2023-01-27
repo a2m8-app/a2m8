@@ -21,7 +21,7 @@ fn find_app(_: &Lua, appname: String) -> mlua::Result<String> {
     if let Some(app) = app {
         Ok(appfinder::remove_arguments(&app))
     } else {
-        Err(LuaError::RuntimeError(format!("Could not find app {}", appname)))
+        Err(LuaError::RuntimeError(format!("Could not find app {appname}")))
     }
 }
 

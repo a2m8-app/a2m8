@@ -1,4 +1,4 @@
-use mlua::{FromLua, Function, Lua, UserData, UserDataMethods};
+use mlua::{AnyUserData, FromLua, Function, Lua, UserData, UserDataMethods};
 use rdev::{Button, Event, EventType, Key};
 use serde::{Deserialize, Serialize};
 
@@ -9,8 +9,30 @@ use crate::{
 
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body!(lua,
-        "event_handler" => EventHandler {}
+        "read" => lua.create_async_function(read)?,
+        "grab" => lua.create_async_function(grab)?
     )
+}
+
+async fn read(_: &Lua, _: ()) -> mlua::Result<EventEvent> {
+    let event = EVENT_LISTENER.lock().await.recv().await;
+    match event {
+        Some(event) => Ok(EventEvent(event)),
+        None => Err(mlua::Error::RuntimeError("Could no receive event".to_string())),
+    }
+}
+
+async fn grab<'lua>(_: &'lua Lua, fun: Function<'_>) -> mlua::Result<()> {
+    let (event, responder) = match EVENT_GRABBER.lock().await.recv().await {
+        Some(event) => event,
+        None => return Err(mlua::Error::RuntimeError("Could no receive event".to_string())),
+    };
+
+    let result = fun.call_async::<_, Option<EventEvent>>(EventEvent(event)).await?;
+    responder
+        .send(result.map(|x| x.0))
+        .map_err(|_| mlua::Error::RuntimeError("Could no send event".to_string()))?;
+    Ok(())
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq, Hash)]
@@ -22,18 +44,6 @@ pub enum Events {
     MouseMove,
     Wheel,
 }
-
-// impl Events {
-//     pub fn to_string(&self) -> &'static str {
-//         match self {
-//             Events::Click => "click",
-//             Events::KeyPress => "key_press",
-//             Events::KeyRelease => "key_release",
-//             Events::MouseMove => "mouse_move",
-//             Events::Wheel => "wheel",
-//         }
-//     }
-// }
 
 impl Default for Events {
     fn default() -> Self {
@@ -138,69 +148,5 @@ impl UserData for EventEvent {
                 _ => 0,
             })
         });
-    }
-}
-
-#[derive(Debug, PartialEq, Clone)]
-pub struct EventHandler {}
-
-impl UserData for EventHandler {
-    fn add_methods<'lua, M: UserDataMethods<'lua, Self>>(methods: &mut M) {
-        // methods.add_async_method("read", |lua, this, ()| async move {
-        //     let event = EVENT_LISTENER.lock().await.try_recv();
-        //     match event {
-        //         Ok(event) => Ok(lua.create_ser_userdata(EventEvent(event))?),
-        //         Err(_) => Err(mlua::Error::RuntimeError(
-        //             "Could no receive event".to_string(),
-        //         )),
-        //     }
-        // });
-        methods.add_async_function("read", |lua, ()| async move {
-            let event = EVENT_LISTENER.lock().await.recv().await;
-            match event {
-                Some(event) => Ok(lua.create_userdata(EventEvent(event))?),
-                None => Err(mlua::Error::RuntimeError("Could no receive event".to_string())),
-            }
-        });
-        methods.add_async_function("grab", |_, fun: Function| async move {
-            let (event, responder) = match EVENT_GRABBER.lock().await.recv().await {
-                Some(event) => event,
-                None => return Err(mlua::Error::RuntimeError("Could no receive event".to_string())),
-            };
-
-            let result = fun.call_async::<_, Option<EventEvent>>(EventEvent(event)).await?;
-            responder
-                .send(result.map(|x| x.0))
-                .map_err(|_| mlua::Error::RuntimeError("Could no send event".to_string()))?;
-            Ok(())
-        });
-        // methods.add_async_function("read2", |lua, fun: Function| async move {
-        //     let event = EVENT_LISTENER.lock().await.recv().await;
-        //     match event {
-        //         Some(event) => {
-        //             tokio::spawn(async move {
-        //                 let _ = fun.call::<_, ()>(EventEvent(event));
-        //             });
-        //             return Ok(())
-        //         },
-        //         None => Err(mlua::Error::RuntimeError("Could no receive event".to_string())),
-        //     }
-        // });
-        // methods.add_async_function(
-        //     "on",
-        //     |lua, (event, handler): (Events, Function)| async move {
-        //         let mut event_listeners = EVENT_LISTENER.lock().await;
-        //         let fun = Arc::new(handler);
-        //         tokio::spawn(async move {
-        //             while let Some(e) = event_listeners.recv().await {
-        //                 let ev = EventEvent(e);
-        //                 if event.to_string() == ev.name() {
-        //                     let _ = fun.call::<_, ()>(EventEvent(e));
-        //                 }
-        //             }
-        //         });
-        //         Ok(())
-        //     },
-        // )
     }
 }

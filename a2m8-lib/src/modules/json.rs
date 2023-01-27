@@ -4,7 +4,9 @@ use mlua::{Lua, LuaSerdeExt};
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body! (lua,
         "parse" => lua.create_function(parse)?,
-        "stringify" => lua.create_function(stringify)?
+        "stringify" => lua.create_function(stringify)?,
+        "encode" => lua.create_function(stringify)?,
+        "decode" => lua.create_function(parse)?
     )
 }
 

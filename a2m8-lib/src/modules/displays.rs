@@ -7,37 +7,29 @@ use crate::create_body;
 
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body!(lua,
-        "displays" => EasyDisplay {}
+        "screens" => lua.create_function(screens)?,
+        "screen_from_point" => lua.create_function(screen_from_point)?
     )
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct EasyDisplay {}
+fn screens(_: &Lua, _: ()) -> mlua::Result<Vec<SerdeDisplayInfo>> {
+    Ok(screenshots::DisplayInfo::all()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|x| {
+            let x: SerdeDisplayInfo = x.into();
+            x
+        })
+        .collect::<Vec<_>>())
+}
 
-impl UserData for EasyDisplay {
-    fn add_fields<'lua, F: mlua::UserDataFields<'lua, Self>>(fields: &mut F) {
-        fields.add_field_method_get("screens", |_, _this| {
-            Ok(screenshots::DisplayInfo::all()
-                .unwrap_or_default()
-                .into_iter()
-                .map(|x| {
-                    let x: SerdeDisplayInfo = x.into();
-                    x
-                })
-                .collect::<Vec<_>>())
-        });
-    }
-
-    fn add_methods<'lua, M: mlua::UserDataMethods<'lua, Self>>(methods: &mut M) {
-        methods.add_function("from_point", |_, (x, y): (i32, i32)| {
-            Ok(screenshots::DisplayInfo::from_point(x, y)
-                .map(|x| {
-                    let x: SerdeDisplayInfo = x.into();
-                    x
-                })
-                .unwrap_or_default())
-        });
-    }
+fn screen_from_point(_: &Lua, (x, y): (i32, i32)) -> mlua::Result<SerdeDisplayInfo> {
+    Ok(screenshots::DisplayInfo::from_point(x, y)
+        .map(|x| {
+            let x: SerdeDisplayInfo = x.into();
+            x
+        })
+        .unwrap_or_default())
 }
 
 #[derive(Serialize, Deserialize, Default, Debug, Clone, Copy)]
