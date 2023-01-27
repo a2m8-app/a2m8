@@ -1,6 +1,7 @@
+use crate::create_body;
 use mlua::{Lua, Table, UserData};
 
-use crate::create_body;
+use crate::prelude::*;
 
 pub fn init(lua: &Lua) -> mlua::Result<Table> {
     create_body!(

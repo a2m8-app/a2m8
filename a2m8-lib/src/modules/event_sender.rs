@@ -4,6 +4,7 @@ use mlua::Lua;
 use rdev::{simulate, Button, Event, EventType};
 
 use crate::create_body;
+use crate::prelude::*;
 
 use super::event_handler::{parse_key, EventEvent};
 

@@ -1,4 +1,6 @@
-use mlua::Lua;
+// use mlua::Lua;
+use tealr::mlu::mlua;
+use tealr::mlu::mlua::Lua;
 use tracing::metadata::LevelFilter;
 use tracing_subscriber::EnvFilter;
 
@@ -16,6 +18,9 @@ async fn main() -> anyhow::Result<()> {
                 .from_env_lossy(),
         )
         .init();
+
+    use tealr::embed_compiler;
+    let compiler = embed_compiler!(Github(version = "v0.9.0"));
 
     let lua = Lua::new();
 

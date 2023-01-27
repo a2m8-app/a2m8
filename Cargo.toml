@@ -1,6 +1,10 @@
 [workspace]
 resolver = "2"
-members = ["a2m8-lib", "a2m8/src-tauri"]
+members = [
+    "a2m8-lib",
+    #  "a2m8/src-tauri"
+
+]
 
 [workspace.dependencies]
 anyhow = { version = "1.0.68", features = ["backtrace"] }
@@ -19,14 +23,11 @@ tracing-subscriber = { version = "0.3.16", features = [
     "env-filter",
     "parking_lot"
 ] }
-mlua = { version = "0.8", features = [
-    "lua54",
-    "vendored",
-    "parking_lot",
-    "async",
-    "serde",
-    "serialize",
-    "mlua_derive",
-    "macros",
-    "send"
-] }
+tealr = { features = [
+    "mlua",
+    "mlua_vendored",
+    "mlua_serialize",
+    "mlua_send",
+    "mlua_lua54",
+    "mlua_async",
+], git = "https://github.com/Tricked-dev/tealr" }

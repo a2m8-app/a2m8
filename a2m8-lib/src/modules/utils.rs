@@ -7,6 +7,8 @@ use crate::create_body;
 
 use super::command;
 
+use crate::prelude::*;
+
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body! (lua,
         "sleep" => lua.create_async_function(sleep)?,

@@ -1,6 +1,8 @@
 use mlua::{Lua, Table};
 use rust_embed::RustEmbed;
 
+use crate::prelude::*;
+
 #[cfg(feature = "audio")]
 mod audio;
 #[cfg(feature = "clipboard")]
@@ -54,8 +56,8 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
     }
     /* loads the module from the filesystem this needs to be updated when released */
     let load_std = || async {
-        let code = StdFiles::get_lua_file(&module)
-            .ok_or(mlua::Error::RuntimeError(format!("module {} not found", module).into()))?;
+        let code =
+            StdFiles::get_lua_file(&module).ok_or(mlua::Error::RuntimeError(format!("module {module} not found")))?;
 
         let table: Table = lua.load(&code).set_name(&module)?.call_async(()).await?;
         Ok::<_, mlua::Error>(table)

@@ -1,6 +1,7 @@
 use mlua::Lua;
 
 use crate::create_body;
+use crate::prelude::*;
 
 pub fn init(lua: &Lua) -> mlua::Result<mlua::Table> {
     create_body! (lua,

@@ -2,6 +2,7 @@ use cli_clipboard::{ClipboardContext, ClipboardProvider};
 use mlua::UserData;
 
 use crate::create_body;
+use crate::prelude::*;
 
 pub fn init(lua: &mlua::Lua) -> mlua::Result<mlua::Table> {
     create_body!(lua,
