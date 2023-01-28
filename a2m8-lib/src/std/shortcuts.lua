@@ -20,8 +20,9 @@ e.eventHandler:addEventListener("key_press", function(event)
 end)
 
 e.eventHandler:addEventListener("key_release", function(event)
+    local key = event.key:lower()
     for i = 1, #keydowns do
-        if (keydowns[i] == event.key) then
+        if (keydowns[i] == key) then
             table.remove(keydowns, i)
             break
         end
