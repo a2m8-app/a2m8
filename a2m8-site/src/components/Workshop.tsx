@@ -90,7 +90,7 @@ const WorkShop = () => {
       <div class="mb-8">
         <div class="grid flex-wrap mx-auto md:grid-cols-4 sm:grid-cols-2 justify-center gap-2 max-w-[70rem]">
           {data.map((item: any) => (
-            <div class="card  p-0">
+            <div class="card p-0 hover:scale-105 transition-transform duration-150 hover:shadow-md hover:shadow-primary/5">
               <figure class="image-wrapper">
                 <img src={item.avatar || "/A2.png"} class="w-1/3" />
               </figure>
