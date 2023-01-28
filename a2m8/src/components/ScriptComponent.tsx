@@ -7,7 +7,7 @@ import { invoke } from "@tauri-apps/api";
 import { fullReloadScripts, removeScript, scripts } from "../lib/scriptStore";
 import { listen } from "@tauri-apps/api/event";
 import ViewSource from "./ViewSource";
-import { openScript } from "../lib/viewScriptState";
+import { openScript } from "../lib/editScriptStore";
 
 export default function ScriptComponent({
   script: scriptThing,
@@ -65,7 +65,7 @@ export default function ScriptComponent({
   }, []);
 
   const openEditor = () => {
-    openScript(script.id);
+    openScript({ id: script.id });
   };
 
   return (

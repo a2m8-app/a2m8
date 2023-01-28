@@ -27,8 +27,6 @@ export default function Home({ path }: { path: string }) {
 
   return (
     <>
-      <ViewSource />
-
       <h1 class={"text-center text-xl"}>Script List</h1>
       <p class="text-center text-base-content">
         Manage and run scripts from here

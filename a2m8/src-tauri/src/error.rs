@@ -18,6 +18,10 @@ pub enum Error {
     Uuid(#[from] uuid::Error),
     #[error(transparent)]
     Lua(#[from] mlua::Error),
+    #[error(transparent)]
+    Hyper(#[from] hyper::Error),
+    #[error(transparent)]
+    FromUtf8(#[from] std::string::FromUtf8Error),
 }
 pub type Result<T> = std::result::Result<T, Error>;
 

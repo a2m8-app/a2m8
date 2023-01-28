@@ -1,9 +1,6 @@
 #![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows")]
 
-use std::{
-    path::Path,
-    thread::{self},
-};
+use std::{path::Path, sync::Arc, thread};
 
 use crate::{commands::*, prelude::*};
 use a2m8_lib::require;
@@ -35,6 +32,7 @@ import_modules! {
     cli,
     commands,
     error,
+    http,
     prelude,
     script
 }
@@ -156,18 +154,19 @@ async fn start_app(
 
     let app = tauri::Builder::default()
         .system_tray(create_tray(&config.scripts)?)
-        .manage(Mutex::new(config))
+        .manage(Arc::new(Mutex::new(config)))
         .on_system_tray_event(handle_tray_event)
         .setup(|app| {
             let main_window = app.get_window("main").unwrap();
-            thread::Builder::new()
-                .name("script_stop_receiver".to_owned())
-                .spawn(move || {
-                    while let Some(val) = rx.blocking_recv() {
-                        main_window.emit("script_end", val)?;
-                    }
-                    Ok::<_, error::Error>(())
-                })?;
+            tokio::spawn(async move {
+                while let Some(val) = rx.recv().await {
+                    main_window.emit("script_end", val)?;
+                }
+                Ok::<_, error::Error>(())
+            });
+            let window = app.get_window("main").unwrap();
+            let state = Arc::clone(&app.state::<A2>());
+            tokio::spawn(async move { http::start_web(window, state).await });
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

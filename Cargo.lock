@@ -10,6 +10,7 @@ dependencies = [
  "anyhow",
  "clap",
  "directories",
+ "hyper",
  "mlua",
  "parking_lot",
  "rmp-serde",

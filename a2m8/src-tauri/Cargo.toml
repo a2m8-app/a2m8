@@ -1,10 +1,12 @@
 [package]
 name = "a2m8"
 description = "A Tauri App"
-version = { workspace = true }
+# version = { workspace = true }
+version = "0.1.0"
 edition = "2021"
 default-run = "a2m8"
-authors = { workspace = true }
+# authors = { workspace = true }
+authors = [""]
 documentation = { workspace = true }
 license = { workspace = true }
 repository = { workspace = true }
@@ -29,6 +31,7 @@ tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 clap = { version = "4.1.4", features = ["derive", "env", "cargo"] }
+hyper = { version = "0.14.23", features = ["http1", "server"] }
 
 [features]
 # by default Tauri runs in production mode

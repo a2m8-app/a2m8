@@ -2,6 +2,8 @@ import Router from "preact-router";
 import Home from "./routes/Home";
 import {} from "react-icons/fa";
 import "./monaco";
+import NewScriptListener from "./components/NewScriptListener";
+import ViewSource from "./components/ViewSource";
 
 export function App<FC>() {
   return (
@@ -24,7 +26,8 @@ export function App<FC>() {
           </div>
         </nav>
       </div>
-
+      <ViewSource />
+      <NewScriptListener />
       <Router>
         <Home path="/" />
       </Router>

@@ -94,7 +94,6 @@ const WorkShop = () => {
               <figure class="image-wrapper">
                 <img src={item.avatar || "/A2.png"} class="w-1/3" />
               </figure>
-
               <div class="card-body p-4 bg-base-300 rounded-sm">
                 <h2 class="card-title mb-0 !mt-0">{item.name}</h2>
                 <p class="text-sm text-base-content/80">

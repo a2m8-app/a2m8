@@ -1,10 +1,10 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, sync::Arc};
 
 use tokio::{fs, sync::mpsc};
 
 use crate::{prelude::*, ScriptEnd};
 
-pub type A2 = Mutex<A2M8Config>;
+pub type A2 = Arc<Mutex<A2M8Config>>;
 
 #[derive(Debug)]
 pub struct A2M8Config {

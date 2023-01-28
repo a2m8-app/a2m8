@@ -4,26 +4,38 @@ import { useStore } from "@nanostores/react";
 import { invoke } from "@tauri-apps/api";
 import { Fragment } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
-import { Script } from "../lib/script";
+import { closeScript, viewScript } from "../lib/editScriptStore";
+import { Script, scriptStatus } from "../lib/script";
 import {
+  addScript,
   getScriptFromId,
   removeScript,
   updateScript,
 } from "../lib/scriptStore";
-import { closeScript, viewScript } from "../lib/viewScriptState";
+
+type RequiredData =
+  | Script
+  | { content: string; description?: string; name: string };
 
 export default function ViewSource() {
   const data = useStore(viewScript);
-  const [script, setScript] = useState<Script>();
+  const [script, setScript] = useState<RequiredData>();
   const editorRef = useRef<any | null>(null);
 
   function handleEditorDidMount(editor: any, _monaco: unknown) {
     editorRef.current = editor;
+    editor.focus();
   }
 
   useEffect(() => {
-    if (data.id) {
+    if ("id" in data) {
       setScript(getScriptFromId(data.id));
+    } else if ("name" in data) {
+      setScript({
+        content: data.content,
+        description: data.description,
+        name: data.name,
+      });
     }
   }, [data]);
 
@@ -86,32 +98,55 @@ export default function ViewSource() {
                     class="inline-flex btn btn-error w-auto"
                     onClick={closeScript}
                   >
-                    Quit without saving
+                    {"id" in script ? "Quit without saving" : "Cancel"}
                   </button>
                   <button
                     type="button"
                     class="inline-flex btn btn-success w-auto"
-                    onClick={() => {
-                      updateScript({
-                        ...script,
-                        content: editorRef.current.getValue(),
-                      });
+                    onClick={async () => {
+                      if ("id" in script) {
+                        updateScript({
+                          ...script,
+                          content: editorRef.current.getValue(),
+                        });
+                      } else {
+                        const dat: Script = {
+                          id: crypto.randomUUID(),
+                          name: script.name,
+                          description: script.description ?? "",
+                          startup: false,
+                          favorite: false,
+                          status: scriptStatus.stopped,
+                          content: editorRef.current.getValue(),
+                        };
+
+                        await invoke("create_script", { script: dat });
+                        addScript(dat);
+                      }
+
                       closeScript();
                     }}
                   >
-                    Save & quit
+                    {"id" in script ? "Save & quit" : "Add script"}
                   </button>
-                  <button
-                    type="button"
-                    class="ml-auto inline-flex btn btn-warning w-auto"
-                    onClick={() => {
-                      invoke("delete_script", { id: script.id }).then((r) => {
-                        removeScript(script.id);
-                      });
-                    }}
-                  >
-                    Delete Script this cannot be undone
-                  </button>
+                  {"id" in script && (
+                    <button
+                      type="button"
+                      class="ml-auto inline-flex btn btn-warning w-auto"
+                      onClick={() => {
+                        if ("id" in script) {
+                          invoke("delete_script", { id: script.id }).then(
+                            (r) => {
+                              removeScript(script.id!);
+                              closeScript();
+                            }
+                          );
+                        }
+                      }}
+                    >
+                      Delete Script this cannot be undone
+                    </button>
+                  )}
                 </div>
               </Dialog.Panel>
             </Transition.Child>
