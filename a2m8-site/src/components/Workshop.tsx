@@ -130,7 +130,7 @@ const WorkShop = () => {
                   {item.topics
                     .filter((topic: string) => topic !== "script")
                     .map((topic: string) => (
-                      <span class="badge badge-secondary badge-sm">
+                      <span class="badge badge-secondary badge-sm px-0">
                         {topic}
                       </span>
                     ))
@@ -146,7 +146,6 @@ const WorkShop = () => {
                         .filter((x) => x.name?.endsWith(".lua"))
                         .sort(createCustomSorter(item.name))[0];
                       if (file) {
-                        console.log(file);
                         let data = await gitea.repos
                           .repoGetContents(item.dev, item.name, file.path!)
                           .then((r) => r.data);
@@ -159,6 +158,9 @@ const WorkShop = () => {
                               body: decoded,
                             }
                           ).then((r) => r.ok);
+                          if (!ok) {
+                            alert("Failed to open installer!");
+                          }
                         }
                       }
                     }}
