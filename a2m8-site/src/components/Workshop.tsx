@@ -1,6 +1,7 @@
 /** @jsxImportSource preact */
 import type { FunctionalComponent } from "preact";
 import { useState, useEffect, useRef } from "preact/hooks";
+import { GITEA } from "../consts";
 
 const AVAILABLE_TAGS = ["utility", "keybindings", "automation", "ui", "misc"];
 
@@ -87,25 +88,37 @@ const WorkShop = () => {
         ))}
       </div>
       <div class="mb-8">
-        <div class="flex flex-wrap mx-auto grid-cols-3 justify-center gap-2">
+        <div class="grid flex-wrap mx-auto md:grid-cols-4 sm:grid-cols-2 justify-center gap-2 max-w-[70rem]">
           {data.map((item: any) => (
-            <div class="card bg-base-300 p-0">
-              <div class="card-body p-2 rounded-sm">
-                <figure>
-                  <img src={item.avatar} class="aspect-video" alt="Shoes" />
-                </figure>
+            <div class="card  p-0">
+              <figure class="image-wrapper">
+                <img src={item.avatar || "/A2.png"} class="w-1/3" />
+              </figure>
+
+              <div class="card-body p-4 bg-base-300 rounded-sm">
                 <h2 class="card-title mb-0 !mt-0">{item.name}</h2>
                 <p class="text-sm text-base-content/80">
-                  By <a href={`__GITEA__/${item.dev}`}>{item.dev}</a>
+                  By <a href={`${GITEA}/${item.dev}`}>{item.dev}</a>
                 </p>
                 <p class="card-subtitle">{item.description}</p>
                 <div class="flex flex-wrap gap-2">
-                  {item.topics.map((topic: string) => (
-                    <span class="badge badge-secondary badge-sm">{topic}</span>
-                  ))}
+                  {item.topics
+                    .filter((topic: string) => topic !== "script")
+                    .map((topic: string) => (
+                      <span class="badge badge-secondary badge-sm">
+                        {topic}
+                      </span>
+                    ))
+                    .slice(0, 4)}
                 </div>
-                <div>
+                <div class="flex flex-wrap gap-2">
                   <a class="btn btn-xs btn-primary">Install</a>
+                  <a
+                    href={`${GITEA}/${item.full_name}`}
+                    class="btn btn-xs btn-secondary"
+                  >
+                    View
+                  </a>
                 </div>
               </div>
             </div>

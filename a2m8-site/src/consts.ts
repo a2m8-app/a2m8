@@ -30,3 +30,5 @@ export const SIDEBAR: Sidebar = {
   ],
   // 'Another Section': [{ text: 'Page 4', link: 'page-4' }],
 };
+
+export const GITEA = "https://a2m8-git.tricked.dev";
