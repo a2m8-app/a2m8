@@ -73,7 +73,7 @@ export default function ViewSource() {
                       as="h3"
                       class="text-lg font-medium leading-6 text-base-content"
                     >
-                      Edit script
+                      {"id" in script ? "Edit script" : "Add script"}
                     </Dialog.Title>
                     <div class="mt-2">
                       <Editor

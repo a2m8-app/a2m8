@@ -2,8 +2,34 @@
 import type { FunctionalComponent } from "preact";
 import { useState, useEffect, useRef } from "preact/hooks";
 import { GITEA } from "../consts";
+import { gitea } from "../lib/gitea";
 
 const AVAILABLE_TAGS = ["utility", "keybindings", "automation", "ui", "misc"];
+function createCustomSorter(name: string) {
+  return function customSorter(a: any, b: any) {
+    let prioList = [
+      `${name}.lua`,
+      "mod.lua",
+      "index.lua",
+      "main.lua",
+      "program.lua",
+      "script.lua",
+    ];
+    let aPrio = prioList.indexOf(a.name);
+    let bPrio = prioList.indexOf(b.name);
+    if (aPrio !== -1 && bPrio !== -1) {
+      return aPrio - bPrio;
+    }
+    if (aPrio !== -1) {
+      return -1;
+    }
+    if (bPrio !== -1) {
+      return 1;
+    }
+
+    return a.name.localeCompare(b.name);
+  };
+}
 
 const WorkShop = () => {
   let [tagFilters, setTagFilters] = useState<string[]>(["script"]);
@@ -111,7 +137,35 @@ const WorkShop = () => {
                     .slice(0, 4)}
                 </div>
                 <div class="flex flex-wrap gap-2">
-                  <a class="btn btn-xs btn-primary">Install</a>
+                  <button
+                    onClick={async () => {
+                      let contents = await gitea.repos
+                        .repoGetContentsList(item.dev, item.name)
+                        .then((r) => r.data);
+                      let file = contents
+                        .filter((x) => x.name?.endsWith(".lua"))
+                        .sort(createCustomSorter(item.name))[0];
+                      if (file) {
+                        console.log(file);
+                        let data = await gitea.repos
+                          .repoGetContents(item.dev, item.name, file.path!)
+                          .then((r) => r.data);
+                        if (data) {
+                          let decoded = atob(data.content!);
+                          let ok = await fetch(
+                            `http://127.0.0.1:5836/new?${item.name}.lua`,
+                            {
+                              method: "POST",
+                              body: decoded,
+                            }
+                          ).then((r) => r.ok);
+                        }
+                      }
+                    }}
+                    class="btn btn-xs btn-primary"
+                  >
+                    Install
+                  </button>
                   <a
                     href={`${GITEA}/${item.full_name}`}
                     class="btn btn-xs btn-secondary"

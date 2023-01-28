@@ -53,6 +53,9 @@ async fn handle_req(req: Request<Body>, state: A2, window: Window) -> crate::Res
             let body = hyper::body::to_bytes(req.into_body()).await?;
             let body = String::from_utf8(body.to_vec())?;
 
+            window.show()?;
+            window.set_focus()?;
+
             window.emit(
                 "create_w_prompt",
                 CreateWithPromptPayload {
