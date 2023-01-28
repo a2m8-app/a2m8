@@ -1,0 +1,8 @@
+{
+  "licenser.author": "Tricked <tricked@tricked.dev>",
+  "licenser.customSPDXId": "MPL-2.0",
+  "licenser.projectName": "A2M8",
+  "licenser.license": "Custom",
+  "licenser.disableAutoHeaderInsertion": false,
+  "licenser.customHeader": "Copyright 2023 @AUTHOR@. All rights reserved. MPL-2.0 license."
+}

@@ -1,0 +1,10 @@
+{
+  "licenser.author": "Tricked <tricked@tricked.dev>",
+  "licenser.customSPDXId": "MPL-2.0",
+  "licenser.projectName": "A2M8",
+  "licenser.license": "MPLv2",
+  "licenser.customHeader": "test",
+  "licenser.useSPDXLicenseFormat": true,
+  "licenser.disableAutoHeaderInsertion": false,
+  "licenser.useSingleLineStyle": true
+}

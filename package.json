@@ -1,9 +1,11 @@
 {
-    "name": "a2m8-workspace",
-    "version": "0.0.0",
-    "private": true,
-    "workspaces": [
-      "a2m8-site",
-      "a2m8"
-    ]
+  "name": "a2m8-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "author": "Tricked <tricked@tricked.dev>",
+  "license": "MPL-2.0",
+  "workspaces": [
+    "a2m8-site",
+    "a2m8"
+  ]
 }

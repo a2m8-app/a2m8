@@ -2,6 +2,8 @@
   "name": "@example/basics",
   "type": "module",
   "version": "0.0.1",
+  "author": "Tricked <tricked@tricked.dev>",
+  "license": "MPL-2.0",
   "private": true,
   "scripts": {
     "dev": "astro dev",

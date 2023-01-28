@@ -8,8 +8,8 @@
   "exports": {
     "./theme": "./theme.js"
   },
-  "author": "",
-  "license": "",
+  "author": "Tricked <tricked@tricked.dev>",
+  "license": "MPL-2.0",
   "dependencies": {
     "daisyui": "^2.49.0"
   }
