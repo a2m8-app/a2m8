@@ -21,13 +21,29 @@ pub struct CreateWithPromptPayload {
     pub content: String,
 }
 
+fn create_res(body: Body) -> Response<Body> {
+    let mut res = Response::new(body);
+    *res.status_mut() = hyper::StatusCode::OK;
+
+    res.headers_mut().insert(
+        "Access-Control-Allow-Origin",
+        hyper::header::HeaderValue::from_static("*"),
+    );
+    res.headers_mut().insert(
+        "Access-Control-Allow-Methods",
+        hyper::header::HeaderValue::from_static("GET, POST, OPTIONS"),
+    );
+
+    res
+}
+
 async fn handle_req(req: Request<Body>, state: A2, window: Window) -> crate::Result<Response<Body>> {
     let uri = req.uri().clone();
     let res = match (uri.path(), req.method()) {
         ("/", &hyper::Method::GET) => {
             let state = state.lock().await;
             let body = serde_json::to_string(&state.scripts)?;
-            let mut response = Response::new(Body::from(body));
+            let mut response = create_res(Body::from(body));
             *response.status_mut() = hyper::StatusCode::OK;
             return Ok(response);
         }
@@ -45,11 +61,11 @@ async fn handle_req(req: Request<Body>, state: A2, window: Window) -> crate::Res
                 },
             )?;
 
-            let mut response = Response::new(Body::empty());
+            let mut response = create_res(Body::empty());
             *response.status_mut() = hyper::StatusCode::CREATED;
             return Ok(response);
         }
-        _ => Ok(Response::new(Body::empty())),
+        _ => Ok(create_res(Body::empty())),
     };
     res
 }
@@ -71,7 +87,7 @@ pub async fn start_web(window: Window, state: A2) -> crate::Result<()> {
                 async {
                     let res = handle_req(req, state, window).await;
                     if res.is_err() {
-                        let mut response = Response::new(Body::empty());
+                        let mut response = create_res(Body::empty());
                         *response.status_mut() = hyper::StatusCode::INTERNAL_SERVER_ERROR;
                         Ok(response)
                     } else {

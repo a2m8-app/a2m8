@@ -3,20 +3,22 @@ import { SITE } from "../../consts";
 import AstroLogo from "./AstroLogo.astro";
 import SkipToContent from "./SkipToContent.astro";
 import SidebarToggle from "./SidebarToggle";
+
+const showSkipContent = Astro.url.pathname.startsWith("/docs");
 ---
 
 <header class="bg-base-200/20 w-full rounded-lg">
-  <SkipToContent />
+  {showSkipContent && <SkipToContent />}
   <nav class="navbar max-w-[75rem] mx-auto">
     <div class="menu-toggle md:hidden">
-      <SidebarToggle client:idle />
+      {showSkipContent && <SidebarToggle client:idle />}
     </div>
     <a class="ml-4 flex-1 text-3xl underline-none" href="/">
       <p class="font-bold">A2</p>
       <p>M8</p>
     </a>
     <div class="flex-none">
-      <ul class="menu menu-horizontal px-1">
+      <ul class="menu menu-horizontal px-1 flex-wrap">
         <li>
           <a href="/docs/introduction">Wiki</a>
         </li>
@@ -24,7 +26,7 @@ import SidebarToggle from "./SidebarToggle";
           <a href="/workshop">Workshop</a>
         </li>
         <li>
-          <a href="/discord">Discord</a>
+          <a class="hidden md:block" href="/discord">Discord</a>
         </li>
         <li>
           <a href="/lib/a2m8_lib">Modules</a>
