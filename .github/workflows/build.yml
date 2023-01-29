@@ -21,7 +21,7 @@ jobs:
         # You can remove libayatana-appindicator3-dev if you don't use the system tray feature.
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev librsvg2-dev
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev librsvg2-dev libxi-dev libxtst-dev libxcb-composite0-dev librust-alsa-sys-dev
 
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
@@ -30,7 +30,9 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           workspaces: "./a2m8/src-tauri -> target"
-
+      - uses: pnpm/action-setup@v2
+        with:
+        version: 6.32.9
       - name: Sync node version and setup cache
         uses: actions/setup-node@v3
         with:
