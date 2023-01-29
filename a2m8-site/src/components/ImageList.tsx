@@ -1,17 +1,7 @@
 /** @jsxImportSource preact */
 import type { FunctionalComponent } from "preact";
 import { useState, useEffect } from "preact/hooks";
-
 export const ImageCarousel = ({ images }: { images: string[] }) => {
-  //   const [recentlyClicked, setRecentlyClicked] = useState(false);
-  //   useEffect(() => {
-  //     if (recentlyClicked) {
-  //       setTimeout(() => {
-  //         setRecentlyClicked(false);
-  //       }, 1000);
-  //     }
-  //   }, [recentlyClicked]);
-
   return (
     <div class="carousel max-w-[74rem] mx-auto h-[40rem]">
       {images.map((image, index) => {

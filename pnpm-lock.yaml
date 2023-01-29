@@ -79,6 +79,7 @@ importers:
       preact: ^10.11.3
       react: ^18.2.0
       react-dom: ^18.2.0
+      react-icons: ^4.7.1
       sass: ^1.57.1
       sharp: ^0.31.3
       shiki: ^0.13.0
@@ -104,6 +105,7 @@ importers:
       preact: 10.11.3
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      react-icons: 4.7.1_react@18.2.0
       sass: 1.57.1
       sharp: 0.31.3
       shiki: 0.13.0
@@ -3945,6 +3947,14 @@ packages:
     resolution: {integrity: sha512-yHd3oKGMgm7zxo3EA7H2n7vxSoiGmHk5t6Ou4bXsfcgWyhfDKMpyKfhHR6Bjnn63c+YXBLBPUql9H4wPJM6sXw==}
     peerDependencies:
       react: '*'
+    dev: false
+
+  /react-icons/4.7.1_react@18.2.0:
+    resolution: {integrity: sha512-yHd3oKGMgm7zxo3EA7H2n7vxSoiGmHk5t6Ou4bXsfcgWyhfDKMpyKfhHR6Bjnn63c+YXBLBPUql9H4wPJM6sXw==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is/16.13.1:

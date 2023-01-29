@@ -98,6 +98,7 @@ const WorkShop = () => {
       <div class="flex flex-wrap gap-2 px-2 py-4 justify-center">
         {AVAILABLE_TAGS.map((tag) => (
           <button
+            key={tag}
             class={`${
               tagFilters.includes(tag) ? "btn-primary" : ""
             } btn btn-sm`}
@@ -107,16 +108,23 @@ const WorkShop = () => {
               } else {
                 setTagFilters([...tagFilters, tag]);
               }
+              setData([]);
+              setVirtualPage(0);
+              setIsEnd(false);
+              fetchMore();
             }}
           >
             {tag}
           </button>
         ))}
       </div>
-      <div class="mb-8">
+      <div class="mb-8 grid justify-center">
         <div class="grid flex-wrap mx-auto md:grid-cols-4 sm:grid-cols-2 justify-center gap-2 max-w-[70rem]">
           {data.map((item: any) => (
-            <div class="card p-0 hover:scale-105 transition-transform duration-150 hover:shadow-md hover:shadow-primary/5">
+            <div
+              key={item.full_name}
+              class="card p-0 hover:scale-105 transition-transform duration-150 hover:shadow-md hover:shadow-primary/5"
+            >
               <figure class="image-wrapper">
                 <img src={item.avatar || "/A2.png"} class="w-1/3" />
               </figure>
@@ -130,7 +138,10 @@ const WorkShop = () => {
                   {item.topics
                     .filter((topic: string) => topic !== "script")
                     .map((topic: string) => (
-                      <span class="badge badge-secondary badge-sm px-0">
+                      <span
+                        key={topic}
+                        class="badge badge-secondary badge-sm px-0"
+                      >
                         {topic}
                       </span>
                     ))
@@ -179,7 +190,10 @@ const WorkShop = () => {
             </div>
           ))}
         </div>
-        <div ref={loadingRef}>
+        <div
+          ref={loadingRef}
+          class={`btn btn-ghost mx-auto text-center ${isEnd ? "" : ""}`}
+        >
           {loading && !isEnd && <div>Loading...</div>}
           {loading && isEnd && <div>End of the list</div>}
         </div>
