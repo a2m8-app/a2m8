@@ -1,0 +1,6 @@
+https://a2m8.pages.dev/*
+  X-Robots-Tag: noindex
+
+/_astro/*
+  Access-Control-Allow-Origin: *
+  X-Robots-Tag: nosnippet

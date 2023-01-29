@@ -5,6 +5,7 @@ import CodeSnippet from "../components/CodeSnippet/CodeSnippet.astro";
 import fs from "node:fs/promises";
 import { ImageCarousel } from "../components/ImageList";
 import { GITEA } from "../consts";
+import { Download } from "../components/Download";
 
 const screenshots: string[] = await Astro.glob("../../public/pics/*.png")
   .then((r) => r.map((x) => x["default"]?.src?.replace?.("public/", "")))
@@ -34,9 +35,8 @@ let repos: { name: string; code: string; link: string }[] = await Promise.all(
             <strong>A2M8</strong> allows you to write lua scripts that automate things
             for any platform
           </p>
-          <button class="btn btn-primary">Download the app</button>
+          <Download client:load />
         </div>
-        <div></div>
       </div>
     </div>
     <div class="bg-base-300 py-2">

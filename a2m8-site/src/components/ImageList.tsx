@@ -10,6 +10,7 @@ export const ImageCarousel = ({ images }: { images: string[] }) => {
             <img
               src={image}
               class="mx-auto object-contain "
+              alt={image}
               onClick={() => {
                 //open in popup
                 window.open(
