@@ -12,6 +12,7 @@ jobs:
       matrix:
         platform: [macos-latest, ubuntu-20.04, windows-latest]
     runs-on: ${{ matrix.platform }}
+    working-directory: a2m8
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -45,7 +46,6 @@ jobs:
 
       - name: Build the app
         uses: tauri-apps/tauri-action@dev
-        working-directory: a2m8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
