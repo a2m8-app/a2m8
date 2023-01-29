@@ -4,29 +4,23 @@ import { Code } from "astro/components";
 import CodeSnippet from "../components/CodeSnippet/CodeSnippet.astro";
 import fs from "node:fs/promises";
 import { ImageCarousel } from "../components/ImageList";
-
-let examplesNames = ["ip_info", "app_starting", "sendNotifaction"];
-
-const codes = await fs
-  .readFile("../a2m8-lib/src/stdexamples.lua", "utf8")
-  .then((x) => {
-    return x
-      .split("--ex")
-      .map((x) => x.trim())
-      .map((x) => {
-        let name = x.split("function")[1]?.split("(")[0]?.trim();
-        let code = x.replace("local ", "");
-        return {
-          name,
-          code,
-        };
-      })
-      .filter((x) => x.name && examplesNames.includes(x.name));
-  });
+import { GITEA } from "../consts";
 
 const screenshots: string[] = await Astro.glob("../../public/pics/*.png")
   .then((r) => r.map((x) => x["default"]?.src?.replace?.("public/", "")))
   .then((x) => x.filter((x) => x));
+
+let repos: { name: string; code: string; link: string }[] = await Promise.all(
+  ["get-ip", "keybinds-starter", "screenshot-every-x", "open-app"].map((x) =>
+    fetch(
+      `https://a2m8-git.tricked.dev/tricked/${x}/raw/branch/main/module.lua`
+    ).then(async (res) => ({
+      code: await res.text(),
+      name: `${x}.lua`,
+      link: `${GITEA}/tricked/${x}`,
+    }))
+  )
+);
 ---
 
 <Layout title="Welcome to A2M8.">
@@ -49,10 +43,10 @@ const screenshots: string[] = await Astro.glob("../../public/pics/*.png")
       <h2 class="text-2xl text-center">Create scripts!</h2>
       <div class="max-w-[44rem] mx-auto">
         {
-          codes.map((x, index) => {
+          repos.map((x, index) => {
             return (
               <div class={`w-auto my-4 ${index % 2 ? "md:ml-36" : "md:mr-20"}`}>
-                <CodeSnippet title={x.name}>
+                <CodeSnippet title={x.name} href={x.link}>
                   <Code code={x.code} lang="lua" />
                 </CodeSnippet>
               </div>
