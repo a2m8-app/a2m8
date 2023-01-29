@@ -12,7 +12,6 @@ jobs:
       matrix:
         platform: [macos-latest, ubuntu-20.04, windows-latest]
     runs-on: ${{ matrix.platform }}
-    working-directory: a2m8
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -49,7 +48,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # projectPath: "./a2m8"
+          tauriScript: "pnpm tauri"
           runner: "pnpm tauri build"
           tagName: ${{ github.ref_name }} # This only works if your workflow triggers on new tags.
           releaseName: "App Name v__VERSION__" # tauri-action replaces \_\_VERSION\_\_ with the app version.
