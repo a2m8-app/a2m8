@@ -45,11 +45,11 @@ jobs:
 
       - name: Build the app
         uses: tauri-apps/tauri-action@dev
-
+        working-directory: a2m8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          projectPath: "./a2m8"
+          # projectPath: "./a2m8"
           runner: "pnpm tauri build"
           tagName: ${{ github.ref_name }} # This only works if your workflow triggers on new tags.
           releaseName: "App Name v__VERSION__" # tauri-action replaces \_\_VERSION\_\_ with the app version.
