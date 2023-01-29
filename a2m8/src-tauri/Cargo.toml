@@ -13,12 +13,13 @@ repository = { workspace = true }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [build-dependencies]
-tauri-build = { version = "1.2", features = [] }
+# tauri-build = { version = "1.2", features = [] }
+tauri-build = { git = "https://github.com/tauri-apps/tauri", features = [] }
 
 [dependencies]
 serde = { workspace = true }
 serde_json = { workspace = true }
-tauri = { version = "1.2", features = ["api-all", "global-shortcut", "reqwest-client", "system-tray"] }
+tauri = { git = "https://github.com/tauri-apps/tauri", features = ["api-all", "global-shortcut", "reqwest-client", "system-tray"] }
 directories = "4.0.1"
 rmp-serde = "1.1.1"
 parking_lot = { version = "0.12.1", features = ["serde"] }
