@@ -25,7 +25,7 @@
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
-      "copyright": "",
+      "copyright": "Tricked <tricked@tricked.dev>",
       "deb": {
         "depends": []
       },
