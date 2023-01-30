@@ -12,7 +12,7 @@ const screenshots: string[] = await Astro.glob("../../public/pics/*.png")
   .then((x) => x.filter((x) => x));
 
 let repos: { name: string; code: string; link: string }[] = await Promise.all(
-  ["get-ip", "keybinds-starter", "screenshot-every-x", "open-app"].map((x) =>
+  ["keybinds-starter","get-ip",  "screenshot-every-x", "open-app"].map((x) =>
     fetch(
       `https://a2m8-git.tricked.dev/tricked/${x}/raw/branch/main/module.lua`
     ).then(async (res) => ({
@@ -29,6 +29,11 @@ let repos: { name: string; code: string; link: string }[] = await Promise.all(
     <div class="hero min-h-screen bg-base-200">
       <div class="hero-content flex-col lg:flex-row-reverse">
         <!-- <img src="https://placeimg.com/260/400/arch" class="max-w-sm rounded-lg shadow-2xl" /> -->
+        <div class={`w-auto my-4 `}>
+          <CodeSnippet>
+            <Code code={repos[0].code} lang="lua" />
+          </CodeSnippet>
+        </div>
         <div>
           <h1 class="text-5xl font-bold">A2M8!</h1>
           <p class="py-6">
