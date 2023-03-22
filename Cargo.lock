@@ -46,6 +46,7 @@ dependencies = [
  "screenshots",
  "serde",
  "serde_json",
+ "tl",
  "tokio",
  "tokio-util",
  "tracing",
@@ -4404,6 +4405,11 @@ name = "tinyvec_macros"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
+
+[[package]]
+name = "tl"
+version = "0.1.0"
+source = "git+https://github.com/a2m8-app/tl#097721895429f645d68fcfd2564a2b6fe7dfa5c0"
 
 [[package]]
 name = "tokio"

@@ -69,3 +69,4 @@ uuid = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
+tl = { git = "https://github.com/a2m8-app/tl" }

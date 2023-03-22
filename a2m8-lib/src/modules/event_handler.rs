@@ -1,3 +1,5 @@
+use std::default;
+
 use mlua::{FromLua, Function, Lua, UserData};
 use rdev::{Button, Event, EventType, Key};
 use serde::{Deserialize, Serialize};
@@ -36,9 +38,10 @@ async fn grab<'lua>(_: &'lua Lua, fun: Function<'_>) -> mlua::Result<()> {
     Ok(())
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq, Hash, Default)]
 #[serde(rename_all = "snake_case")]
 pub enum Events {
+    #[default]
     Click,
     KeyPress,
     KeyRelease,
@@ -46,11 +49,6 @@ pub enum Events {
     Wheel,
 }
 
-impl Default for Events {
-    fn default() -> Self {
-        Events::Click
-    }
-}
 impl<'lua> FromLua<'lua> for Events {
     fn from_lua(lua_value: mlua::Value<'lua>, lua: &'lua mlua::Lua) -> mlua::Result<Self> {
         let ty = lua_value.type_name();

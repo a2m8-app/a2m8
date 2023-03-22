@@ -24,8 +24,9 @@ async fn main() -> anyhow::Result<()> {
     globals.set("require", lua.create_async_function(require)?)?;
     globals.set("__INTERNAL_LOADED_MODULES", lua.create_table()?)?;
 
-    std::env::set_current_dir("./src").unwrap();
-    lua.load(&std::fs::read_to_string("script.lua")?)
+    let file = std::env::args().last().expect("REQUIRED ARGS");
+
+    lua.load(&std::fs::read_to_string(file)?)
         .set_name("main")?
         .exec_async()
         .await?;
