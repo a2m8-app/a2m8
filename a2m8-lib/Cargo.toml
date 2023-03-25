@@ -39,11 +39,11 @@ deno_task_shell = { version = "0.8.2", features = [
     "serde",
     "serialization"
 ], git = "https://github.com/Tricked-dev/deno_task_shell", rev = "59e72b67566444152a0fbe963235424d8b52c954", optional = true }
-os_pipe = { version = "1.0.1", optional = true }
+os_pipe = { version = "1", optional = true }
 # display
-screenshots = { version = "0.4.6", optional = true }
+screenshots = { version = "0", optional = true }
 # events
-rdev = { version = "0.5.2", features = [
+rdev = { version = "0.5", features = [
     "serde",
     "serialize",
     "unstable_grab"

@@ -14,10 +14,15 @@ use tauri::{
 };
 use tokio::{
     fs,
+    process::Child,
+    select,
     sync::{mpsc, oneshot},
 };
 use tracing::metadata::LevelFilter;
 use tracing_subscriber::EnvFilter;
+use utils::spawn_script_handle;
+
+mod utils;
 
 macro_rules! import_modules {
     ($($x:ident),*) => {
@@ -63,13 +68,8 @@ async fn main() -> Result<()> {
 
     match args.subcommand {
         Some(cli::Command::Run { file }) => {
-            let lua = Lua::new();
-
-            let globals = lua.globals();
-            globals.set("require_ref", globals.get::<_, mlua::Function>("require")?)?;
-            globals.set("require", lua.create_async_function(require)?)?;
-            globals.set("__INTERNAL_LOADED_MODULES", lua.create_table()?)?;
-            lua.load(Path::new(&file)).exec_async().await?;
+            let lua = utils::create_lua()?;
+            lua.load(Path::new(&file)).set_name("main")?.exec_async().await?;
             Ok(())
         }
 
@@ -106,13 +106,13 @@ async fn main() -> Result<()> {
                 Some(cli::Command::Start { id }) => {
                     let script = config.scripts.iter_mut().find(|script| script.id == id);
                     if let Some(script) = script {
-                        let (receiver, handle) = script.start().await?;
-                        config.script_handles.push(handle);
-                        let id = script.id;
-                        let tx_clone = tx.clone();
-                        spawn_script_handle(tx_clone, receiver, id)
-                            .await
-                            .expect("Failed to spawn script handle")?;
+                        let lua = Lua::new();
+
+                        let globals = lua.globals();
+                        globals.set("require_ref", globals.get::<_, mlua::Function>("require")?)?;
+                        globals.set("require", lua.create_async_function(require)?)?;
+                        globals.set("__INTERNAL_LOADED_MODULES", lua.create_table()?)?;
+                        lua.load(&script.content).set_name("main")?.exec_async().await?;
                     }
                     Ok(())
                 }
@@ -141,12 +141,11 @@ async fn start_app(
         if script.running() {
             script.status = A2M8Script::STATUS_STOPPED;
         }
+    }
+    //pretty nasty ngl
+    for script in config.scripts.clone() {
         if script.startup {
-            let (receiver, handle) = script.start().await?;
-            config.script_handles.push(handle);
-            let id = script.id;
-            let tx_clone = tx.clone();
-            spawn_script_handle(tx_clone, receiver, id);
+            config.run_script(script).await?;
         }
     }
 
@@ -257,30 +256,9 @@ fn create_tray(scripts: &[A2M8Script]) -> Result<SystemTray> {
     Ok(system_tray)
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ScriptEnd {
     id: Uuid,
     status: i8,
-}
-
-fn spawn_script_handle(
-    tx: mpsc::Sender<ScriptEnd>,
-    receiver: oneshot::Receiver<Result<()>>,
-    id: Uuid,
-) -> JoinHandle<Result<()>> {
-    tokio::spawn(async move {
-        let status = receiver.await;
-        tx.send(ScriptEnd {
-            id,
-            status: if status.is_ok() {
-                A2M8Script::STATUS_STOPPED
-            } else {
-                A2M8Script::STATUS_ERROR
-            },
-        })
-        .await
-        // it doesn't matter if the receiver is gone
-        .ok();
-        Ok(())
-    })
+    error: Option<String>,
 }

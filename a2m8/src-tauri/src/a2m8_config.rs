@@ -1,17 +1,22 @@
 use std::{path::PathBuf, sync::Arc};
 
-use tokio::{fs, sync::mpsc};
+use tokio::{
+    fs,
+    sync::{mpsc, oneshot},
+};
 
-use crate::{prelude::*, ScriptEnd};
+use crate::{prelude::*, utils::spawn_script_handle, ScriptEnd};
 
 pub type A2 = Arc<Mutex<A2M8Config>>;
+
+pub type ScriptHandle = A2M8ScriptRunningHandle;
 
 #[derive(Debug)]
 pub struct A2M8Config {
     pub scripts: Vec<A2M8Script>,
     pub data_dir: PathBuf,
     pub stop_sender: mpsc::Sender<ScriptEnd>,
-    pub script_handles: Vec<A2M8ScriptRunningHandle>,
+    pub script_handles: Vec<ScriptHandle>,
 }
 
 impl A2M8Config {
@@ -71,6 +76,20 @@ impl A2M8Config {
             .ok_or_else(|| anyhow::anyhow!("Script not found"))?;
         self.scripts.remove(index);
         self.save_scripts().await?;
+        Ok(())
+    }
+
+    pub async fn run_script(&mut self, mut script: A2M8Script) -> Result<()> {
+        let (stop_sender, receiver) = oneshot::channel::<u8>();
+        let child = script.start().await?;
+        let handle = ScriptHandle {
+            id: script.id,
+            stop_sender,
+        };
+        self.script_handles.push(handle);
+        spawn_script_handle(self.stop_sender.clone(), receiver, child, script.id);
+
+        self.update_script(script).await?;
         Ok(())
     }
 }

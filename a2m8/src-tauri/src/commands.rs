@@ -1,3 +1,5 @@
+use tokio::sync::oneshot;
+
 use crate::{prelude::*, spawn_script_handle};
 
 #[tauri::command]
@@ -30,16 +32,15 @@ pub async fn get_scripts(config: tauri::State<'_, A2>) -> Result<Vec<A2M8Script>
 #[tauri::command]
 pub async fn start_script(config: tauri::State<'_, A2>, id: Uuid) -> Result<()> {
     let mut config = config.lock().await;
-    let mut script = config
+    let script = config
         .scripts
         .iter()
         .find(|s| s.id == id)
         .ok_or_else(|| anyhow::anyhow!("Script not found"))?
         .clone();
-    let (receiver, handle) = script.start().await?;
-    config.script_handles.push(handle);
-    config.update_script(script).await?;
-    spawn_script_handle(config.stop_sender.clone(), receiver, id);
+
+    config.run_script(script).await?;
+
     Ok(())
 }
 
@@ -60,9 +61,8 @@ pub async fn stop_script(config: tauri::State<'_, A2>, id: Uuid) -> Result<()> {
 
     let h = config.script_handles.remove(handle);
 
-    //  if it errors here, it means the script has already stopped otherwise this will stop the script
-    h.sender.send(Ok(())).ok();
-    h.handle.join().unwrap()?;
+    // if it errors here, it means the script has already stopped otherwise this will stop the script
+    h.stop_sender.send(0).unwrap_or_default();
 
     script.status = A2M8Script::STATUS_STOPPED;
     config.update_script(script).await?;
