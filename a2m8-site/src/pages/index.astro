@@ -7,12 +7,12 @@ import { ImageCarousel } from "../components/ImageList";
 import { GITEA } from "../consts";
 import { Download } from "../components/Download";
 
-const screenshots: string[] = await Astro.glob("../../public/pics/*.png")
+const screenshots: string[] = await Astro.glob("../../public/pics/*.(png|gif)")
   .then((r) => r.map((x) => x["default"]?.src?.replace?.("public/", "")))
   .then((x) => x.filter((x) => x));
 
 let repos: { name: string; code: string; link: string }[] = await Promise.all(
-  ["keybinds-starter","get-ip",  "screenshot-every-x", "open-app"].map((x) =>
+  ["keybinds-starter", "get-ip", "screenshot-every-x", "open-app"].map((x) =>
     fetch(
       `https://a2m8-git.tricked.dev/tricked/${x}/raw/branch/main/module.lua`
     ).then(async (res) => ({
@@ -47,17 +47,41 @@ let repos: { name: string; code: string; link: string }[] = await Promise.all(
     <div class="bg-base-300 py-2">
       <h2 class="text-2xl text-center">Create scripts!</h2>
       <div class="max-w-[44rem] mx-auto">
+        <div class="flex gap-2" id="selecter-portal"></div>
         {
           repos.map((x, index) => {
             return (
-              <div class={`w-auto my-4 ${index % 2 ? "md:ml-36" : "md:mr-20"}`}>
-                <CodeSnippet title={x.name} href={x.link}>
-                  <Code code={x.code} lang="lua" />
-                </CodeSnippet>
+              <div class="selecter" id={x.name}>
+                <div>
+                  <button class="text-center rounded-sm">{x.name}</button>
+                </div>
+
+                <div
+                  style={{ display: index == 0 ? "block" : "none" }}
+                  class={`w-auto my-4 content`}
+                >
+                  <CodeSnippet href={x.link}>
+                    <Code code={x.code} lang="lua" />
+                  </CodeSnippet>
+                </div>
               </div>
             );
           })
         }
+        <script type="module">
+          const portal = document.getElementById("selecter-portal");
+          let selecters = document.querySelectorAll(".selecter");
+          selecters.forEach((s) => {
+            let btn = s.querySelector("button");
+            btn.addEventListener("click", () => {
+              selecters.forEach(
+                (s) => (s.querySelector(".content").style.display = "none")
+              );
+              s.querySelector(".content").style.display = "block";
+            });
+            portal.appendChild(btn);
+          });
+        </script>
       </div>
     </div>
     <div>

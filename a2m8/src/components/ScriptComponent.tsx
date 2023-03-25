@@ -58,6 +58,7 @@ export default function ScriptComponent({
         updateScript({ status, id });
         // lmao why did i think this was a good idea...
         // updateScript(script);
+        console.log(event.payload);
       }
     );
     return () => {

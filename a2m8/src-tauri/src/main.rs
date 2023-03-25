@@ -208,7 +208,6 @@ fn handle_tray_event(app: &AppHandle<Wry>, event: SystemTrayEvent) {
                     config.run_script(script).await.unwrap();
                     config
                         .stop_sender
-                        .clone()
                         .send(ScriptEnd {
                             id,
                             status: A2M8Script::STATUS_RUNNING,
@@ -230,6 +229,15 @@ fn handle_tray_event(app: &AppHandle<Wry>, event: SystemTrayEvent) {
                     config.stop_script(id).await.unwrap();
                     config.save_scripts().await.unwrap();
 
+                    config
+                        .stop_sender
+                        .send(ScriptEnd {
+                            id,
+                            status: A2M8Script::STATUS_STOPPED,
+                            error: None,
+                        })
+                        .await
+                        .expect("Failed to send");
                     let tray = handle.tray_handle();
                     tray.set_menu(create_tray(&config.scripts).unwrap())
                 });
@@ -242,7 +250,7 @@ fn handle_tray_event(app: &AppHandle<Wry>, event: SystemTrayEvent) {
     }
 }
 
-fn create_tray(scripts: &[A2M8Script]) -> Result<SystemTrayMenu> {
+pub fn create_tray(scripts: &[A2M8Script]) -> Result<SystemTrayMenu> {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
     let hide = CustomMenuItem::new("hide".to_string(), "Hide");
     let open = CustomMenuItem::new("open".to_string(), "Open");
