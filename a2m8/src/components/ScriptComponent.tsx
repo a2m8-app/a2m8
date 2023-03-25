@@ -56,7 +56,8 @@ export default function ScriptComponent({
         const { id, status } = event.payload;
         if (id != script.id) return;
         updateScript({ status, id });
-        updateScript(script);
+        // lmao why did i think this was a good idea...
+        // updateScript(script);
       }
     );
     return () => {

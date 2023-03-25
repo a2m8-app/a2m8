@@ -133,7 +133,7 @@ async fn start_app(
     tauri::async_runtime::set(tokio::runtime::Handle::current());
 
     let app = tauri::Builder::default()
-        .system_tray(create_tray(&config.scripts)?)
+        .system_tray(SystemTray::new().with_menu(create_tray(&config.scripts)?))
         .manage(Arc::new(Mutex::new(config)))
         .on_system_tray_event(handle_tray_event)
         .setup(|app| {
@@ -191,13 +191,58 @@ fn handle_tray_event(app: &AppHandle<Wry>, event: SystemTrayEvent) {
                 let window = app.get_window("main").unwrap();
                 window.show().unwrap();
             }
-            _ => {}
+            s if s.starts_with("start-") => {
+                let id = s.replace("start-", "").parse().expect("failed to parse id");
+                let handle = app.clone();
+                tokio::spawn(async move {
+                    let state = handle.try_state::<A2>().expect("failed to get state");
+                    let mut config = state.lock().await;
+                    let script = config
+                        .scripts
+                        .iter()
+                        .find(|s| s.id == id)
+                        .ok_or_else(|| anyhow::anyhow!("Script not found"))
+                        .unwrap()
+                        .clone();
+
+                    config.run_script(script).await.unwrap();
+                    config
+                        .stop_sender
+                        .clone()
+                        .send(ScriptEnd {
+                            id,
+                            status: A2M8Script::STATUS_RUNNING,
+                            error: None,
+                        })
+                        .await
+                        .expect("Failed to send");
+
+                    let tray = handle.tray_handle();
+                    tray.set_menu(create_tray(&config.scripts).unwrap())
+                });
+            }
+            s if s.starts_with("stop-") => {
+                let id = s.replace("stop-", "").parse().expect("failed to parse id");
+                let handle = app.clone();
+                tokio::spawn(async move {
+                    let state = handle.try_state::<A2>().expect("failed to get state");
+                    let mut config = state.lock().await;
+                    config.stop_script(id).await.unwrap();
+                    config.save_scripts().await.unwrap();
+
+                    let tray = handle.tray_handle();
+                    tray.set_menu(create_tray(&config.scripts).unwrap())
+                });
+            }
+            _ => {
+                println!("{id}");
+            }
         },
         _ => {}
     }
 }
 
-fn create_tray(scripts: &[A2M8Script]) -> Result<SystemTray> {
+fn create_tray(scripts: &[A2M8Script]) -> Result<SystemTrayMenu> {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
     let hide = CustomMenuItem::new("hide".to_string(), "Hide");
     let open = CustomMenuItem::new("open".to_string(), "Open");
@@ -208,10 +253,10 @@ fn create_tray(scripts: &[A2M8Script]) -> Result<SystemTray> {
     scripts.sort_by_key(|s| s.favorite);
     for script in scripts {
         if !script.running() {
-            let start = CustomMenuItem::new(script.id.to_string(), format!("Start {}", script.name));
+            let start = CustomMenuItem::new(format!("start-{}", script.id), format!("Start {}", script.name));
             starter_menu = starter_menu.add_item(start);
         } else {
-            let stop = CustomMenuItem::new(script.id.to_string(), format!("Stop {}", script.name));
+            let stop = CustomMenuItem::new(format!("stop-{}", script.id), format!("Stop {}", script.name));
             stop_menu = stop_menu.add_item(stop);
         }
     }
@@ -233,8 +278,7 @@ fn create_tray(scripts: &[A2M8Script]) -> Result<SystemTray> {
         .add_submenu(SystemTraySubmenu::new("start script", starter_menu))
         .add_submenu(SystemTraySubmenu::new("stop script", stop_menu));
 
-    let system_tray = SystemTray::new().with_menu(tray_menu);
-    Ok(system_tray)
+    Ok(tray_menu)
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

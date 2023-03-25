@@ -66,6 +66,7 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
 
     let load_teal = || async {
         let table: Table = lua.load(tl::TEAL_LUA).set_name(&module)?.call_async(()).await?;
+        loaded_modules.set("tl", table.clone())?;
         Ok::<_, mlua::Error>(table)
     };
 
