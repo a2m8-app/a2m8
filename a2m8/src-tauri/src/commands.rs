@@ -1,6 +1,4 @@
-use tokio::sync::oneshot;
-
-use crate::{prelude::*, spawn_script_handle};
+use crate::prelude::*;
 
 #[tauri::command]
 pub async fn create_script(config: tauri::State<'_, A2>, script: A2M8Script) -> Result<()> {

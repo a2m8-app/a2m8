@@ -6,7 +6,7 @@ use hyper::{
     Body, Request, Response, Server,
 };
 use serde::Serialize;
-use tauri::{State, Window};
+use tauri::Window;
 
 use crate::a2m8_config::A2;
 

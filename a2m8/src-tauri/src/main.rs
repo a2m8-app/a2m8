@@ -1,26 +1,20 @@
 #![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows")]
 
-use std::{path::Path, sync::Arc, thread};
+use std::{path::Path, sync::Arc};
 
 use crate::{commands::*, prelude::*};
-use a2m8_lib::require;
+
 use clap::Parser;
 use directories::ProjectDirs;
-use mlua::Lua;
+
 use tauri::{
-    async_runtime::{Mutex, TokioJoinHandle as JoinHandle},
-    AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
-    SystemTraySubmenu, Wry,
+    async_runtime::Mutex, AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
+    SystemTrayMenuItem, SystemTraySubmenu, Wry,
 };
-use tokio::{
-    fs,
-    process::Child,
-    select,
-    sync::{mpsc, oneshot},
-};
+use tokio::{fs, sync::mpsc};
 use tracing::metadata::LevelFilter;
 use tracing_subscriber::EnvFilter;
-use utils::spawn_script_handle;
+use utils::create_lua;
 
 mod a2m8_config;
 mod cli;
@@ -58,7 +52,10 @@ async fn main() -> Result<()> {
     match args.subcommand {
         Some(cli::Command::Run { file }) => {
             let lua = utils::create_lua()?;
-            lua.load(Path::new(&file)).set_name("main")?.exec_async().await?;
+            lua.load(Path::new(&file))
+                .set_name(file.file_name().unwrap().to_string_lossy())?
+                .exec_async()
+                .await?;
             Ok(())
         }
 
@@ -95,13 +92,8 @@ async fn main() -> Result<()> {
                 Some(cli::Command::Start { id }) => {
                     let script = config.scripts.iter_mut().find(|script| script.id == id);
                     if let Some(script) = script {
-                        let lua = Lua::new();
-
-                        let globals = lua.globals();
-                        globals.set("require_ref", globals.get::<_, mlua::Function>("require")?)?;
-                        globals.set("require", lua.create_async_function(require)?)?;
-                        globals.set("__INTERNAL_LOADED_MODULES", lua.create_table()?)?;
-                        lua.load(&script.content).set_name("main")?.exec_async().await?;
+                        let lua = create_lua()?;
+                        lua.load(&script.content).set_name(&script.name)?.exec_async().await?;
                     }
                     Ok(())
                 }
@@ -124,7 +116,7 @@ async fn main() -> Result<()> {
 
 async fn start_app(
     mut config: A2M8Config,
-    (tx, mut rx): (mpsc::Sender<ScriptEnd>, mpsc::Receiver<ScriptEnd>),
+    (_tx, mut rx): (mpsc::Sender<ScriptEnd>, mpsc::Receiver<ScriptEnd>),
 ) -> Result<()> {
     for script in &mut config.scripts {
         if script.running() {

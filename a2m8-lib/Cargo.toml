@@ -53,12 +53,12 @@ notify-rust = { version = "4", optional = true, default-features = false, featur
     "d"
 ] }
 # network
-reqwest = { version = "0.11.13", optional = true }
+reqwest = { version = "0.11", optional = true }
 # open
-opener = { version = "0.5.0", optional = true }
+opener = { version = "0.5", optional = true }
 # misc
-once_cell = { version = "1.17.0", features = ["parking_lot"] }
-rust-embed = "6.4.2"
+once_cell = { version = "1", features = ["parking_lot"] }
+rust-embed = "6"
 tokio-util = { version = "0.7.4" }
 appfinder = { version = "0.1.1" }
 serde = { workspace = true }

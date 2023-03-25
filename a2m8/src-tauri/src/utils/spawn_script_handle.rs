@@ -6,8 +6,7 @@ use tokio::{
 };
 use uuid::Uuid;
 
-use crate::ScriptEnd;
-use crate::{script::A2M8Script, Result};
+use crate::{script::A2M8Script, Result, ScriptEnd};
 
 pub fn spawn_script_handle(
     tx: mpsc::Sender<ScriptEnd>,
@@ -20,7 +19,8 @@ pub fn spawn_script_handle(
         let mut error = None;
         select! {
             _ = stop_receiver => {
-                 child.kill().await;
+                //we dont care about the result
+                child.kill().await.ok();
             }
             res = child.wait() => {
                 match res {
@@ -42,6 +42,7 @@ pub fn spawn_script_handle(
 
             }
         }
+        //we dont care about the result
         tx.send(ScriptEnd { id, status, error }).await.ok();
         Ok(())
     })
