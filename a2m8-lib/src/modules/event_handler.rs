@@ -1,5 +1,3 @@
-use std::default;
-
 use mlua::{FromLua, Function, Lua, UserData};
 use rdev::{Button, Event, EventType, Key};
 use serde::{Deserialize, Serialize};

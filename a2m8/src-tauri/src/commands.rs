@@ -47,25 +47,7 @@ pub async fn start_script(config: tauri::State<'_, A2>, id: Uuid) -> Result<()> 
 #[tauri::command]
 pub async fn stop_script(config: tauri::State<'_, A2>, id: Uuid) -> Result<()> {
     let mut config = config.lock().await;
-    let mut script = config
-        .scripts
-        .iter()
-        .find(|s| s.id == id)
-        .ok_or_else(|| anyhow::anyhow!("Script not found"))?
-        .clone();
-    let handle = config
-        .script_handles
-        .iter()
-        .position(|h| h.id == id)
-        .ok_or_else(|| anyhow::anyhow!("Script not found"))?;
-
-    let h = config.script_handles.remove(handle);
-
-    // if it errors here, it means the script has already stopped otherwise this will stop the script
-    h.stop_sender.send(0).unwrap_or_default();
-
-    script.status = A2M8Script::STATUS_STOPPED;
-    config.update_script(script).await?;
+    config.stop_script(id).await?;
     Ok(())
 }
 

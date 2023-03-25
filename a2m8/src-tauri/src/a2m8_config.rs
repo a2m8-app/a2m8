@@ -92,4 +92,25 @@ impl A2M8Config {
         self.update_script(script).await?;
         Ok(())
     }
+
+    pub async fn stop_script(&mut self, id: Uuid) -> Result<()> {
+        let index = self
+            .script_handles
+            .iter()
+            .position(|s| s.id == id)
+            .ok_or_else(|| anyhow::anyhow!("Script not found"))?;
+        let handle = self.script_handles.remove(index);
+        handle.stop_sender.send(0).ok();
+        // set the script status to stopped
+        let mut script = self
+            .scripts
+            .iter_mut()
+            .find(|s| s.id == id)
+            .ok_or_else(|| anyhow::anyhow!("Script not found"))?
+            .clone();
+        script.status = A2M8Script::STATUS_STOPPED;
+        self.update_script(script).await?;
+
+        Ok(())
+    }
 }

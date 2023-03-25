@@ -23,8 +23,8 @@ pub enum Command {
     Add { file: PathBuf },
     /// Remove a script this requires the id you can view it in list sub
     Delete { id: Uuid },
-    /// Start
+    /// Start a installed script by uuid
     Start { id: Uuid },
-    /// Inspect
+    /// Inspect a script by uuid
     Inspect { id: Uuid },
 }

@@ -15,9 +15,15 @@ function module.read()
     return input
 end
 
-function module.loop(fun)
+---comment
+---@param fun function function to run
+---@param delay number? seconds of delay
+function module.loop(fun, delay)
     while true do
         fun()
+        if (delay ~= nil) then
+            module.sleep(delay)
+        end
     end
 end
 

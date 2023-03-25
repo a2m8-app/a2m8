@@ -50,4 +50,12 @@ function events.press_key(key, delay)
     sim(events.create_key_release(key))
 end
 
+---@param key "left"|"right"|"middle"|string? key to press use a number if its a utility mouse button
+---@param delay number?
+function events.click(key, delay)
+    sim(events.create_button_press(key or "left"))
+    u.sleep(delay or 0.01)
+    sim(events.create_button_release(key or "left"))
+end
+
 return events

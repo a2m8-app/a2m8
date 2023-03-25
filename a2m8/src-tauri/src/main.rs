@@ -22,25 +22,14 @@ use tracing::metadata::LevelFilter;
 use tracing_subscriber::EnvFilter;
 use utils::spawn_script_handle;
 
+mod a2m8_config;
+mod cli;
+mod commands;
+mod error;
+mod http;
+mod prelude;
+mod script;
 mod utils;
-
-macro_rules! import_modules {
-    ($($x:ident),*) => {
-        $(
-            mod $x;
-        )*
-    };
-}
-
-import_modules! {
-    a2m8_config,
-    cli,
-    commands,
-    error,
-    http,
-    prelude,
-    script
-}
 
 #[tokio::main]
 async fn main() -> Result<()> {

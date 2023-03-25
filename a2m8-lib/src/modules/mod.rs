@@ -44,8 +44,8 @@ struct StdFiles;
 impl StdFiles {
     pub fn get_lua_file(name: &str) -> Option<String> {
         std::str::from_utf8(Self::get(&format!("{name}.lua"))?.data.as_ref())
-            .ok()
             .map(|x| x.to_string())
+            .ok()
     }
 }
 

@@ -87,8 +87,14 @@ const WorkShop = () => {
       if (res.length < 10) {
         setIsEnd(true);
       }
-
-      setData([...data, ...res]);
+      let newData = [...data, ...res];
+      let filtered: any[] = [];
+      for (let item of newData) {
+        if (!filtered.find((x) => x.full_name === item.full_name)) {
+          filtered.push(item);
+        }
+      }
+      setData(filtered);
       setVirtualPage(virtualPage + 1);
     }
   };
