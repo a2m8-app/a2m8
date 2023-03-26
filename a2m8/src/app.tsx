@@ -34,7 +34,8 @@ export function App<FC>() {
                 type="checkbox"
                 class="toggle"
                 id="simple-mode"
-                onChange={(e) => setSimpleMode(e.target.checked)}
+                checked={simpleMode}
+                onChange={() => setSimpleMode(!simpleMode)}
               />
             </label>
           </div>
