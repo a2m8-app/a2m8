@@ -12,7 +12,13 @@ const screenshots: string[] = await Astro.glob("../../public/pics/*.(png|gif)")
   .then((x) => x.filter((x) => x));
 
 let repos: { name: string; code: string; link: string }[] = await Promise.all(
-  ["keybinds-starter", "get-ip", "screenshot-every-x", "open-app"].map((x) =>
+  [
+    "stardew-animation-cancel",
+    "keybinds-starter",
+    "get-ip",
+    "screenshot-every-x",
+    "open-app",
+  ].map((x) =>
     fetch(
       `https://a2m8-git.tricked.dev/tricked/${x}/raw/branch/main/module.lua`
     ).then(async (res) => ({
@@ -46,31 +52,41 @@ let repos: { name: string; code: string; link: string }[] = await Promise.all(
     </div>
     <div class="bg-base-300 py-2">
       <h2 class="text-2xl text-center">Create scripts!</h2>
-      <div class="max-w-[44rem] mx-auto">
+      <div class="max-w-[60rem] mx-auto">
         <div class="flex gap-2" id="selecter-portal"></div>
-        {
-          repos.map((x, index) => {
-            return (
-              <div class="selecter" id={x.name}>
-                <div>
-                  <button class="text-center rounded-sm">{x.name}</button>
-                </div>
+        <div>
+          {
+            repos.map((x, index) => {
+              return (
+                <div class="selecter" id={x.name}>
+                  <div>
+                    <button
+                      id={index == 0 ? "selected" : undefined}
+                      class={`text-center rounded-sm ${
+                        index == 0 ? "bg-secondary/60" : ""
+                      }`}
+                    >
+                      {x.name}
+                    </button>
+                  </div>
 
-                <div
-                  style={{ display: index == 0 ? "block" : "none" }}
-                  class={`w-auto my-4 content`}
-                >
-                  <CodeSnippet href={x.link}>
-                    <Code code={x.code} lang="lua" />
-                  </CodeSnippet>
+                  <div
+                    style={{ display: index == 0 ? "block" : "none" }}
+                    class={`w-auto my-4 content`}
+                  >
+                    <CodeSnippet href={x.link}>
+                      <Code code={x.code} lang="lua" />
+                    </CodeSnippet>
+                  </div>
                 </div>
-              </div>
-            );
-          })
-        }
+              );
+            })
+          }
+        </div>
+
         <script type="module">
           const portal = document.getElementById("selecter-portal");
-          let selecters = document.querySelectorAll(".selecter");
+          const selecters = document.querySelectorAll(".selecter");
           selecters.forEach((s) => {
             let btn = s.querySelector("button");
             btn.addEventListener("click", () => {
@@ -78,6 +94,14 @@ let repos: { name: string; code: string; link: string }[] = await Promise.all(
                 (s) => (s.querySelector(".content").style.display = "none")
               );
               s.querySelector(".content").style.display = "block";
+
+              document.querySelectorAll("#selected").forEach((x) => {
+                x.classList.remove("bg-secondary/60");
+                x.id = "";
+              });
+
+              btn.classList.add("bg-secondary/60");
+              btn.id = "selected";
             });
             portal.appendChild(btn);
           });

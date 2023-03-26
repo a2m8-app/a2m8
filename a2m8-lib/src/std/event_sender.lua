@@ -41,6 +41,16 @@ function events.enter()
 end
 
 ---@param key string
+function events.down(key)
+    sim(events.create_key_press(key))
+end
+
+---@param key string
+function events.up(key)
+    sim(events.create_key_release(key))
+end
+
+---@param key string
 ---@param delay number
 function events.press_key(key, delay)
     sim(events.create_key_press(key))
