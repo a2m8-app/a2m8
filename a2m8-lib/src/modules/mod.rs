@@ -84,6 +84,8 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
 #[cfg(feature = "events")]      "event_sender_internal" => event_sender::init(lua)?,
 #[cfg(feature = "events")]      "event_sender" => load_std().await?,
 /* always-on */                 "json" => json::init(lua)?,
+/* always-on */                 "kv" => load_std().await?,
+/* always-on */                 "preload" => load_std().await?,
 /* always-on */                 "log" => log::init(lua)?,
 #[cfg(feature = "network")]     "network" => network::init(lua)?,
 #[cfg(feature = "notify")]      "notify" => notify::init(lua)?,
@@ -103,6 +105,7 @@ pub async fn require(lua: &Lua, module: String) -> mlua::Result<Table> {
                                     let data = read_to_string(m)?;
                                     load.call::<_, Function>((data, m))?.call::<_, Table>(())?
                                 }
+
         _ => {
             /* early return so other modules can be cached */
             return globals

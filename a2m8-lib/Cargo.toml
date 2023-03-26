@@ -30,10 +30,10 @@ open = ["opener"]
 
 [dependencies]
 # audio
-rodio = { version = "0.16.0", optional = true }
+rodio = { version = "0.17", optional = true }
 # clipboard
-cli-clipboard = { version = "0.4.0", optional = true }
-clipboard-ext = { version = "0.2.0", optional = true }
+cli-clipboard = { version = "0.4", optional = true }
+clipboard-ext = { version = "0.2", optional = true }
 # command
 deno_task_shell = { version = "0.8.2", features = [
     "serde",

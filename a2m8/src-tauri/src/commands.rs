@@ -20,9 +20,11 @@ pub async fn update_script(
     script: A2M8Script,
 ) -> Result<()> {
     let mut config = config.lock().await;
+
     config.update_script(script).await?;
 
     app_handle.tray_handle().set_menu(create_tray(&config.scripts)?)?;
+
     Ok(())
 }
 

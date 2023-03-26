@@ -81,11 +81,16 @@ impl A2M8Config {
 
     pub async fn run_script(&mut self, mut script: A2M8Script) -> Result<()> {
         let (stop_sender, receiver) = oneshot::channel::<u8>();
+
+        let mut data_dir = self.data_dir.clone();
+        data_dir.push("data");
+        data_dir.push(script.id.to_string());
         let child = script.start().await?;
         let handle = ScriptHandle {
             id: script.id,
             stop_sender,
         };
+
         self.script_handles.push(handle);
         spawn_script_handle(self.stop_sender.clone(), receiver, child, script.id);
 

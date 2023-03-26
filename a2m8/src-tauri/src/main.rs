@@ -48,69 +48,73 @@ async fn main() -> Result<()> {
             path
         }
     };
+    fs::create_dir_all(&path).await?;
 
+    let (tx, rx) = tokio::sync::mpsc::channel(10);
+
+    let mut config = A2M8Config {
+        scripts: Vec::new(),
+        script_handles: Vec::new(),
+        stop_sender: tx.clone(),
+        data_dir: path,
+    };
+    config.load_scripts().await?;
     match args.subcommand {
         Some(cli::Command::Run { file }) => {
-            let lua = utils::create_lua()?;
+            let data_dir = config.data_dir.join("dev").join("");
+            tokio::fs::create_dir_all(&data_dir).await?;
+            std::env::set_var("A2M8_SCRIPT_DATA_DIR", data_dir.to_string_lossy().to_string());
+
+            let lua = utils::create_lua().await?;
             lua.load(Path::new(&file))
                 .set_name(file.file_name().unwrap().to_string_lossy())?
                 .exec_async()
                 .await?;
             Ok(())
         }
-
-        _ => {
-            fs::create_dir_all(&path).await?;
-
-            let (tx, rx) = tokio::sync::mpsc::channel(10);
-
-            let mut config = A2M8Config {
-                scripts: Vec::new(),
-                script_handles: Vec::new(),
-                stop_sender: tx.clone(),
-                data_dir: path,
-            };
-            config.load_scripts().await?;
-            match args.subcommand {
-                Some(cli::Command::List {}) => {
-                    for script in &config.scripts {
-                        println!("{} {}", script.id, script.name);
-                    }
-                    Ok(())
-                }
-                Some(cli::Command::Add { file }) => {
-                    let script = A2M8Script::from_file(file)?;
-                    config.scripts.push(script);
-                    config.save_scripts().await?;
-                    Ok(())
-                }
-                Some(cli::Command::Delete { id }) => {
-                    config.scripts.retain(|script| script.id != id);
-                    config.save_scripts().await?;
-                    Ok(())
-                }
-                Some(cli::Command::Start { id }) => {
-                    let script = config.scripts.iter_mut().find(|script| script.id == id);
-                    if let Some(script) = script {
-                        let lua = create_lua()?;
-                        lua.load(&script.content).set_name(&script.name)?.exec_async().await?;
-                    }
-                    Ok(())
-                }
-                Some(cli::Command::Inspect { id }) => {
-                    let script = config.scripts.iter_mut().find(|script| script.id == id);
-                    if let Some(script) = script {
-                        println!("name: {}", script.name);
-                        println!("id: {}", script.id);
-                        println!("favorite: {}", script.favorite);
-                        println!("description: {}", script.description);
-                        println!("content\n{}", script.content);
-                    }
-                    Ok(())
-                }
-                _ => start_app(config, (tx, rx)).await,
+        Some(cli::Command::List {}) => {
+            for script in &config.scripts {
+                println!("{} {}", script.id, script.name);
             }
+            Ok(())
         }
+        Some(cli::Command::Add { file }) => {
+            let script = A2M8Script::from_file(file)?;
+            config.scripts.push(script);
+            config.save_scripts().await?;
+            Ok(())
+        }
+        Some(cli::Command::Delete { id }) => {
+            config.scripts.retain(|script| script.id != id);
+            config.save_scripts().await?;
+            Ok(())
+        }
+        Some(cli::Command::Start { id }) => {
+            let script = config.scripts.iter_mut().find(|script| script.id == id);
+            if let Some(script) = script {
+                let data_dir = config.data_dir.join("data").join(script.id.to_string()).join("");
+                tokio::fs::create_dir_all(&data_dir).await?;
+                std::env::set_var("A2M8_SCRIPT_DATA_DIR", data_dir.to_string_lossy().to_string());
+
+                std::env::set_var("A2M8_SCRIPT", serde_json::to_string_pretty(&script)?);
+
+                let lua = create_lua().await?;
+                lua.load(&script.content).set_name(&script.name)?.exec_async().await?;
+            }
+            Ok(())
+        }
+        Some(cli::Command::Inspect { id }) => {
+            let script = config.scripts.iter_mut().find(|script| script.id == id);
+            if let Some(script) = script {
+                println!("name: {}", script.name);
+                println!("id: {}", script.id);
+                println!("favorite: {}", script.favorite);
+                println!("description: {}", script.description);
+                println!("content\n----\n{}", script.content);
+            }
+            Ok(())
+        }
+        _ => start_app(config, (tx, rx)).await,
     }
 }
 

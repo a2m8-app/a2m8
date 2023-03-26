@@ -6,11 +6,13 @@ fn add_globals(lua: &Lua) -> mlua::Result<()> {
     globals.set("require_ref", globals.get::<_, mlua::Function>("require")?)?;
     globals.set("require", lua.create_async_function(require)?)?;
     globals.set("__INTERNAL_LOADED_MODULES", lua.create_table()?)?;
+
     Ok(())
 }
 
-pub fn create_lua() -> mlua::Result<Lua> {
+pub async fn create_lua() -> mlua::Result<Lua> {
     let lua = Lua::new();
     add_globals(&lua)?;
+    require(&lua, "preload".to_owned()).await?;
     Ok(lua)
 }

@@ -105,10 +105,12 @@ export default function ViewSource() {
                     class="inline-flex btn btn-success w-auto"
                     onClick={async () => {
                       if ("id" in script) {
-                        updateScript({
+                        let newScript = {
                           ...script,
                           content: editorRef.current.getValue(),
-                        });
+                        };
+                        await invoke("update_script", { script: newScript });
+                        updateScript(newScript);
                       } else {
                         const dat: Script = {
                           id: crypto.randomUUID(),

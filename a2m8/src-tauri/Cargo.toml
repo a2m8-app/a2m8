@@ -19,8 +19,12 @@ tauri-build = { version = "2.0.0-alpha.2", features = [] }
 [dependencies]
 serde = { workspace = true }
 serde_json = { workspace = true }
-tauri = { version = "2.0.0-alpha.4", features = ["api-all", "global-shortcut", "system-tray"] }
-directories = "4.0.1"
+tauri = { version = "2.0.0-alpha.4", features = [
+    "api-all",
+    "global-shortcut",
+    "system-tray"
+] }
+directories = "5"
 rmp-serde = "1.1.1"
 parking_lot = { version = "0.12.1", features = ["serde"] }
 thiserror = "1.0.38"
