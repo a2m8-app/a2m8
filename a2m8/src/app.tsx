@@ -4,8 +4,11 @@ import {} from "react-icons/fa";
 import "./monaco";
 import NewScriptListener from "./components/NewScriptListener";
 import ViewSource from "./components/ViewSource";
+import SimpleHome from "./routes/SimpleHome";
+import { useState } from "preact/hooks";
 
 export function App<FC>() {
+  let [simpleMode, setSimpleMode] = useState(false);
   return (
     <div>
       <div class="bg-base-200/20 w-full rounded-lg">
@@ -24,12 +27,23 @@ export function App<FC>() {
               </li>
             </ul>
           </div>
+          <div class="flex-none form-control">
+            <label for="simple-mode" class="cursor-pointer label">
+              <span class="label-text px-2">Simple mode</span>
+              <input
+                type="checkbox"
+                class="toggle"
+                id="simple-mode"
+                onChange={(e) => setSimpleMode(e.target.checked)}
+              />
+            </label>
+          </div>
         </nav>
       </div>
       <ViewSource />
       <NewScriptListener />
       <Router>
-        <Home path="/" />
+        {simpleMode ? <SimpleHome path="/" /> : <Home path="/" />}
       </Router>
     </div>
   );

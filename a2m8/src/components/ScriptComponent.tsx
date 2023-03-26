@@ -9,11 +9,7 @@ import { listen } from "@tauri-apps/api/event";
 import ViewSource from "./ViewSource";
 import { openScript } from "../lib/editScriptStore";
 
-export default function ScriptComponent({
-  script: scriptThing,
-}: {
-  script: Script;
-}) {
+function createScriptUtilities(scriptThing: Script) {
   const [script, updateScript] = useReducer(
     (state: Script, data: Partial<Script>) => {
       let newScript = { ...state, ...data };
@@ -69,6 +65,33 @@ export default function ScriptComponent({
   const openEditor = () => {
     openScript({ id: script.id });
   };
+  return {
+    script,
+    updateScript,
+    ref,
+    handleFavorite,
+    handleStartup,
+    start,
+    deleteScript,
+    openEditor,
+  };
+}
+
+export default function ScriptComponent({
+  script: scriptThing,
+}: {
+  script: Script;
+}) {
+  const {
+    script,
+    updateScript,
+    ref,
+    handleFavorite,
+    handleStartup,
+    start,
+    deleteScript,
+    openEditor,
+  } = createScriptUtilities(scriptThing);
 
   return (
     <div class={`bg-base-300 rounded-lg flex`}>
