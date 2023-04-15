@@ -28,7 +28,7 @@ directories = "5"
 rmp-serde = "1"
 parking_lot = { version = "0.12", features = ["serde"] }
 thiserror = "1"
-a2m8-lib = { path = "../../a2m8-lib", default-features = false, features = [] }
+a2m8-lib = { path = "../../a2m8-lib" }
 mlua = { workspace = true }
 anyhow = { workspace = true }
 uuid = { workspace = true }
